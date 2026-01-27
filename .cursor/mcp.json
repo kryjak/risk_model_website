@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "canva-dev": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@canva/cli@latest",
+        "mcp"
+      ]
+    },
+    "Figma": {
+      "url": "https://mcp.figma.com/mcp"
+    }
+  }
+}

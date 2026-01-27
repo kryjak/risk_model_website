@@ -1,0 +1,254 @@
+@import "tailwindcss";
+
+/* Season Sans Font Family */
+@font-face {
+  font-family: 'Season Sans';
+  src: url('/fonts/SeasonSans-Light.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Season Sans';
+  src: url('/fonts/SeasonSans-LightItalic.woff2') format('woff2');
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Season Sans';
+  src: url('/fonts/SeasonSans-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Season Sans';
+  src: url('/fonts/SeasonSans-RegularItalic.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Season Sans';
+  src: url('/fonts/SeasonSans-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Season Sans';
+  src: url('/fonts/SeasonSans-MediumItalic.woff2') format('woff2');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Season Sans';
+  src: url('/fonts/SeasonSans-SemiBold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Season Sans';
+  src: url('/fonts/SeasonSans-SemiBoldItalic.woff2') format('woff2');
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Season Sans';
+  src: url('/fonts/SeasonSans-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Season Sans';
+  src: url('/fonts/SeasonSans-BoldItalic.woff2') format('woff2');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Season Sans';
+  src: url('/fonts/SeasonSans-Heavy.woff2') format('woff2');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Season Sans';
+  src: url('/fonts/SeasonSans-HeavyItalic.woff2') format('woff2');
+  font-weight: 800;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Season Serif Font Family */
+@font-face {
+  font-family: 'Season Serif';
+  src: url('/fonts/SeasonSerif-Light.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Season Serif';
+  src: url('/fonts/SeasonSerif-LightItalic.woff2') format('woff2');
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* SaferAI Brand CSS Variables */
+:root {
+  /* Primary Colors */
+  --color-safer-blue: #5B86B5;
+  --color-safer-purple: #700C8C;
+  --color-safer-charcoal: #202137;
+  --color-safer-grey: #F9F8F8;
+  --color-white: #FFFFFF;
+  
+  /* Accent Colors (Data Visualization) */
+  --color-accent-green: #CADBC0;
+  --color-accent-pink: #F4DBD8;
+  --color-accent-purple: #E1E2EF;
+  --color-accent-teal: #5B7B7A;
+  --color-accent-red: #BC4B51;
+  
+  /* Semantic Colors */
+  --color-background: var(--color-safer-grey);
+  --color-surface: var(--color-white);
+  --color-text-primary: var(--color-safer-charcoal);
+  --color-text-secondary: #5B6B7A;
+  --color-text-muted: #8A9AA8;
+  --color-border: #E2E8F0;
+  
+  /* Chart Colors */
+  --color-baseline: var(--color-safer-blue);
+  --color-uplifted: var(--color-safer-purple);
+  
+  /* Grid/Chart styling */
+  --color-grid: #E5E7EB;
+  --color-zero-line: #9CA3AF;
+}
+
+@theme {
+  /* Brand Colors */
+  --color-safer-blue: #5B86B5;
+  --color-safer-purple: #700C8C;
+  --color-safer-charcoal: #202137;
+  --color-safer-grey: #F9F8F8;
+  --color-safer-green: #CADBC0;
+  --color-safer-pink: #F4DBD8;
+  --color-safer-light-purple: #E1E2EF;
+  --color-safer-teal: #5B7B7A;
+  --color-safer-red: #BC4B51;
+  
+  /* Typography */
+  --font-serif: 'Season Serif', Georgia, serif;
+  --font-sans: 'Season Sans', system-ui, sans-serif;
+  --font-mono: Consolas, Monaco, 'Courier New', monospace;
+}
+
+/* Base styles */
+body {
+  font-family: 'Season Sans', system-ui, -apple-system, sans-serif;
+  background-color: var(--color-safer-grey);
+  color: var(--color-safer-charcoal);
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Season Serif', Georgia, serif;
+  font-weight: 300;
+}
+
+/* Utility classes */
+.text-muted {
+  color: var(--color-text-muted);
+}
+
+.text-no-rationale {
+  color: var(--color-accent-teal);
+  font-style: italic;
+}
+
+/* Skeleton loading animation */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-border) 25%,
+    var(--color-safer-grey) 50%,
+    var(--color-border) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-safer-grey);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-safer-blue);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-safer-charcoal);
+}
+
+/* Table styles */
+.table-zebra tr:nth-child(even) {
+  background-color: var(--color-safer-grey);
+}
+
+.table-zebra tr:nth-child(odd) {
+  background-color: var(--color-white);
+}
+
+/* Focus styles for accessibility */
+*:focus-visible {
+  outline: 2px solid var(--color-safer-blue);
+  outline-offset: 2px;
+}
+
+/* Card styles */
+.card {
+  background-color: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+  border: 1px solid #f3f4f6;
+  padding: 1.5rem;
+}
