@@ -6,7 +6,7 @@ import { getPercentiles } from '../utils/statistics';
 
 interface ByParameterViewProps {
   index: RiskModelsIndex;
-  loadedModels: Map<string, { baseline: MonteCarloResults; uplifted: MonteCarloResults }>;
+  loadedModels: Map<string, { baseline: MonteCarloResults; sota: MonteCarloResults; saturated: MonteCarloResults }>;
   onShowDistribution: (estimate: ParameterEstimate) => void;
   onLoadModel: (modelId: string) => Promise<void>;
 }
@@ -42,17 +42,19 @@ export function ByParameterView({
       estimate: ParameterEstimate;
     }> = [];
 
-    loadedModels.forEach(({ baseline, uplifted }, modelId) => {
+    loadedModels.forEach(({ baseline, sota, saturated }, modelId) => {
       const node = baseline.metadata.nodes.find((n) => n.name === selectedParameter);
       if (!node) return;
 
       const baselineSamples = baseline.samples[node.id] as number[];
-      const upliftedSamples = uplifted.samples[node.id] as number[];
+      const sotaSamples = sota.samples[node.id] as number[];
+      const saturatedSamples = saturated.samples[node.id] as number[];
 
-      if (!baselineSamples || !upliftedSamples) return;
+      if (!baselineSamples || !sotaSamples || !saturatedSamples) return;
 
       const [bp5, bp50, bp95] = getPercentiles(baselineSamples);
-      const [up5, up50, up95] = getPercentiles(upliftedSamples);
+      const [sp5, sp50, sp95] = getPercentiles(sotaSamples);
+      const [satp5, satp50, satp95] = getPercentiles(saturatedSamples);
 
       const modelEntry = index.models.find((m) => m.id === modelId);
 
@@ -65,9 +67,11 @@ export function ByParameterView({
           nodeType: node.nodeType,
           unit: 'unit' in node ? node.unit : undefined,
           baseline: { p5: bp5, p50: bp50, p95: bp95 },
-          uplifted: { p5: up5, p50: up50, p95: up95 },
+          sota: { p5: sp5, p50: sp50, p95: sp95 },
+          saturated: { p5: satp5, p50: satp50, p95: satp95 },
           baselineSamples,
-          upliftedSamples,
+          sotaSamples,
+          saturatedSamples,
           rationale: node.description || '',
         },
       });
@@ -149,19 +153,28 @@ export function ByParameterView({
                     Baseline 5th %
                   </th>
                   <th className="text-right py-3 px-4 font-medium text-safer-blue whitespace-nowrap">
-                    Baseline 50th %
+                    Baseline Mode
                   </th>
                   <th className="text-right py-3 px-4 font-medium text-safer-blue whitespace-nowrap">
                     Baseline 95th %
                   </th>
                   <th className="text-right py-3 px-4 font-medium text-safer-purple whitespace-nowrap">
-                    AI 5th %
+                    SOTA 5th %
                   </th>
                   <th className="text-right py-3 px-4 font-medium text-safer-purple whitespace-nowrap">
-                    AI 50th %
+                    SOTA Mode
                   </th>
                   <th className="text-right py-3 px-4 font-medium text-safer-purple whitespace-nowrap">
-                    AI 95th %
+                    SOTA 95th %
+                  </th>
+                  <th className="text-right py-3 px-4 font-medium text-safer-teal whitespace-nowrap">
+                    Sat. 5th %
+                  </th>
+                  <th className="text-right py-3 px-4 font-medium text-safer-teal whitespace-nowrap">
+                    Sat. Mode
+                  </th>
+                  <th className="text-right py-3 px-4 font-medium text-safer-teal whitespace-nowrap">
+                    Sat. 95th %
                   </th>
                   <th className="text-center py-3 px-4 font-medium text-safer-charcoal">
                     Dist.
@@ -190,13 +203,22 @@ export function ByParameterView({
                       {format(estimate.baseline.p95, estimate)}
                     </td>
                     <td className="py-3 px-4 text-right text-safer-purple">
-                      {format(estimate.uplifted.p5, estimate)}
+                      {format(estimate.sota.p5, estimate)}
                     </td>
                     <td className="py-3 px-4 text-right text-safer-purple font-medium">
-                      {format(estimate.uplifted.p50, estimate)}
+                      {format(estimate.sota.p50, estimate)}
                     </td>
                     <td className="py-3 px-4 text-right text-safer-purple">
-                      {format(estimate.uplifted.p95, estimate)}
+                      {format(estimate.sota.p95, estimate)}
+                    </td>
+                    <td className="py-3 px-4 text-right text-safer-teal">
+                      {format(estimate.saturated.p5, estimate)}
+                    </td>
+                    <td className="py-3 px-4 text-right text-safer-teal font-medium">
+                      {format(estimate.saturated.p50, estimate)}
+                    </td>
+                    <td className="py-3 px-4 text-right text-safer-teal">
+                      {format(estimate.saturated.p95, estimate)}
                     </td>
                     <td className="py-3 px-4 text-center">
                       <button

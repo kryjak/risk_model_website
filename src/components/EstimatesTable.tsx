@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect } from 'react';
-import { ChevronDown, ChevronRight, BarChart3, Copy, Check } from 'lucide-react';
-import type { ParameterEstimate, TableType } from '../types';
+import { useState } from 'react';
+import { ChevronDown, ChevronRight, ChevronUp, BarChart3, Copy, Check } from 'lucide-react';
+import type { ParameterEstimate, TechniqueChild, TableType } from '../types';
 import { formatValue, truncateText } from '../utils/formatters';
 
 interface EstimatesTableProps {
@@ -21,7 +21,7 @@ export function EstimatesTable({
   }
 
   return (
-    <div className="card overflow-hidden p-0">
+    <div className="card overflow-visible p-0">
       <h3 className="text-lg font-serif font-medium text-safer-charcoal p-4 pb-2">
         {title}
       </h3>
@@ -31,9 +31,9 @@ export function EstimatesTable({
             <tr className="bg-safer-grey/50 border-b border-gray-100">
               <th className="text-left py-2 px-4 font-medium text-gray-500 w-8"></th>
               <th className="text-left py-2 px-4 font-medium text-gray-500">Parameter</th>
-              <th className="text-right py-2 px-4 font-medium text-gray-500 w-36">5th %</th>
-              <th className="text-right py-2 px-4 font-medium text-gray-500 w-36">50th %</th>
-              <th className="text-right py-2 px-4 font-medium text-gray-500 w-36">95th %</th>
+              <th className="text-right py-2 px-4 font-medium text-gray-500 w-40">5th %</th>
+              <th className="text-right py-2 px-4 font-medium text-gray-500 w-40">Mode</th>
+              <th className="text-right py-2 px-4 font-medium text-gray-500 w-40">95th %</th>
               <th className="text-left py-2 px-4 font-medium text-gray-500 min-w-[180px]">Rationale</th>
               <th className="text-center py-2 px-4 font-medium text-gray-500 w-12">Dist.</th>
             </tr>
@@ -62,6 +62,7 @@ interface ParameterRowsProps {
 
 function ParameterRows({ estimate, tableType, onShowDistribution }: ParameterRowsProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const hasTechniques = estimate.techniqueChildren && estimate.techniqueChildren.length > 0;
 
   const format = (value: number) => {
     if (tableType === 'probability' || estimate.nodeType === 'continuous') {
@@ -73,25 +74,22 @@ function ParameterRows({ estimate, tableType, onShowDistribution }: ParameterRow
   // Scenarios
   const scenarios = [
     { name: 'Baseline', data: estimate.baseline, rationale: estimate.rationale || '', color: 'safer-blue' as const },
-    { name: 'AI-Uplifted', data: estimate.uplifted, rationale: 'LLM assistance increases capability', color: 'safer-purple' as const },
+    { name: 'SOTA', data: estimate.sota, rationale: 'State-of-the-art LLM capabilities applied', color: 'safer-purple' as const },
+    { name: 'Saturated', data: estimate.saturated, rationale: 'Full saturation of KRI benchmark', color: 'safer-teal' as const },
   ];
 
-  // Calculate ranges with dynamic colour assignment based on which scenario has min/max
+  // Calculate ranges with dynamic colour assignment
   const getRange = (getValue: (s: typeof scenarios[0]) => number) => {
     const values = scenarios.map(s => ({ value: getValue(s), color: s.color }));
-    const min = Math.min(...values.map(v => v.value));
-    const max = Math.max(...values.map(v => v.value));
-    
-    // Find which scenario has the min and max values
-    const minScenario = values.find(v => v.value === min)!;
-    const maxScenario = [...values].reverse().find((v: { value: number; color: string }) => v.value === max)!; // Use last match for max (latest scenario)
-    
-    return { 
-      min, 
-      max, 
-      minColor: minScenario.color,
-      maxColor: maxScenario.color,
-      isSame: min === max 
+    const sorted = [...values].sort((a, b) => a.value - b.value);
+    return {
+      min: sorted[0].value,
+      mid: sorted[1].value,
+      max: sorted[2].value,
+      minColor: sorted[0].color,
+      midColor: sorted[1].color,
+      maxColor: sorted[2].color,
+      allSame: sorted[0].value === sorted[2].value,
     };
   };
 
@@ -99,12 +97,12 @@ function ParameterRows({ estimate, tableType, onShowDistribution }: ParameterRow
   const rangeP50 = getRange(s => s.data.p50);
   const rangeP95 = getRange(s => s.data.p95);
 
-  const hasRationale = estimate.rationale && estimate.rationale.trim().length > 0;
+  const hasRationale = !!(estimate.rationale && estimate.rationale.trim().length > 0);
 
   return (
     <>
       {/* Collapsed summary row */}
-      <tr 
+      <tr
         className={`border-b border-gray-100 hover:bg-safer-grey/30 cursor-pointer transition-colors ${
           isExpanded ? 'bg-safer-grey/20' : ''
         }`}
@@ -157,57 +155,239 @@ function ParameterRows({ estimate, tableType, onShowDistribution }: ParameterRow
         </td>
       </tr>
 
-      {/* Expanded scenario rows */}
-      {isExpanded && scenarios.map((scenario, idx) => (
-        <tr 
+      {/* Expanded content */}
+      {isExpanded && hasTechniques && (
+        <TechniqueGroup
+          techniques={estimate.techniqueChildren!}
+          parentFormat={format}
+        />
+      )}
+      {isExpanded && !hasTechniques && scenarios.map((scenario) => (
+        <ScenarioRow
           key={scenario.name}
-          className={`border-b border-gray-50 ${
-            scenario.color === 'safer-blue' ? 'bg-safer-blue/5' : 'bg-safer-purple/5'
-          }`}
-        >
-          <td className="py-2 px-4"></td>
-          <td className="py-2 px-4 pl-8">
-            <div className="flex items-center gap-2">
-              <div className={`w-2 h-2 rounded-full flex-shrink-0 ${
-                scenario.color === 'safer-blue' ? 'bg-safer-blue' : 'bg-safer-purple'
-              }`} />
-              <span className={`text-sm font-medium ${
-                scenario.color === 'safer-blue' ? 'text-safer-blue' : 'text-safer-purple'
-              }`}>
-                {scenario.name}
-              </span>
-            </div>
-          </td>
-          <td className={`py-2 px-4 text-right text-sm ${
-            scenario.color === 'safer-blue' ? 'text-safer-blue' : 'text-safer-purple'
-          }`}>
-            {format(scenario.data.p5)}
-          </td>
-          <td className={`py-2 px-4 text-right text-sm font-medium ${
-            scenario.color === 'safer-blue' ? 'text-safer-blue' : 'text-safer-purple'
-          }`}>
-            {format(scenario.data.p50)}
-          </td>
-          <td className={`py-2 px-4 text-right text-sm ${
-            scenario.color === 'safer-blue' ? 'text-safer-blue' : 'text-safer-purple'
-          }`}>
-            {format(scenario.data.p95)}
-          </td>
-          <td className="py-2 px-4 text-sm text-gray-600">
-            {idx === 0 ? (
-              hasRationale ? (
-                <RationaleCell text={scenario.rationale} />
-              ) : (
-                <span className="text-no-rationale">No rationale available</span>
-              )
-            ) : (
-              <RationaleCell text={scenario.rationale} />
-            )}
-          </td>
-          <td className="py-2 px-4"></td>
-        </tr>
+          scenario={scenario}
+          format={format}
+
+        />
       ))}
     </>
+  );
+}
+
+// Technique group with AND/OR connector
+interface TechniqueGroupProps {
+  techniques: TechniqueChild[];
+  parentFormat: (v: number) => string;
+}
+
+function TechniqueGroup({ techniques, parentFormat }: TechniqueGroupProps) {
+  const combinationMode = techniques[0]?.combinationMode || 'AND';
+  const connectorColor = combinationMode === 'AND' ? '#5B86B5' : '#BC4B51';
+
+  return (
+    <>
+      {techniques.map((technique, idx) => (
+        <TechniqueRow
+          key={technique.nodeId}
+          technique={technique}
+          parentFormat={parentFormat}
+          isFirst={idx === 0}
+          isLast={idx === techniques.length - 1}
+          combinationMode={combinationMode}
+          connectorColor={connectorColor}
+          totalTechniques={techniques.length}
+        />
+      ))}
+    </>
+  );
+}
+
+// Individual technique row
+interface TechniqueRowProps {
+  technique: TechniqueChild;
+  parentFormat: (v: number) => string;
+  isFirst: boolean;
+  isLast: boolean;
+  combinationMode: string;
+  connectorColor: string;
+  totalTechniques: number;
+}
+
+function TechniqueRow({
+  technique,
+  parentFormat,
+  isFirst,
+  isLast,
+  combinationMode,
+  connectorColor,
+  totalTechniques,
+}: TechniqueRowProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const scenarios = [
+    { name: 'Baseline', data: technique.baseline, rationale: technique.rationale || '', color: 'safer-blue' as const },
+    { name: 'SOTA', data: technique.sota, rationale: 'State-of-the-art LLM capabilities applied', color: 'safer-purple' as const },
+    { name: 'Saturated', data: technique.saturated, rationale: 'Full saturation of KRI benchmark', color: 'safer-teal' as const },
+  ];
+
+  const getRange = (getValue: (s: typeof scenarios[0]) => number) => {
+    const values = scenarios.map(s => ({ value: getValue(s), color: s.color }));
+    const sorted = [...values].sort((a, b) => a.value - b.value);
+    return {
+      min: sorted[0].value,
+      mid: sorted[1].value,
+      max: sorted[2].value,
+      minColor: sorted[0].color,
+      midColor: sorted[1].color,
+      maxColor: sorted[2].color,
+      allSame: sorted[0].value === sorted[2].value,
+    };
+  };
+
+  const rangeP5 = getRange(s => s.data.p5);
+  const rangeP50 = getRange(s => s.data.p50);
+  const rangeP95 = getRange(s => s.data.p95);
+
+  const hasRationale = !!(technique.rationale && technique.rationale.trim().length > 0);
+
+  return (
+    <>
+      <tr
+        className="border-b border-gray-50 bg-safer-light-purple/20 hover:bg-safer-light-purple/40 cursor-pointer transition-colors"
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
+        <td className="py-2 px-4">
+          <button className="p-0.5" aria-expanded={isExpanded}>
+            {isExpanded ? (
+              <ChevronDown className="w-3 h-3 text-gray-400" />
+            ) : (
+              <ChevronRight className="w-3 h-3 text-gray-400" />
+            )}
+          </button>
+        </td>
+        <td className="py-2 px-4 pl-8">
+          <div className="flex items-center gap-1">
+            {/* AND/OR connector */}
+            <svg
+              width="20"
+              height="24"
+              className="flex-shrink-0 -ml-2"
+              style={{ overflow: 'visible' }}
+            >
+              <line
+                x1="10" y1={isFirst ? 12 : 0}
+                x2="10" y2={isLast ? 12 : 24}
+                stroke={connectorColor}
+                strokeWidth="2"
+              />
+              <line
+                x1="10" y1="12"
+                x2="20" y2="12"
+                stroke={connectorColor}
+                strokeWidth="2"
+              />
+              {isFirst && totalTechniques > 1 && (
+                <text
+                  x="10"
+                  y="-4"
+                  textAnchor="middle"
+                  fill={connectorColor}
+                  fontSize="9"
+                  fontWeight="bold"
+                >
+                  {combinationMode}
+                </text>
+              )}
+            </svg>
+            <span className="text-sm font-medium text-safer-charcoal/80">{technique.name}</span>
+          </div>
+        </td>
+        <td className="py-2 px-4 text-right text-sm">
+          <RangeDisplay range={rangeP5} format={parentFormat} />
+        </td>
+        <td className="py-2 px-4 text-right text-sm font-medium">
+          <RangeDisplay range={rangeP50} format={parentFormat} />
+        </td>
+        <td className="py-2 px-4 text-right text-sm">
+          <RangeDisplay range={rangeP95} format={parentFormat} />
+        </td>
+        <td className="py-2 px-4">
+          {hasRationale ? (
+            <RationaleCell text={technique.rationale} />
+          ) : (
+            <span className="text-no-rationale text-sm">No rationale available</span>
+          )}
+        </td>
+        <td className="py-2 px-4"></td>
+      </tr>
+
+      {isExpanded && scenarios.map((scenario) => (
+        <ScenarioRow
+          key={scenario.name}
+          scenario={scenario}
+          format={parentFormat}
+
+          indent="pl-16"
+        />
+      ))}
+    </>
+  );
+}
+
+// Scenario row (Baseline / SOTA / Saturated)
+function ScenarioRow({ scenario, format, indent = 'pl-8' }: {
+  scenario: {
+    name: string;
+    data: { p5: number; p50: number; p95: number };
+    rationale: string;
+    color: 'safer-blue' | 'safer-purple' | 'safer-teal';
+  };
+  format: (v: number) => string;
+  indent?: string;
+}) {
+  const bgClass = scenario.color === 'safer-blue'
+    ? 'bg-safer-blue/5'
+    : scenario.color === 'safer-purple'
+      ? 'bg-safer-purple/5'
+      : 'bg-safer-teal/5';
+
+  const textClass = scenario.color === 'safer-blue'
+    ? 'text-safer-blue'
+    : scenario.color === 'safer-purple'
+      ? 'text-safer-purple'
+      : 'text-safer-teal';
+
+  const dotClass = scenario.color === 'safer-blue'
+    ? 'bg-safer-blue'
+    : scenario.color === 'safer-purple'
+      ? 'bg-safer-purple'
+      : 'bg-safer-teal';
+
+  return (
+    <tr className={`border-b border-gray-50 ${bgClass}`}>
+      <td className="py-2 px-4"></td>
+      <td className={`py-2 px-4 ${indent}`}>
+        <div className="flex items-center gap-2">
+          <div className={`w-2 h-2 rounded-full flex-shrink-0 ${dotClass}`} />
+          <span className={`text-sm font-medium ${textClass}`}>
+            {scenario.name}
+          </span>
+        </div>
+      </td>
+      <td className={`py-2 px-4 text-right text-sm ${textClass}`}>
+        {format(scenario.data.p5)}
+      </td>
+      <td className={`py-2 px-4 text-right text-sm font-medium ${textClass}`}>
+        {format(scenario.data.p50)}
+      </td>
+      <td className={`py-2 px-4 text-right text-sm ${textClass}`}>
+        {format(scenario.data.p95)}
+      </td>
+      <td className="py-2 px-4 text-sm text-gray-600">
+        <RationaleCell text={scenario.rationale} />
+      </td>
+      <td className="py-2 px-4"></td>
+    </tr>
   );
 }
 
@@ -220,55 +400,46 @@ const colorClasses: Record<string, string> = {
   'safer-green': 'text-safer-green',
 };
 
-// Range display with dynamically determined colours based on which scenario has min/max
-function RangeDisplay({ 
-  range, 
-  format 
-}: { 
-  range: { min: number; max: number; minColor: string; maxColor: string; isSame: boolean }; 
+// Range display with 3 values
+function RangeDisplay({
+  range,
+  format
+}: {
+  range: { min: number; mid: number; max: number; minColor: string; midColor: string; maxColor: string; allSame: boolean };
   format: (v: number) => string;
 }) {
-  if (range.isSame) {
+  if (range.allSame) {
     return <span className={colorClasses[range.minColor] || 'text-gray-600'}>{format(range.min)}</span>;
   }
 
+  if (range.min === range.mid) {
+    return (
+      <span className="whitespace-nowrap">
+        <span className={colorClasses[range.minColor] || 'text-gray-600'}>{format(range.min)}</span>
+        <span className="text-gray-400"> – </span>
+        <span className={colorClasses[range.maxColor] || 'text-gray-600'}>{format(range.max)}</span>
+      </span>
+    );
+  }
+
   return (
-    <span className="whitespace-nowrap">
+    <span className="whitespace-nowrap text-xs">
       <span className={colorClasses[range.minColor] || 'text-gray-600'}>{format(range.min)}</span>
-      <span className="text-gray-400"> – </span>
+      <span className="text-gray-400">–</span>
+      <span className={colorClasses[range.midColor] || 'text-gray-600'}>{format(range.mid)}</span>
+      <span className="text-gray-400">–</span>
       <span className={colorClasses[range.maxColor] || 'text-gray-600'}>{format(range.max)}</span>
     </span>
   );
 }
 
-// Rationale cell with truncation and copyable popup
+// Rationale cell with inline expandable dropdown and copy button
 function RationaleCell({ text }: { text: string }) {
-  const [showPopup, setShowPopup] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
   const [copied, setCopied] = useState(false);
-  const popupRef = useRef<HTMLDivElement>(null);
-  const buttonRef = useRef<HTMLButtonElement>(null);
 
   const maxLength = 35;
   const needsTruncation = text.length > maxLength;
-
-  // Close popup when clicking outside
-  useEffect(() => {
-    if (!showPopup) return;
-
-    const handleClickOutside = (e: MouseEvent) => {
-      if (
-        popupRef.current && 
-        !popupRef.current.contains(e.target as Node) &&
-        buttonRef.current &&
-        !buttonRef.current.contains(e.target as Node)
-      ) {
-        setShowPopup(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [showPopup]);
 
   const handleCopy = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -281,53 +452,70 @@ function RationaleCell({ text }: { text: string }) {
     }
   };
 
+  const toggleExpand = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsExpanded(!isExpanded);
+  };
+
   if (!needsTruncation) {
-    return <span className="text-gray-600 text-sm">{text}</span>;
+    return (
+      <div className="flex items-center gap-1">
+        <span className="text-gray-600 text-sm">{text}</span>
+        <button
+          onClick={handleCopy}
+          className="p-0.5 hover:bg-gray-100 rounded transition-colors flex-shrink-0"
+          title="Copy rationale"
+        >
+          {copied ? (
+            <Check className="w-3 h-3 text-green-500" />
+          ) : (
+            <Copy className="w-3 h-3 text-gray-400 hover:text-safer-blue" />
+          )}
+        </button>
+      </div>
+    );
   }
 
   return (
-    <div className="relative">
-      <button
-        ref={buttonRef}
-        onClick={(e) => {
-          e.stopPropagation();
-          setShowPopup(!showPopup);
-        }}
-        className="text-left text-gray-600 text-sm hover:text-safer-blue transition-colors"
-        title="Click to see full rationale"
-      >
-        {truncateText(text, maxLength)}
-      </button>
-
-      {showPopup && (
-        <div
-          ref={popupRef}
-          className="absolute z-50 left-0 top-full mt-1 w-80 bg-white rounded-lg shadow-lg border border-gray-200 p-3"
-          onClick={(e) => e.stopPropagation()}
+    <div onClick={(e) => e.stopPropagation()}>
+      <div className="flex items-center gap-1">
+        <span className="text-gray-600 text-sm">
+          {isExpanded ? '' : truncateText(text, maxLength)}
+        </span>
+        <button
+          onClick={toggleExpand}
+          className="p-0.5 hover:bg-gray-100 rounded transition-colors flex-shrink-0"
+          aria-label={isExpanded ? 'Collapse rationale' : 'Expand rationale'}
+          title={isExpanded ? 'Show less' : 'Show full rationale'}
         >
-          <div className="flex items-start justify-between gap-2 mb-2">
-            <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
-              Rationale
-            </span>
-            <button
-              onClick={handleCopy}
-              className="p-1 hover:bg-gray-100 rounded transition-colors flex items-center gap-1 text-xs text-gray-500 hover:text-safer-blue"
-              title="Copy to clipboard"
-            >
-              {copied ? (
-                <>
-                  <Check className="w-3 h-3 text-green-500" />
-                  <span className="text-green-500">Copied!</span>
-                </>
-              ) : (
-                <>
-                  <Copy className="w-3 h-3" />
-                  <span>Copy</span>
-                </>
-              )}
-            </button>
-          </div>
-          <p className="text-sm text-gray-700 leading-relaxed">{text}</p>
+          {isExpanded ? (
+            <ChevronUp className="w-3.5 h-3.5 text-safer-blue" />
+          ) : (
+            <ChevronDown className="w-3.5 h-3.5 text-safer-blue" />
+          )}
+        </button>
+      </div>
+
+      {isExpanded && (
+        <div className="mt-1 flex items-start justify-between gap-2 bg-safer-grey/50 rounded p-2">
+          <p className="text-sm text-gray-700 leading-relaxed flex-1">{text}</p>
+          <button
+            onClick={handleCopy}
+            className="p-1 hover:bg-gray-100 rounded transition-colors flex items-center gap-1 text-xs text-gray-500 hover:text-safer-blue flex-shrink-0"
+            title="Copy to clipboard"
+          >
+            {copied ? (
+              <>
+                <Check className="w-3 h-3 text-green-500" />
+                <span className="text-green-500">Copied!</span>
+              </>
+            ) : (
+              <>
+                <Copy className="w-3 h-3" />
+                <span>Copy</span>
+              </>
+            )}
+          </button>
         </div>
       )}
     </div>
@@ -355,9 +543,7 @@ export function EstimatesTableSkeleton({ rows = 5 }: { rows?: number }) {
           {Array.from({ length: rows }).map((_, i) => (
             <tr key={i} className="border-b border-gray-100">
               <td className="py-3 px-4"><div className="skeleton w-4 h-4" /></td>
-              <td className="py-3 px-4">
-                <div className="skeleton h-4 w-32" />
-              </td>
+              <td className="py-3 px-4"><div className="skeleton h-4 w-32" /></td>
               <td className="py-3 px-4"><div className="skeleton h-4 w-24 ml-auto" /></td>
               <td className="py-3 px-4"><div className="skeleton h-4 w-24 ml-auto" /></td>
               <td className="py-3 px-4"><div className="skeleton h-4 w-24 ml-auto" /></td>
