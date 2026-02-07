@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, useState } from 'react';
 import { X, Download } from 'lucide-react';
 import Plot from 'react-plotly.js';
 import type { ParameterEstimate } from '../types';
@@ -14,7 +14,9 @@ interface DistributionModalProps {
 export function DistributionModal({ estimate, isOpen, onClose }: DistributionModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
   const graphDivRef = useRef<HTMLElement | null>(null);
+  const [plotKey, setPlotKey] = useState(0);
 
+  // ALL HOOKS MUST BE CALLED BEFORE ANY EARLY RETURNS
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -22,50 +24,14 @@ export function DistributionModal({ estimate, isOpen, onClose }: DistributionMod
     if (isOpen) {
       document.addEventListener('keydown', handleEscape);
       document.body.style.overflow = 'hidden';
+      // Force re-render of plot when modal opens to ensure proper sizing
+      setPlotKey(prev => prev + 1);
     }
     return () => {
       document.removeEventListener('keydown', handleEscape);
       document.body.style.overflow = 'unset';
     };
   }, [isOpen, onClose]);
-
-  // Trigger Plotly resize after modal opens
-  useEffect(() => {
-    if (isOpen && graphDivRef.current) {
-      const timer = setTimeout(() => {
-        import('plotly.js').then((Plotly) => {
-          if (graphDivRef.current) {
-            Plotly.Plots.resize(graphDivRef.current);
-          }
-        });
-      }, 100);
-      return () => clearTimeout(timer);
-    }
-  }, [isOpen]);
-
-  const handleBackdropClick = (e: React.MouseEvent) => {
-    if (e.target === modalRef.current) {
-      onClose();
-    }
-  };
-
-  if (!isOpen || !estimate) return null;
-
-  const baselineKDE = generateKDE(estimate.baselineSamples);
-  const sotaKDE = generateKDE(estimate.sotaSamples);
-  const saturatedKDE = generateKDE(estimate.saturatedSamples);
-  const baselineStats = getSummaryStatistics(estimate.baselineSamples);
-  const sotaStats = getSummaryStatistics(estimate.sotaSamples);
-  const saturatedStats = getSummaryStatistics(estimate.saturatedSamples);
-
-  const hasValidData = baselineKDE.x.length > 0;
-
-  const format = (value: number) => {
-    if (estimate.nodeType === 'continuous') {
-      return formatValue(value, undefined, 'continuous');
-    }
-    return formatValue(value, estimate.unit, estimate.nodeType);
-  };
 
   const handlePlotInit = useCallback((_figure: any, graphDiv: HTMLElement) => {
     graphDivRef.current = graphDiv;
@@ -83,6 +49,31 @@ export function DistributionModal({ estimate, isOpen, onClose }: DistributionMod
       });
     }
   }, [estimate]);
+
+  const handleBackdropClick = useCallback((e: React.MouseEvent) => {
+    if (e.target === modalRef.current) {
+      onClose();
+    }
+  }, [onClose]);
+
+  // NOW we can do early returns
+  if (!isOpen || !estimate) return null;
+
+  const baselineKDE = generateKDE(estimate.baselineSamples);
+  const sotaKDE = generateKDE(estimate.sotaSamples);
+  const saturatedKDE = generateKDE(estimate.saturatedSamples);
+  const baselineStats = getSummaryStatistics(estimate.baselineSamples);
+  const sotaStats = getSummaryStatistics(estimate.sotaSamples);
+  const saturatedStats = getSummaryStatistics(estimate.saturatedSamples);
+
+  const hasValidData = baselineKDE.x.length > 0;
+
+  const format = (value: number) => {
+    if (estimate.nodeType === 'continuous') {
+      return formatValue(value, undefined, 'continuous');
+    }
+    return formatValue(value, estimate.unit, estimate.nodeType);
+  };
 
   return (
     <div
@@ -116,12 +107,14 @@ export function DistributionModal({ estimate, isOpen, onClose }: DistributionMod
           </div>
         </div>
 
-        <div className="flex-1 p-6 overflow-auto">
+        <div className="flex-1 p-6 overflow-auto" style={{ minHeight: '500px' }}>
           {hasValidData ? (
-            <Plot
-              onInitialized={handlePlotInit}
-              onUpdate={handlePlotInit}
-              data={[
+            <div style={{ width: '100%', height: '400px' }}>
+              <Plot
+                key={plotKey}
+                onInitialized={handlePlotInit}
+                onUpdate={handlePlotInit}
+                data={[
                 {
                   x: baselineKDE.x,
                   y: baselineKDE.y,
@@ -188,8 +181,9 @@ export function DistributionModal({ estimate, isOpen, onClose }: DistributionMod
                 displaylogo: false,
                 scrollZoom: true,
               }}
-              style={{ width: '100%', height: '350px' }}
+              style={{ width: '100%', height: '100%' }}
             />
+            </div>
           ) : (
             <div className="flex items-center justify-center h-[350px] bg-safer-grey/30 rounded-lg">
               <p className="text-gray-500">No distribution data available</p>
