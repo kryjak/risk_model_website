@@ -152,7 +152,11 @@ export function generateKDE(
   // Silverman's rule of thumb for bandwidth
   const stdDev = getStdDev(samples);
   const iqr = getPercentiles(samples, [75])[0] - getPercentiles(samples, [25])[0];
-  const bandwidth = 0.9 * Math.min(stdDev, iqr / 1.34) * Math.pow(samples.length, -0.2);
+  const rawBandwidth = 0.9 * Math.min(stdDev, iqr / 1.34) * Math.pow(samples.length, -0.2);
+  // Fallback: if bandwidth is 0 or NaN (e.g., all samples identical), use range-based fallback
+  const bandwidth = (rawBandwidth > 0 && isFinite(rawBandwidth))
+    ? rawBandwidth
+    : Math.max(range * 0.05, Math.abs(min) * 0.01, 0.001);
   
   const x: number[] = [];
   const y: number[] = [];

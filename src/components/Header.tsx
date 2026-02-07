@@ -1,10 +1,26 @@
-export function Header() {
+import { ArrowLeft } from 'lucide-react';
+
+interface HeaderProps {
+  showBack?: boolean;
+  onBack?: () => void;
+}
+
+export function Header({ showBack, onBack }: HeaderProps) {
   return (
     <header className="bg-safer-charcoal text-white py-4 px-6 shadow-lg">
       <div className="max-w-7xl mx-auto flex items-center gap-4">
-        <img 
-          src="/images/SaferAI_Logo_White_RGB.svg" 
-          alt="SaferAI" 
+        {showBack && onBack && (
+          <button
+            onClick={onBack}
+            className="p-1.5 -ml-1.5 hover:bg-white/10 rounded-lg transition-colors"
+            aria-label="Back to home"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </button>
+        )}
+        <img
+          src="/images/SaferAI_Logo_White_RGB.svg"
+          alt="SaferAI"
           className="h-10 w-auto"
         />
         <div className="border-l border-white/20 pl-4">

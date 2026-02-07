@@ -5,63 +5,72 @@
       "name": "OC4 + Infrastructure (small) + Disruption",
       "description": "State-sponsored APT (OC4) targeting regional power utilities with the goal of causing operational disruption. This scenario models sophisticated actors with nation-state resources attempting to compromise SCADA systems and industrial control infrastructure.",
       "baselineFile": "monte_carlo/RM1_distributions_baseline.json",
-      "upliftedFile": "monte_carlo/RM1_distributions_uplifted.json"
+      "sotaFile": "monte_carlo/RM1_distributions_sota.json",
+      "saturatedFile": "monte_carlo/RM1_distributions_saturated.json"
     },
     {
       "id": "RM2",
       "name": "OC3 + SME + Ransomware",
       "description": "Cyber syndicate (OC3) conducting ransomware attacks against small and medium enterprises. This scenario models organized criminal groups deploying ransomware-as-a-service against targets with limited security resources.",
       "baselineFile": "monte_carlo/RM2_distributions_baseline.json",
-      "upliftedFile": "monte_carlo/RM2_distributions_uplifted.json"
+      "sotaFile": "monte_carlo/RM2_distributions_sota.json",
+      "saturatedFile": "monte_carlo/RM2_distributions_saturated.json"
     },
     {
       "id": "RM3",
       "name": "OC2 + Financial + Data Breach",
       "description": "Small group threat actors (OC2) targeting financial institutions for data exfiltration. Models opportunistic attackers seeking customer PII and financial records.",
       "baselineFile": "monte_carlo/RM3_distributions_baseline.json",
-      "upliftedFile": "monte_carlo/RM3_distributions_uplifted.json"
+      "sotaFile": "monte_carlo/RM3_distributions_sota.json",
+      "saturatedFile": "monte_carlo/RM3_distributions_saturated.json"
     },
     {
       "id": "RM4",
       "name": "OC4 + Healthcare + IP Theft",
       "description": "State-sponsored actors targeting healthcare research facilities for intellectual property theft, including pharmaceutical research and vaccine development data.",
       "baselineFile": "monte_carlo/RM4_distributions_baseline.json",
-      "upliftedFile": "monte_carlo/RM4_distributions_uplifted.json"
+      "sotaFile": "monte_carlo/RM4_distributions_sota.json",
+      "saturatedFile": "monte_carlo/RM4_distributions_saturated.json"
     },
     {
       "id": "RM5",
       "name": "OC1 + Retail + Payment Fraud",
       "description": "Individual threat actors conducting payment card fraud against retail point-of-sale systems. Models lone hackers or small groups seeking financial gain through card skimming.",
       "baselineFile": "monte_carlo/RM5_distributions_baseline.json",
-      "upliftedFile": "monte_carlo/RM5_distributions_uplifted.json"
+      "sotaFile": "monte_carlo/RM5_distributions_sota.json",
+      "saturatedFile": "monte_carlo/RM5_distributions_saturated.json"
     },
     {
       "id": "RM6",
       "name": "OC3 + Manufacturing + Supply Chain",
       "description": "Cyber syndicates compromising manufacturing supply chains to introduce malicious components or disrupt production processes.",
       "baselineFile": "monte_carlo/RM6_distributions_baseline.json",
-      "upliftedFile": "monte_carlo/RM6_distributions_uplifted.json"
+      "sotaFile": "monte_carlo/RM6_distributions_sota.json",
+      "saturatedFile": "monte_carlo/RM6_distributions_saturated.json"
     },
     {
       "id": "RM7",
       "name": "OC4 + Government + Espionage",
       "description": "Nation-state actors conducting cyber espionage against government agencies, seeking classified information and intelligence assets.",
       "baselineFile": "monte_carlo/RM7_distributions_baseline.json",
-      "upliftedFile": "monte_carlo/RM7_distributions_uplifted.json"
+      "sotaFile": "monte_carlo/RM7_distributions_sota.json",
+      "saturatedFile": "monte_carlo/RM7_distributions_saturated.json"
     },
     {
       "id": "RM8",
       "name": "OC2 + Education + DDoS",
       "description": "Small groups conducting distributed denial-of-service attacks against educational institutions, often for ideological reasons or extortion.",
       "baselineFile": "monte_carlo/RM8_distributions_baseline.json",
-      "upliftedFile": "monte_carlo/RM8_distributions_uplifted.json"
+      "sotaFile": "monte_carlo/RM8_distributions_sota.json",
+      "saturatedFile": "monte_carlo/RM8_distributions_saturated.json"
     },
     {
       "id": "RM9",
       "name": "OC3 + Telecom + Infrastructure Attack",
       "description": "Organized criminal groups targeting telecommunications infrastructure for large-scale fraud, interception, or service disruption.",
       "baselineFile": "monte_carlo/RM9_distributions_baseline.json",
-      "upliftedFile": "monte_carlo/RM9_distributions_uplifted.json"
+      "sotaFile": "monte_carlo/RM9_distributions_sota.json",
+      "saturatedFile": "monte_carlo/RM9_distributions_saturated.json"
     }
   ]
 }

@@ -4,7 +4,8 @@ export interface RiskModelIndexEntry {
   name: string;
   description: string;
   baselineFile: string;
-  upliftedFile: string;
+  sotaFile: string;
+  saturatedFile: string;
 }
 
 export interface RiskModelsIndex {
@@ -14,6 +15,7 @@ export interface RiskModelsIndex {
 // Node Types
 export type NodeType = 'probability' | 'continuous' | 'quantity';
 export type DistributionType = 'discrete' | 'conditionalBeta' | null;
+export type CombinationMode = 'AND' | 'OR';
 
 export interface NodePosition {
   x: number;
@@ -27,6 +29,9 @@ export interface BaseNode {
   description: string;
   position: NodePosition;
   parents: string[];
+  // Optional fields for technique-level nodes
+  parentTactic?: string;
+  combinationMode?: CombinationMode;
 }
 
 export interface ProbabilityNode extends BaseNode {
@@ -107,17 +112,37 @@ export interface PercentileData {
   p95: number;
 }
 
+// Technique child for nested MITRE display
+export interface TechniqueChild {
+  nodeId: string;
+  name: string;
+  combinationMode: CombinationMode;
+  baseline: PercentileData;
+  sota: PercentileData;
+  saturated: PercentileData;
+  baselineSamples: number[];
+  sotaSamples: number[];
+  saturatedSamples: number[];
+  rationale: string;
+}
+
 export interface ParameterEstimate {
   nodeId: string;
   name: string;
   nodeType: NodeType;
   unit?: string;
   baseline: PercentileData;
-  uplifted: PercentileData;
+  sota: PercentileData;
+  saturated: PercentileData;
   baselineSamples: number[];
-  upliftedSamples: number[];
+  sotaSamples: number[];
+  saturatedSamples: number[];
   rationale: string;
+  techniqueChildren?: TechniqueChild[];
 }
+
+// Benchmark/KRI Mappings
+export type BenchmarkMappings = Record<string, string[]>;
 
 // View Types
 export type ViewMode = 'byModel' | 'byParameter';

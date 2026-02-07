@@ -140,7 +140,8 @@
   
   /* Chart Colors */
   --color-baseline: var(--color-safer-blue);
-  --color-uplifted: var(--color-safer-purple);
+  --color-sota: var(--color-safer-purple);
+  --color-saturated: var(--color-safer-teal);
   
   /* Grid/Chart styling */
   --color-grid: #E5E7EB;
