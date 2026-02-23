@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import type { RiskModelsIndex } from '../types';
 
 interface LandingPageProps {
@@ -6,7 +8,7 @@ interface LandingPageProps {
 }
 
 export function LandingPage({ index, onSelectModel }: LandingPageProps) {
-  // Models with actual data files (RM1 and RM2 based on current mock data)
+  const [showGuide, setShowGuide] = useState(false);
   const modelsWithData = new Set(['RM1', 'RM2']);
 
   return (
@@ -19,7 +21,68 @@ export function LandingPage({ index, onSelectModel }: LandingPageProps) {
           Explore quantitative risk models for AI-enabled cyber threats. Each model
           captures a specific attack scenario with Bayesian network analysis across
           baseline, SOTA, and saturated AI capability levels.
+          {' '}
+          <a
+            href="https://forms.gle/rGr99QezryNVrnyH7"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-safer-purple hover:text-safer-purple/80 underline underline-offset-2"
+          >
+            We welcome your feedback.
+          </a>
         </p>
+      </div>
+
+      {/* How to Use This Dashboard */}
+      <div className="max-w-3xl mx-auto mb-10">
+        <button
+          onClick={() => setShowGuide(!showGuide)}
+          className="flex items-center gap-2 mx-auto text-sm font-medium text-safer-blue hover:text-safer-blue/80 transition-colors"
+        >
+          {showGuide ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+          How to use this dashboard
+        </button>
+
+        {showGuide && (
+          <div className="mt-4 card text-sm text-gray-600 leading-relaxed space-y-3">
+            <p>
+              This dashboard presents results from{' '}
+              <a
+                href="https://arxiv.org/abs/2512.08864"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-safer-blue hover:underline"
+              >
+                quantitative risk models for AI-enabled cyber offense
+              </a>
+              . Each model decomposes a specific cyber attack scenario into four risk
+              factors: the <strong>number of threat actors</strong>, the <strong>frequency
+              of attack attempts</strong>, the <strong>probability of a successful
+              attack</strong> (broken down into individual steps using the MITRE ATT&CK
+              framework), and the <strong>resulting financial damage</strong>. These
+              factors are combined in a Bayesian network and propagated via Monte Carlo
+              simulation to produce an overall risk distribution.
+            </p>
+            <p>
+              Three AI capability levels are compared: <strong>Baseline</strong> (no
+              meaningful AI assistance), <strong>SOTA</strong> (current state-of-the-art
+              AI capabilities), and <strong>Saturated</strong> (a hypothetical AI that
+              can solve all tasks in the benchmarks we condition on). Estimates were
+              produced through structured expert elicitation and LLM-simulated expert
+              judgement, mapping cybersecurity benchmark performance (Cybench and
+              BountyBench) to changes in each risk factor.
+            </p>
+            <p>
+              <strong>To navigate:</strong> click any model card below to explore its
+              risk estimates in detail. Once inside a model, use the{' '}
+              <em>"By Risk Model"</em> view to examine all parameters for that scenario,
+              or switch to <em>"By Parameter"</em> to compare a single factor across
+              multiple models. Tables display the 5th percentile, mode, and 95th
+              percentile of each estimate; click the chart icon on any row to view the
+              full probability distribution.
+            </p>
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">

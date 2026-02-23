@@ -1,12 +1,14 @@
 import { useState } from 'react';
-import { ChevronDown, ChevronUp, FileText } from 'lucide-react';
+import { ChevronDown, ChevronUp, FileText, Map } from 'lucide-react';
 
 interface ScenarioCardProps {
   title: string;
   description: string;
+  onShowKRIMappings?: () => void;
+  hasKRIMappings?: boolean;
 }
 
-export function ScenarioCard({ title, description }: ScenarioCardProps) {
+export function ScenarioCard({ title, description, onShowKRIMappings, hasKRIMappings }: ScenarioCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   
   // Truncate description for collapsed view
@@ -27,25 +29,36 @@ export function ScenarioCard({ title, description }: ScenarioCardProps) {
           <p className="text-sm text-gray-600 leading-relaxed">
             {displayText}
           </p>
-          {shouldTruncate && (
-            <button
-              onClick={() => setIsExpanded(!isExpanded)}
-              className="mt-2 flex items-center gap-1 text-sm text-safer-blue hover:text-safer-purple transition-colors"
-              aria-expanded={isExpanded}
-            >
-              {isExpanded ? (
-                <>
-                  <ChevronUp className="w-4 h-4" />
-                  Show less
-                </>
-              ) : (
-                <>
-                  <ChevronDown className="w-4 h-4" />
-                  Read more
-                </>
-              )}
-            </button>
-          )}
+          <div className="mt-3 flex items-center gap-3 flex-wrap">
+            {shouldTruncate && (
+              <button
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="flex items-center gap-1 text-sm text-safer-blue hover:text-safer-purple transition-colors"
+                aria-expanded={isExpanded}
+              >
+                {isExpanded ? (
+                  <>
+                    <ChevronUp className="w-4 h-4" />
+                    Show less
+                  </>
+                ) : (
+                  <>
+                    <ChevronDown className="w-4 h-4" />
+                    Read more
+                  </>
+                )}
+              </button>
+            )}
+            {hasKRIMappings && onShowKRIMappings && (
+              <button
+                onClick={onShowKRIMappings}
+                className="flex items-center gap-1.5 text-sm font-medium text-safer-purple border border-safer-purple/30 rounded-lg px-3 py-1.5 hover:bg-safer-purple/5 transition-colors"
+              >
+                <Map className="w-4 h-4" />
+                Show KRI Mappings
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>

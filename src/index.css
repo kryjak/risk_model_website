@@ -117,7 +117,7 @@
 /* SaferAI Brand CSS Variables */
 :root {
   /* Primary Colors */
-  --color-safer-blue: #5B86B5;
+  --color-safer-blue: #2B6CB0;
   --color-safer-purple: #700C8C;
   --color-safer-charcoal: #202137;
   --color-safer-grey: #F9F8F8;
@@ -127,7 +127,7 @@
   --color-accent-green: #CADBC0;
   --color-accent-pink: #F4DBD8;
   --color-accent-purple: #E1E2EF;
-  --color-accent-teal: #5B7B7A;
+  --color-accent-teal: #2D6A4F;
   --color-accent-red: #BC4B51;
   
   /* Semantic Colors */
@@ -141,7 +141,7 @@
   /* Chart Colors */
   --color-baseline: var(--color-safer-blue);
   --color-sota: var(--color-safer-purple);
-  --color-saturated: var(--color-safer-teal);
+  --color-saturated: var(--color-accent-teal);
   
   /* Grid/Chart styling */
   --color-grid: #E5E7EB;
@@ -150,14 +150,14 @@
 
 @theme {
   /* Brand Colors */
-  --color-safer-blue: #5B86B5;
+  --color-safer-blue: #2B6CB0;
   --color-safer-purple: #700C8C;
   --color-safer-charcoal: #202137;
   --color-safer-grey: #F9F8F8;
   --color-safer-green: #CADBC0;
   --color-safer-pink: #F4DBD8;
   --color-safer-light-purple: #E1E2EF;
-  --color-safer-teal: #5B7B7A;
+  --color-safer-teal: #2D6A4F;
   --color-safer-red: #BC4B51;
   
   /* Typography */

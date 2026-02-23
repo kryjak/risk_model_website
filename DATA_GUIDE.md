@@ -149,7 +149,7 @@ These are continuous nodes with extra fields that make them nest under a parent 
 | `parentTactic` | The `id` of the parent continuous (tactic) node. This creates the nested drill-down in the Probability table. |
 | `combinationMode` | `"AND"` or `"OR"` — how techniques combine into the tactic. Displayed as a color-coded connector (blue = AND, red = OR). |
 
-All technique nodes under the same parent tactic should share the same `combinationMode`.
+All technique nodes under the same parent tactic should share the same `combinationMode`. The dashboard displays an inline explanation row above technique groups: AND nodes show "probabilities multiply" and OR nodes show "combined via inclusion-exclusion".
 
 #### Quantity nodes (computed real-valued outputs)
 
@@ -171,7 +171,7 @@ These represent counts, dollar amounts, rates, etc. They appear in the **Quantit
 
 The `unit` field is displayed in column headers and chart axes.
 
-**Special node:** A quantity node named exactly `"Total Risk"` is required for the Overall Risk Distribution chart at the top. Its samples drive the big KDE chart and the Expected Value / VaR 95% stat cards.
+**Special node:** A quantity node named exactly `"Total Risk"` is required for the Overall Risk Distribution chart at the top. Its samples drive the big KDE chart and the Expected Value / 95th Percentile Risk stat cards.
 
 ### 2b. Links (`metadata.links`)
 
@@ -219,7 +219,7 @@ You can include these as empty objects `{}` if your simulation tool doesn't prod
 
 ### 2e. Benchmark Mappings (`benchmarkMappings`)
 
-Optional. If present, a "Show KRI Mappings" button appears above the tables, opening a modal that shows which benchmarks map to which parameters.
+If present in the baseline JSON, a "Show KRI Mappings" button appears inside the scenario description card, opening a modal that explains Key Risk Indicators and shows which benchmarks map to which parameters.
 
 ```json
 {
@@ -233,7 +233,7 @@ Optional. If present, a "Show KRI Mappings" button appears above the tables, ope
 
 Keys are benchmark/KRI names. Values are arrays of **node names** (not IDs) that the benchmark maps to.
 
-Place this at the **top level** of each Monte Carlo JSON file (same level as `metadata`, `samples`, etc.). It only needs to be in the baseline file — that's where the code reads it from.
+Place this at the **top level** of the **baseline** Monte Carlo JSON file (same level as `metadata`, `samples`, etc.). The code reads it from the baseline file only. Every model that should display KRI mappings must have this field in its baseline JSON.
 
 ---
 
@@ -263,13 +263,13 @@ The `metadata.nodes` (with `position.x`, `position.y`) and `metadata.links` (wit
 
 ## 4. Scenarios Explained
 
-Each model has three scenarios with distinct colors:
+Each model has three scenarios with distinct colours:
 
-| Scenario | Color | Hex | Meaning |
-|----------|-------|-----|---------|
-| Baseline | Blue | `#5B86B5` | Current threat landscape without AI assistance |
+| Scenario | Colour | Hex | Meaning |
+|----------|--------|-----|---------|
+| Baseline | Blue | `#2B6CB0` | Current threat landscape without AI assistance |
 | SOTA | Purple | `#700C8C` | Threat actors using current best AI capabilities |
-| Saturated | Teal | `#5B7B7A` | Threat actors with fully mature/saturated AI tools |
+| Saturated | Dark forest green | `#2D6A4F` | Threat actors with fully mature/saturated AI tools |
 
 The three JSON files per model should contain the same node structure (same IDs, same names) but different sample values reflecting each scenario's assumptions.
 
@@ -336,9 +336,16 @@ public/
 src/
 ├── components/
 │   ├── LandingPage.tsx                ← Edit modelsWithData set here
+│   ├── ScenarioCard.tsx               ← Shows KRI Mappings button if data present
+│   ├── FeedbackButton.tsx             ← Floating feedback link (all pages)
+│   ├── ByParameterView.tsx            ← Tree-view parameter selector + cross-model table
 │   └── BayesianNetworkPlaceholder.tsx ← Replace with real visualization
 ├── hooks/
 │   └── useModelData.ts                ← Data loading and processing logic
+├── utils/
+│   ├── formatters.ts                  ← Number/currency/percentage formatting
+│   ├── statistics.ts                  ← Percentile, KDE, summary statistics
+│   └── tickFormatter.ts              ← Currency axis tick labels ($X Billion/Million)
 └── types/
     └── index.ts                       ← All TypeScript type definitions
 ```
@@ -353,11 +360,12 @@ src/
 | "Error loading risk model" after clicking Load | JSON file missing, wrong path in index, or malformed JSON |
 | Table shows no rows | No `continuous` or `quantity` nodes in `metadata.nodes`, or samples missing |
 | Distribution chart is blank | Samples array empty or contains non-numeric values |
-| No "Show KRI Mappings" button | No `benchmarkMappings` field in the baseline JSON |
+| No "Show KRI Mappings" button in scenario card | No `benchmarkMappings` field in the baseline JSON |
 | Techniques not nesting under tactics | Missing `parentTactic` field on technique nodes |
 | AND/OR connector not showing | Missing `combinationMode` field on technique nodes |
 | Total Risk chart missing | No node with `name: "Total Risk"` and `nodeType: "quantity"` |
-| Rationale says "No rationale available" | Node's `description` field is empty or missing |
+| Rationale says "Toggle to view rationales" | This is expected behaviour — expand the row to see per-scenario rationales |
+| Expanded rationale is empty | Node's `description` field is empty or missing |
 
 ---
 

@@ -1,9 +1,10 @@
-import { useEffect, useRef, useCallback, useState } from 'react';
+import { useEffect, useRef, useCallback, useState, useMemo } from 'react';
 import { X, Download } from 'lucide-react';
 import Plot from 'react-plotly.js';
 import type { ParameterEstimate } from '../types';
 import { generateKDE, getSummaryStatistics } from '../utils/statistics';
 import { formatValue } from '../utils/formatters';
+import { generateCurrencyTicks } from '../utils/tickFormatter';
 
 interface DistributionModalProps {
   estimate: ParameterEstimate | null;
@@ -56,7 +57,12 @@ export function DistributionModal({ estimate, isOpen, onClose }: DistributionMod
     }
   }, [onClose]);
 
-  // NOW we can do early returns
+  const isCurrencyAxis = estimate?.unit?.includes('$') ?? false;
+  const xTicks = useMemo(() => {
+    if (!estimate || !isCurrencyAxis) return null;
+    return generateCurrencyTicks([estimate.baselineSamples, estimate.sotaSamples, estimate.saturatedSamples]);
+  }, [estimate, isCurrencyAxis]);
+
   if (!isOpen || !estimate) return null;
 
   const baselineKDE = generateKDE(estimate.baselineSamples);
@@ -122,8 +128,8 @@ export function DistributionModal({ estimate, isOpen, onClose }: DistributionMod
                   mode: 'lines',
                   name: 'Baseline',
                   fill: 'tozeroy',
-                  fillcolor: 'rgba(91, 134, 181, 0.25)',
-                  line: { color: '#5B86B5', width: 2 },
+                  fillcolor: 'rgba(43, 108, 176, 0.25)',
+                  line: { color: '#2B6CB0', width: 2 },
                 },
                 {
                   x: sotaKDE.x,
@@ -142,8 +148,8 @@ export function DistributionModal({ estimate, isOpen, onClose }: DistributionMod
                   mode: 'lines',
                   name: 'Saturated',
                   fill: 'tozeroy',
-                  fillcolor: 'rgba(91, 123, 122, 0.25)',
-                  line: { color: '#5B7B7A', width: 2 },
+                  fillcolor: 'rgba(45, 106, 79, 0.25)',
+                  line: { color: '#2D6A4F', width: 2 },
                 },
               ]}
               layout={{
@@ -159,6 +165,7 @@ export function DistributionModal({ estimate, isOpen, onClose }: DistributionMod
                   title: { text: estimate.unit || 'Value' },
                   gridcolor: '#E5E7EB',
                   zerolinecolor: '#9CA3AF',
+                  ...(xTicks ? { tickvals: xTicks.tickvals, ticktext: xTicks.ticktext } : {}),
                 },
                 yaxis: {
                   title: { text: 'Density' },

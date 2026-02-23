@@ -1,0 +1,66 @@
+2.3.1 Identifying and Pre-processing Key Risk Indicators
+We map capability levels to risk factor values by first selecting the most relevant indicator for each
+factor (for example, a coding benchmark for a malware creation step).
+We follow the indicator selection process described by Murray et al. (2025a), targeting indicators that
+are:
+• Unsaturated, such that the risk models capture capabilities beyond those observed currently.
+• Community validated and credible, ensuring that the indicators are of high quality.
+12
+• Relevant to the capabilities needed to support attack steps in our risk scenarios. To ensure
+this, we further select benchmarks that represent as realistic attack scenarios as possible.
+• Statically scored (as opposed to making use of LLM-derived or rank-based scoring), such
+that the capability expressed by a given indicator result is always consistent.
+• Rankable by difficulty, to simplify the mapping from capabilities to risk factors by only
+needing to consider the most difficult task as a proxy for overall capability.
+We analyze a large number of cyber benchmarks: SecCodePLT (Nie et al., 2024), MHBench (Singer
+et al., 2025), Cybench (Zhang et al., 2024), Deepmind In House CTF (DeepMind, 2024), NYU CTF
+Bench (Shao et al., 2024), Autopenbench (Gioacchini et al., 2024), CyberSecEval 3/4 (Wan et al.,
+2024), PrimeVul (Ding et al., 2024), RedCode (AI-secure, 2024), CyberGym (Wang et al., 2025b),
+BountyBench (Zhang et al., 2025), CVE-Bench (Zhu et al., 2025), Cybermetric (Tihanyi et al., 2024),
+DFIR-Metric (Cherif et al., 2025), CSEBenchmark (Wang et al., 2025a), SecEval (XuanwuAI, 2023),
+SecBench (Face, 2025b), OpsEval (Liu et al., 2023), TACTL (Kouremetis et al., 2025), Cyberbench
+(Face, 2025a), CTISum (Peng et al., 2024), CTI-HAL (Della Penna et al., 2025), CTIBench (Alam
+et al., 2024), SECURE (Bhusal et al., 2024). Our selection process eliminates most of the available
+indicators, which are often composed of multiple choice questions (unrealistic evaluation setting), or
+use LLMs as scoring agents. For our initial results, we use either Cybench or BountyBench for all
+the factors of our risk models.
+• Cybench is a benchmark composed of 40 capture the flag (CTF) style tasks covering
+domains of cryptography, web security, reverse engineering, forensics, and exploitation.
+Claude 3.7 Sonnet and OpenAI o3-mini score approximately 20% on Cybench (60% for
+Claude 4.5). Cybench is widely used in the community, cited for example in Anthropic
+model cards (Claude 3.7 Sonnet (Anthropic, 2025b); Claude 4.5 Sonnet (Anthropic, 2025c)).
+Finally, it has a clear scoring system, evaluating success on each CTF task, and has an
+explicit difficulty metric, First Solve Time (FST), the time taken by the fastest human team
+to complete each task.
+• BountyBench is a benchmark of 40 real vulnerabilities, drawn from bug bounty programs,
+where the model is required to detect, exploit, or patch vulnerabilities in real code. Frontier
+models (OpenAI Codex CLI o3-high) achieve scores of up to 12.5%. Tasks in BountyBench
+have a wide range of difficulties, and several metrics that may serve as difficulty proxies,
+such as size of the bounty, though we find these proxies do not always map well to relative
+task difficulty.
+Both of these benchmarks meet all of the selection criteria, aside from direct relevance for some risk
+scenario elements (e.g. social engineering). The lack of benchmarks for social engineering or other
+steps requiring capabilities that diverge significantly from those needed to solve the benchmark tasks is
+a limitation of our current models, and one of the areas we seek to address in the future. Currently, we
+condition on either Cybench or BountyBench and assume that extrapolation of capabilities provides
+some indication of uplifted risk factor values. Risk model factors are generally conditioned on
+Cybench when they involve cryptography or creative tool use elements, while BountyBench is used for
+factors concerning exploitation and properties of production environments. An example benchmark
+mapping and rationale for the OC3 SME Ransomware Scenario can be found in Appendix F,
+Table 14.
+For Cybench, we directly use its FST metric as a proxy of task difficulty. A task with a higher FST
+is considered more difficult than a task with lower FST. This is generally considered a reasonable
+proxy (Zhang et al., 2024). However, there are factors that contribute to FST, but not to task difficulty.
+For example, tasks may be tedious or repetitive, taking a long time to solve without necessarily being
+technically challenging. Further, FST is a measure of the fastest human team, not the average human
+team. Therefore, it is expected to be a noisy metric.
+For BountyBench, there is no statistic provided for tasks that provides a sufficiently reliable ranking
+of tasks by difficulty. We therefore apply the difficulty ranking method presented by Murray et al.
+(2025a), whereby tasks are ranked via four methods: an LLM assigning a difficulty score to each task,
+an LLM estimating the amount of time it would take a human to solve the task, an LLM iteratively
+selecting the easiest remaining task and removing it from the list, and an LLM iteratively selecting
+the hardest task and removing it from the list. These four lists are combined into a consensus list
+using Borda count (Black et al., 1958). We verify this final ranking of tasks by asking a cybersecurity
+13
+expert to provide a relative ranking for a subset of the tasks that we consider, and comparing the
+alignment of the two rankings

@@ -1,8 +1,9 @@
-import { useRef, useCallback } from 'react';
+import { useRef, useCallback, useMemo } from 'react';
 import { Download } from 'lucide-react';
 import Plot from 'react-plotly.js';
 import { generateKDE, getSummaryStatistics } from '../utils/statistics';
 import { formatCurrency, formatChange } from '../utils/formatters';
+import { generateCurrencyTicks } from '../utils/tickFormatter';
 
 interface OverallRiskChartProps {
   baselineSamples: number[];
@@ -48,6 +49,11 @@ export function OverallRiskChart({
     }
   }, []);
 
+  const xTicks = useMemo(
+    () => generateCurrencyTicks([baselineSamples, sotaSamples, saturatedSamples]),
+    [baselineSamples, sotaSamples, saturatedSamples]
+  );
+
   const hasValidData = baselineKDE.x.length > 0;
 
   return (
@@ -77,8 +83,8 @@ export function OverallRiskChart({
               mode: 'lines',
               name: 'Baseline',
               fill: 'tozeroy',
-              fillcolor: 'rgba(91, 134, 181, 0.25)',
-              line: { color: '#5B86B5', width: 2.5 },
+              fillcolor: 'rgba(43, 108, 176, 0.25)',
+              line: { color: '#2B6CB0', width: 2.5 },
             },
             {
               x: sotaKDE.x,
@@ -97,8 +103,8 @@ export function OverallRiskChart({
               mode: 'lines',
               name: 'Saturated',
               fill: 'tozeroy',
-              fillcolor: 'rgba(91, 123, 122, 0.25)',
-              line: { color: '#5B7B7A', width: 2.5 },
+              fillcolor: 'rgba(45, 106, 79, 0.25)',
+              line: { color: '#2D6A4F', width: 2.5 },
             },
           ]}
           layout={{
@@ -114,7 +120,8 @@ export function OverallRiskChart({
               title: { text: 'Annual Risk ($ / year)' },
               gridcolor: '#E5E7EB',
               zerolinecolor: '#9CA3AF',
-              tickformat: '$.2s',
+              tickvals: xTicks.tickvals,
+              ticktext: xTicks.ticktext,
             },
             yaxis: {
               title: { text: 'Density' },
@@ -137,7 +144,7 @@ export function OverallRiskChart({
                 y0: 0,
                 y1: 1,
                 yref: 'paper',
-                line: { color: '#5B86B5', width: 1.5, dash: 'dash' },
+                line: { color: '#2B6CB0', width: 1.5, dash: 'dash' },
               },
               {
                 type: 'line',
@@ -155,7 +162,7 @@ export function OverallRiskChart({
                 y0: 0,
                 y1: 1,
                 yref: 'paper',
-                line: { color: '#5B7B7A', width: 1.5, dash: 'dash' },
+                line: { color: '#2D6A4F', width: 1.5, dash: 'dash' },
               },
             ],
           }}
@@ -194,24 +201,21 @@ export function OverallRiskChart({
           change={satMeanChange}
         />
         <StatCard
-          label="VaR 95% (Baseline)"
+          label="95th Percentile Risk (Baseline)"
           value={formatCurrency(baselineStats.p95)}
           color="safer-blue"
-          subtitle="Value at Risk"
         />
         <StatCard
-          label="VaR 95% (SOTA)"
+          label="95th Percentile Risk (SOTA)"
           value={formatCurrency(sotaStats.p95)}
           color="safer-purple"
           change={sotaP95Change}
-          subtitle="Value at Risk"
         />
         <StatCard
-          label="VaR 95% (Saturated)"
+          label="95th Percentile Risk (Saturated)"
           value={formatCurrency(saturatedStats.p95)}
           color="safer-teal"
           change={satP95Change}
-          subtitle="Value at Risk"
         />
       </div>
     </div>

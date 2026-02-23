@@ -47,7 +47,7 @@ export function KRIMappingsModal({ mappings, isOpen, onClose }: KRIMappingsModal
       <div className="bg-white rounded-xl shadow-2xl max-w-3xl w-full max-h-[80vh] overflow-hidden flex flex-col">
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
           <h2 id="kri-modal-title" className="text-xl font-serif font-medium text-safer-charcoal">
-            KRI / Benchmark Mappings
+            KRI Mappings
           </h2>
           <button
             onClick={onClose}
@@ -59,6 +59,19 @@ export function KRIMappingsModal({ mappings, isOpen, onClose }: KRIMappingsModal
         </div>
 
         <div className="flex-1 p-6 overflow-auto">
+          <p className="text-sm text-gray-600 leading-relaxed mb-5">
+            Key Risk Indicators (KRIs) are cybersecurity benchmarks used to estimate how
+            AI capabilities translate into changes in real-world risk factors. Each risk
+            factor in our models is conditioned on performance on a specific benchmark,
+            with harder tasks implying greater AI capability and thus potentially greater
+            uplift. We use two benchmarks: Cybench (40 capture-the-flag tasks covering
+            cryptography, web security, and exploitation) and BountyBench (40 real-world
+            vulnerability detection tasks from bug bounty programmes). Cybench is
+            generally used for factors involving cryptography or creative tool use, while
+            BountyBench covers exploitation and production environment properties. The
+            table below shows which KRI is mapped to each parameter in this risk model.
+          </p>
+
           {benchmarkEntries.length === 0 ? (
             <div className="flex items-center justify-center h-32">
               <p className="text-gray-500">No benchmark mappings available for this model.</p>
@@ -68,7 +81,7 @@ export function KRIMappingsModal({ mappings, isOpen, onClose }: KRIMappingsModal
               <thead>
                 <tr className="border-b-2 border-safer-charcoal/10">
                   <th className="text-left py-3 px-4 text-xs uppercase tracking-wide text-gray-500 font-medium">
-                    Benchmark / KRI
+                    KRI
                   </th>
                   <th className="text-left py-3 px-4 text-xs uppercase tracking-wide text-gray-500 font-medium">
                     Mapped Parameters

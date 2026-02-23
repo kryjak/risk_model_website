@@ -11,6 +11,7 @@ import { KRIMappingsModal } from './components/KRIMappingsModal';
 import { LandingPage, LandingPageSkeleton } from './components/LandingPage';
 import { ByParameterView } from './components/ByParameterView';
 import { ErrorMessage } from './components/ErrorMessage';
+import { FeedbackButton } from './components/FeedbackButton';
 import { useRiskModelsIndex } from './hooks/useRiskModelsIndex';
 import { useModelData, getTotalRiskNode } from './hooks/useModelData';
 import { useUrlParams } from './hooks/useUrlParams';
@@ -217,6 +218,8 @@ function App() {
                 <ScenarioCard
                   title={selectedModel.name}
                   description={modelData.baseline?.modelDescription || selectedModel.description}
+                  hasKRIMappings={Object.keys(benchmarkMappings).length > 0}
+                  onShowKRIMappings={() => setIsKRIModalOpen(true)}
                 />
               ) : null}
 
@@ -240,18 +243,6 @@ function App() {
               {/* Divider */}
               {showContent && (
                 <hr className="border-t-2 border-safer-charcoal/10 my-2" />
-              )}
-
-              {/* KRI Mappings Button */}
-              {showContent && Object.keys(benchmarkMappings).length > 0 && (
-                <div className="flex justify-end">
-                  <button
-                    onClick={() => setIsKRIModalOpen(true)}
-                    className="text-sm font-medium text-safer-purple hover:text-safer-purple/80 transition-colors px-3 py-1.5 rounded-lg hover:bg-safer-purple/5"
-                  >
-                    Show KRI Mappings
-                  </button>
-                </div>
               )}
 
               {/* Quantity Estimates Table */}
@@ -301,6 +292,9 @@ function App() {
           )}
         </main>
       )}
+
+      {/* Feedback Button */}
+      <FeedbackButton />
 
       {/* Distribution Modal */}
       <DistributionModal

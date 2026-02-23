@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronDown, ChevronRight, ChevronUp, BarChart3, Copy, Check } from 'lucide-react';
+import { ChevronDown, ChevronRight, ChevronUp, BarChart3, Copy, Check, Info } from 'lucide-react';
 import type { ParameterEstimate, TechniqueChild, TableType } from '../types';
 import { formatValue, truncateText } from '../utils/formatters';
 
@@ -29,13 +29,13 @@ export function EstimatesTable({
         <table className="w-full text-sm">
           <thead>
             <tr className="bg-safer-grey/50 border-b border-gray-100">
-              <th className="text-left py-2 px-4 font-medium text-gray-500 w-8"></th>
-              <th className="text-left py-2 px-4 font-medium text-gray-500">Parameter</th>
-              <th className="text-right py-2 px-4 font-medium text-gray-500 w-40">5th %</th>
-              <th className="text-right py-2 px-4 font-medium text-gray-500 w-40">Mode</th>
-              <th className="text-right py-2 px-4 font-medium text-gray-500 w-40">95th %</th>
-              <th className="text-left py-2 px-4 font-medium text-gray-500 min-w-[180px]">Rationale</th>
-              <th className="text-center py-2 px-4 font-medium text-gray-500 w-12">Dist.</th>
+              <th className="text-left py-2 px-3 font-medium text-gray-500 w-8"></th>
+              <th className="text-left py-2 px-3 font-medium text-gray-500 w-[12%] min-w-[120px]">Parameter</th>
+              <th className="text-right py-2 px-3 font-medium text-gray-500 w-[18%] min-w-[9rem]">5th %</th>
+              <th className="text-right py-2 px-3 font-medium text-gray-500 w-[18%] min-w-[9rem]">Mode</th>
+              <th className="text-right py-2 px-3 font-medium text-gray-500 w-[18%] min-w-[9rem]">95th %</th>
+              <th className="text-left py-2 px-3 font-medium text-gray-500">Rationale</th>
+              <th className="text-center py-2 px-3 font-medium text-gray-500 w-12">Dist.</th>
             </tr>
           </thead>
           <tbody>
@@ -97,8 +97,6 @@ function ParameterRows({ estimate, tableType, onShowDistribution }: ParameterRow
   const rangeP50 = getRange(s => s.data.p50);
   const rangeP95 = getRange(s => s.data.p95);
 
-  const hasRationale = !!(estimate.rationale && estimate.rationale.trim().length > 0);
-
   return (
     <>
       {/* Collapsed summary row */}
@@ -108,7 +106,7 @@ function ParameterRows({ estimate, tableType, onShowDistribution }: ParameterRow
         }`}
         onClick={() => setIsExpanded(!isExpanded)}
       >
-        <td className="py-3 px-4">
+        <td className="py-3 px-3">
           <button
             className="p-0.5"
             aria-expanded={isExpanded}
@@ -121,26 +119,24 @@ function ParameterRows({ estimate, tableType, onShowDistribution }: ParameterRow
             )}
           </button>
         </td>
-        <td className="py-3 px-4">
+        <td className="py-3 px-3">
           <div className="font-medium text-safer-charcoal">{estimate.name}</div>
         </td>
-        <td className="py-3 px-4 text-right font-medium">
+        <td className="py-3 px-3 text-right font-medium">
           <RangeDisplay range={rangeP5} format={format} />
         </td>
-        <td className="py-3 px-4 text-right font-medium">
+        <td className="py-3 px-3 text-right font-medium">
           <RangeDisplay range={rangeP50} format={format} />
         </td>
-        <td className="py-3 px-4 text-right font-medium">
+        <td className="py-3 px-3 text-right font-medium">
           <RangeDisplay range={rangeP95} format={format} />
         </td>
-        <td className="py-3 px-4">
-          {hasRationale ? (
-            <RationaleCell text={estimate.rationale} />
-          ) : (
-            <span className="text-no-rationale text-sm">No rationale available</span>
-          )}
+        <td className="py-3 px-3">
+          <span className="text-gray-400 text-sm italic">
+            {isExpanded ? '' : 'Toggle to view rationales'}
+          </span>
         </td>
-        <td className="py-3 px-4 text-center">
+        <td className="py-3 px-3 text-center">
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -182,10 +178,24 @@ interface TechniqueGroupProps {
 
 function TechniqueGroup({ techniques, parentFormat }: TechniqueGroupProps) {
   const combinationMode = techniques[0]?.combinationMode || 'AND';
-  const connectorColor = combinationMode === 'AND' ? '#5B86B5' : '#BC4B51';
+  const connectorColor = combinationMode === 'AND' ? '#2B6CB0' : '#BC4B51';
+
+  const tooltipText = combinationMode === 'AND'
+    ? 'AND: all techniques must succeed for the tactic to succeed (probabilities multiply).'
+    : 'OR: success in any one technique is sufficient for the tactic to succeed (combined via inclusion-exclusion).';
 
   return (
     <>
+      {/* AND/OR explanation row */}
+      <tr className="border-b border-gray-50 bg-safer-light-purple/10">
+        <td className="py-1.5 px-3" />
+        <td className="py-1.5 px-3 pl-8" colSpan={6}>
+          <div className="flex items-center gap-1.5 text-xs text-gray-500">
+            <Info className="w-3.5 h-3.5 flex-shrink-0" style={{ color: connectorColor }} />
+            <span>{tooltipText}</span>
+          </div>
+        </td>
+      </tr>
       {techniques.map((technique, idx) => (
         <TechniqueRow
           key={technique.nodeId}
@@ -248,15 +258,13 @@ function TechniqueRow({
   const rangeP50 = getRange(s => s.data.p50);
   const rangeP95 = getRange(s => s.data.p95);
 
-  const hasRationale = !!(technique.rationale && technique.rationale.trim().length > 0);
-
   return (
     <>
       <tr
         className="border-b border-gray-50 bg-safer-light-purple/20 hover:bg-safer-light-purple/40 cursor-pointer transition-colors"
         onClick={() => setIsExpanded(!isExpanded)}
       >
-        <td className="py-2 px-4">
+        <td className="py-2 px-3">
           <button className="p-0.5" aria-expanded={isExpanded}>
             {isExpanded ? (
               <ChevronDown className="w-3 h-3 text-gray-400" />
@@ -265,9 +273,8 @@ function TechniqueRow({
             )}
           </button>
         </td>
-        <td className="py-2 px-4 pl-8">
+        <td className="py-2 px-3 pl-8">
           <div className="flex items-center gap-1">
-            {/* AND/OR connector */}
             <svg
               width="20"
               height="24"
@@ -302,23 +309,21 @@ function TechniqueRow({
             <span className="text-sm font-medium text-safer-charcoal/80">{technique.name}</span>
           </div>
         </td>
-        <td className="py-2 px-4 text-right text-sm">
+        <td className="py-2 px-3 text-right text-sm">
           <RangeDisplay range={rangeP5} format={parentFormat} />
         </td>
-        <td className="py-2 px-4 text-right text-sm font-medium">
+        <td className="py-2 px-3 text-right text-sm font-medium">
           <RangeDisplay range={rangeP50} format={parentFormat} />
         </td>
-        <td className="py-2 px-4 text-right text-sm">
+        <td className="py-2 px-3 text-right text-sm">
           <RangeDisplay range={rangeP95} format={parentFormat} />
         </td>
-        <td className="py-2 px-4">
-          {hasRationale ? (
-            <RationaleCell text={technique.rationale} />
-          ) : (
-            <span className="text-no-rationale text-sm">No rationale available</span>
-          )}
+        <td className="py-2 px-3">
+          <span className="text-gray-400 text-sm italic">
+            {isExpanded ? '' : 'Toggle to view rationales'}
+          </span>
         </td>
-        <td className="py-2 px-4"></td>
+        <td className="py-2 px-3"></td>
       </tr>
 
       {isExpanded && scenarios.map((scenario) => (
@@ -365,8 +370,8 @@ function ScenarioRow({ scenario, format, indent = 'pl-8' }: {
 
   return (
     <tr className={`border-b border-gray-50 ${bgClass}`}>
-      <td className="py-2 px-4"></td>
-      <td className={`py-2 px-4 ${indent}`}>
+      <td className="py-2 px-3"></td>
+      <td className={`py-2 px-3 ${indent}`}>
         <div className="flex items-center gap-2">
           <div className={`w-2 h-2 rounded-full flex-shrink-0 ${dotClass}`} />
           <span className={`text-sm font-medium ${textClass}`}>
@@ -374,19 +379,19 @@ function ScenarioRow({ scenario, format, indent = 'pl-8' }: {
           </span>
         </div>
       </td>
-      <td className={`py-2 px-4 text-right text-sm ${textClass}`}>
+      <td className={`py-2 px-3 text-right text-sm ${textClass}`}>
         {format(scenario.data.p5)}
       </td>
-      <td className={`py-2 px-4 text-right text-sm font-medium ${textClass}`}>
+      <td className={`py-2 px-3 text-right text-sm font-medium ${textClass}`}>
         {format(scenario.data.p50)}
       </td>
-      <td className={`py-2 px-4 text-right text-sm ${textClass}`}>
+      <td className={`py-2 px-3 text-right text-sm ${textClass}`}>
         {format(scenario.data.p95)}
       </td>
-      <td className="py-2 px-4 text-sm text-gray-600">
+      <td className="py-2 px-3 text-sm text-gray-600">
         <RationaleCell text={scenario.rationale} />
       </td>
-      <td className="py-2 px-4"></td>
+      <td className="py-2 px-3"></td>
     </tr>
   );
 }
@@ -423,10 +428,10 @@ function RangeDisplay({
   }
 
   return (
-    <span className="whitespace-nowrap text-xs">
+    <span className="whitespace-nowrap text-sm">
       <span className={colorClasses[range.minColor] || 'text-gray-600'}>{format(range.min)}</span>
       <span className="text-gray-400">–</span>
-      <span className={colorClasses[range.midColor] || 'text-gray-600'}>{format(range.mid)}</span>
+      <span className={`font-semibold ${colorClasses[range.midColor] || 'text-gray-600'}`}>{format(range.mid)}</span>
       <span className="text-gray-400">–</span>
       <span className={colorClasses[range.maxColor] || 'text-gray-600'}>{format(range.max)}</span>
     </span>
@@ -459,29 +464,27 @@ function RationaleCell({ text }: { text: string }) {
 
   if (!needsTruncation) {
     return (
-      <div className="flex items-center gap-1">
-        <span className="text-gray-600 text-sm">{text}</span>
-        <button
-          onClick={handleCopy}
-          className="p-0.5 hover:bg-gray-100 rounded transition-colors flex-shrink-0"
-          title="Copy rationale"
-        >
-          {copied ? (
-            <Check className="w-3 h-3 text-green-500" />
-          ) : (
-            <Copy className="w-3 h-3 text-gray-400 hover:text-safer-blue" />
-          )}
-        </button>
-      </div>
+      <span className="text-gray-600 text-sm">{text}</span>
     );
   }
 
   return (
     <div onClick={(e) => e.stopPropagation()}>
-      <div className="flex items-center gap-1">
-        <span className="text-gray-600 text-sm">
-          {isExpanded ? '' : truncateText(text, maxLength)}
-        </span>
+      {/* Controls row: copy (only when expanded) + toggle, right-aligned */}
+      <div className="flex items-center justify-end gap-1">
+        {isExpanded && (
+          <button
+            onClick={handleCopy}
+            className="p-0.5 hover:bg-gray-100 rounded transition-colors flex-shrink-0"
+            title="Copy to clipboard"
+          >
+            {copied ? (
+              <Check className="w-3 h-3 text-green-500" />
+            ) : (
+              <Copy className="w-3 h-3 text-gray-400 hover:text-safer-blue" />
+            )}
+          </button>
+        )}
         <button
           onClick={toggleExpand}
           className="p-0.5 hover:bg-gray-100 rounded transition-colors flex-shrink-0"
@@ -496,27 +499,11 @@ function RationaleCell({ text }: { text: string }) {
         </button>
       </div>
 
-      {isExpanded && (
-        <div className="mt-1 flex items-start justify-between gap-2 bg-safer-grey/50 rounded p-2">
-          <p className="text-sm text-gray-700 leading-relaxed flex-1">{text}</p>
-          <button
-            onClick={handleCopy}
-            className="p-1 hover:bg-gray-100 rounded transition-colors flex items-center gap-1 text-xs text-gray-500 hover:text-safer-blue flex-shrink-0"
-            title="Copy to clipboard"
-          >
-            {copied ? (
-              <>
-                <Check className="w-3 h-3 text-green-500" />
-                <span className="text-green-500">Copied!</span>
-              </>
-            ) : (
-              <>
-                <Copy className="w-3 h-3" />
-                <span>Copy</span>
-              </>
-            )}
-          </button>
-        </div>
+      {/* Collapsed: truncated text. Expanded: full text */}
+      {isExpanded ? (
+        <p className="mt-1 text-sm text-gray-700 leading-relaxed bg-safer-grey/50 rounded p-2">{text}</p>
+      ) : (
+        <span className="text-gray-600 text-sm">{truncateText(text, maxLength)}</span>
       )}
     </div>
   );
