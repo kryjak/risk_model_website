@@ -13,9 +13,10 @@ import { ByParameterView } from './components/ByParameterView';
 import { ErrorMessage } from './components/ErrorMessage';
 import { FeedbackButton } from './components/FeedbackButton';
 import { useRiskModelsIndex } from './hooks/useRiskModelsIndex';
-import { useModelData, getTotalRiskNode } from './hooks/useModelData';
+import { useModelData } from './hooks/useModelData';
+import type { SplitModelData } from './hooks/useModelData';
 import { useUrlParams } from './hooks/useUrlParams';
-import type { ViewMode, ParameterEstimate, MonteCarloResults } from './types';
+import type { ViewMode, ParameterEstimate, ModelRationales, ModelPercentiles, ModelSamples } from './types';
 
 function App() {
   const { params, updateParams } = useUrlParams();
@@ -29,6 +30,8 @@ function App() {
     data: modelData,
     parameterEstimates,
     benchmarkMappings,
+    totalRiskSamples,
+    modelDescription,
     isLoading: modelLoading,
     error: modelError,
     refetch: refetchModel,
@@ -36,7 +39,7 @@ function App() {
 
   // Cache of loaded models for ByParameterView
   const [loadedModelsCache, setLoadedModelsCache] = useState<
-    Map<string, { baseline: MonteCarloResults; sota: MonteCarloResults; saturated: MonteCarloResults }>
+    Map<string, SplitModelData>
   >(new Map());
 
   // Modal states
@@ -46,14 +49,10 @@ function App() {
 
   // Update cache when model data loads
   useEffect(() => {
-    if (modelData.baseline && modelData.sota && modelData.saturated && selectedModelId) {
+    if (modelData.rationales && modelData.percentiles && selectedModelId) {
       setLoadedModelsCache(prev => {
         const newMap = new Map(prev);
-        newMap.set(selectedModelId, {
-          baseline: modelData.baseline!,
-          sota: modelData.sota!,
-          saturated: modelData.saturated!,
-        });
+        newMap.set(selectedModelId, modelData);
         return newMap;
       });
     }
@@ -82,25 +81,52 @@ function App() {
     if (!model) return;
 
     try {
-      const [baselineRes, sotaRes, saturatedRes] = await Promise.all([
-        fetch(`/data/${model.baselineFile}`),
-        fetch(`/data/${model.sotaFile}`),
-        fetch(`/data/${model.saturatedFile}`),
+      // Fetch rationales + percentiles
+      const [rationalesRes, percentilesRes] = await Promise.all([
+        fetch(`/data/${model.rationalesFile}`),
+        fetch(`/data/${model.percentilesFile}`),
       ]);
 
-      if (!baselineRes.ok || !sotaRes.ok || !saturatedRes.ok) {
+      if (!rationalesRes.ok || !percentilesRes.ok) {
         throw new Error(`Failed to load ${modelId}`);
       }
 
-      const [baseline, sota, saturated] = await Promise.all([
-        baselineRes.json(),
-        sotaRes.json(),
-        saturatedRes.json(),
+      const [rationales, percentiles] = await Promise.all([
+        rationalesRes.json() as Promise<ModelRationales>,
+        percentilesRes.json() as Promise<ModelPercentiles>,
       ]);
+
+      // Optionally fetch samples
+      let baselineSamples: ModelSamples | null = null;
+      let sotaSamples: ModelSamples | null = null;
+      let saturatedSamples: ModelSamples | null = null;
+
+      if (model.baselineSamplesFile && model.sotaSamplesFile && model.saturatedSamplesFile) {
+        try {
+          const [bRes, sRes, satRes] = await Promise.all([
+            fetch(`/data/${model.baselineSamplesFile}`),
+            fetch(`/data/${model.sotaSamplesFile}`),
+            fetch(`/data/${model.saturatedSamplesFile}`),
+          ]);
+          if (bRes.ok && sRes.ok && satRes.ok) {
+            [baselineSamples, sotaSamples, saturatedSamples] = await Promise.all([
+              bRes.json() as Promise<ModelSamples>,
+              sRes.json() as Promise<ModelSamples>,
+              satRes.json() as Promise<ModelSamples>,
+            ]);
+          }
+        } catch {
+          // Samples optional
+        }
+      }
 
       setLoadedModelsCache(prev => {
         const newMap = new Map(prev);
-        newMap.set(modelId, { baseline, sota, saturated });
+        newMap.set(modelId, {
+          rationales,
+          percentiles,
+          samples: { baseline: baselineSamples, sota: sotaSamples, saturated: saturatedSamples },
+        });
         return newMap;
       });
     } catch (error) {
@@ -113,13 +139,9 @@ function App() {
     const quantity: ParameterEstimate[] = [];
     const probability: ParameterEstimate[] = [];
     const impact: ParameterEstimate[] = [];
-    let totalRisk: ParameterEstimate | null = null;
 
     for (const est of parameterEstimates) {
-      if (est.name === 'Total Risk') {
-        totalRisk = est;
-        continue;
-      }
+      if (est.name === 'Total Risk') continue;
 
       if (est.nodeType === 'quantity') {
         if (est.name.toLowerCase().includes('damage') ||
@@ -137,24 +159,11 @@ function App() {
       quantityEstimates: quantity,
       probabilityEstimates: probability,
       impactEstimates: impact,
-      totalRiskEstimate: totalRisk,
     };
   }, [parameterEstimates]);
 
-  // Get Total Risk samples for all three scenarios
-  const totalRiskNode = getTotalRiskNode(modelData.baseline);
-  const baselineTotalRiskSamples = totalRiskNode
-    ? (modelData.baseline?.samples[totalRiskNode.id] as number[]) ?? []
-    : [];
-  const sotaTotalRiskSamples = totalRiskNode && modelData.sota
-    ? (modelData.sota.samples[totalRiskNode.id] as number[]) ?? []
-    : [];
-  const saturatedTotalRiskSamples = totalRiskNode && modelData.saturated
-    ? (modelData.saturated.samples[totalRiskNode.id] as number[]) ?? []
-    : [];
-
   const isLoading = indexLoading || modelLoading;
-  const showContent = !isLoading && !modelError && modelData.baseline;
+  const showContent = !isLoading && !modelError && modelData.rationales;
   const isLandingPage = !selectedModelId;
 
   return (
@@ -217,7 +226,7 @@ function App() {
               ) : showContent && selectedModel ? (
                 <ScenarioCard
                   title={selectedModel.name}
-                  description={modelData.baseline?.modelDescription || selectedModel.description}
+                  description={modelDescription || selectedModel.description}
                   hasKRIMappings={Object.keys(benchmarkMappings).length > 0}
                   onShowKRIMappings={() => setIsKRIModalOpen(true)}
                 />
@@ -226,11 +235,11 @@ function App() {
               {/* Overall Risk Chart — moved above tables */}
               {isLoading ? (
                 <OverallRiskChartSkeleton />
-              ) : showContent && baselineTotalRiskSamples.length > 0 ? (
+              ) : showContent && totalRiskSamples.baseline.length > 0 ? (
                 <OverallRiskChart
-                  baselineSamples={baselineTotalRiskSamples}
-                  sotaSamples={sotaTotalRiskSamples}
-                  saturatedSamples={saturatedTotalRiskSamples}
+                  baselineSamples={totalRiskSamples.baseline}
+                  sotaSamples={totalRiskSamples.sota}
+                  saturatedSamples={totalRiskSamples.saturated}
                   title="Total Risk Distribution"
                 />
               ) : null}

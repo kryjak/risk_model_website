@@ -1,12 +1,12 @@
 import { useState, useMemo, useCallback } from 'react';
 import { ChevronRight, ChevronDown, BarChart3, Info } from 'lucide-react';
-import type { RiskModelsIndex, MonteCarloResults, ParameterEstimate, Node } from '../types';
+import type { RiskModelsIndex, ParameterEstimate, RationaleNode } from '../types';
+import type { SplitModelData } from '../hooks/useModelData';
 import { formatValue } from '../utils/formatters';
-import { getPercentiles } from '../utils/statistics';
 
 interface ByParameterViewProps {
   index: RiskModelsIndex;
-  loadedModels: Map<string, { baseline: MonteCarloResults; sota: MonteCarloResults; saturated: MonteCarloResults }>;
+  loadedModels: Map<string, SplitModelData>;
   onShowDistribution: (estimate: ParameterEstimate) => void;
   onLoadModel: (modelId: string) => Promise<void>;
 }
@@ -19,19 +19,20 @@ interface TreeNode {
   depth: number;
 }
 
-function buildTree(loadedModels: Map<string, { baseline: MonteCarloResults }>): TreeNode[] {
-  const allNodes = new Map<string, Node>();
+function buildTree(loadedModels: Map<string, SplitModelData>): TreeNode[] {
+  const allNodes = new Map<string, RationaleNode>();
   const techniquesByTactic = new Map<string, Set<string>>();
   const tacticIdToName = new Map<string, string>();
 
-  loadedModels.forEach(({ baseline }) => {
-    for (const node of baseline.metadata.nodes) {
+  loadedModels.forEach(({ rationales }) => {
+    if (!rationales) return;
+    for (const node of rationales.nodes) {
       if (node.nodeType === 'probability') continue;
       if (!allNodes.has(node.name)) {
         allNodes.set(node.name, node);
       }
       if (node.parentTactic) {
-        const tacticNode = baseline.metadata.nodes.find(n => n.id === node.parentTactic);
+        const tacticNode = rationales.nodes.find(n => n.id === node.parentTactic);
         if (tacticNode) {
           tacticIdToName.set(node.parentTactic, tacticNode.name);
           if (!techniquesByTactic.has(tacticNode.name)) {
@@ -51,7 +52,7 @@ function buildTree(loadedModels: Map<string, { baseline: MonteCarloResults }>): 
     if (node.parentTactic) continue;
 
     if (node.nodeType === 'quantity') {
-      const unit = 'unit' in node ? node.unit : '';
+      const unit = node.unit || '';
       if (unit.includes('$')) {
         impactChildren.push({ id: `impact-${name}`, label: name, parameterName: name, children: [], depth: 2 });
       } else if (name !== 'Successful Attack Rate') {
@@ -212,23 +213,23 @@ export function ByParameterView({
       isGranular: boolean;
     }> = [];
 
-    loadedModels.forEach(({ baseline, sota, saturated }, modelId) => {
-      const node = baseline.metadata.nodes.find((n) => n.name === selectedParameter);
+    loadedModels.forEach(({ rationales, percentiles, samples }, modelId) => {
+      if (!rationales || !percentiles) return;
+
+      const node = rationales.nodes.find((n) => n.name === selectedParameter);
       if (!node) return;
 
-      const baselineSamples = baseline.samples[node.id] as number[];
-      const sotaSamples = sota.samples[node.id] as number[];
-      const saturatedSamples = saturated.samples[node.id] as number[];
+      const pctls = percentiles.nodes[node.id];
+      if (!pctls) return;
 
-      if (!baselineSamples || !sotaSamples || !saturatedSamples) return;
-
-      const [bp5, bp50, bp95] = getPercentiles(baselineSamples);
-      const [sp5, sp50, sp95] = getPercentiles(sotaSamples);
-      const [satp5, satp50, satp95] = getPercentiles(saturatedSamples);
+      const hasSamples = !!(samples.baseline && samples.sota && samples.saturated);
+      const baselineSamples = hasSamples ? (samples.baseline!.samples[node.id] || []) : [];
+      const sotaSamples = hasSamples ? (samples.sota!.samples[node.id] || []) : [];
+      const saturatedSamples = hasSamples ? (samples.saturated!.samples[node.id] || []) : [];
 
       const modelEntry = index.models.find((m) => m.id === modelId);
 
-      const hasTechniqueChildren = baseline.metadata.nodes.some(
+      const hasTechniqueChildren = rationales.nodes.some(
         (n) => n.parentTactic === node.id
       );
 
@@ -240,14 +241,17 @@ export function ByParameterView({
           nodeId: node.id,
           name: node.name,
           nodeType: node.nodeType,
-          unit: 'unit' in node ? node.unit : undefined,
-          baseline: { p5: bp5, p50: bp50, p95: bp95 },
-          sota: { p5: sp5, p50: sp50, p95: sp95 },
-          saturated: { p5: satp5, p50: satp50, p95: satp95 },
+          unit: node.unit,
+          baseline: pctls.baseline,
+          sota: pctls.sota,
+          saturated: pctls.saturated,
           baselineSamples,
           sotaSamples,
           saturatedSamples,
-          rationale: node.description || '',
+          baselineRationale: node.baselineRationale || '',
+          sotaRationale: node.sotaRationale || '',
+          saturatedRationale: node.saturatedRationale || '',
+          samplesAvailable: hasSamples,
         },
       });
     });
@@ -257,10 +261,11 @@ export function ByParameterView({
 
   const isTacticWithTechniques = useMemo(() => {
     if (!selectedParameter) return false;
-    for (const [, { baseline }] of loadedModels) {
-      const node = baseline.metadata.nodes.find((n) => n.name === selectedParameter);
+    for (const [, { rationales }] of loadedModels) {
+      if (!rationales) continue;
+      const node = rationales.nodes.find((n) => n.name === selectedParameter);
       if (node) {
-        const hasTech = baseline.metadata.nodes.some((n) => n.parentTactic === node.id);
+        const hasTech = rationales.nodes.some((n) => n.parentTactic === node.id);
         if (hasTech) return true;
       }
     }
@@ -407,14 +412,16 @@ export function ByParameterView({
                           {format(estimate.saturated.p95, estimate)}
                         </td>
                         <td className="py-2.5 px-2 text-center">
-                          <button
-                            onClick={() => onShowDistribution(estimate)}
-                            className="p-1.5 hover:bg-safer-blue/10 rounded-lg transition-colors"
-                            aria-label={`Show distribution for ${modelId}`}
-                            title="View distribution"
-                          >
-                            <BarChart3 className="w-4 h-4 text-safer-blue" />
-                          </button>
+                          {estimate.samplesAvailable && (
+                            <button
+                              onClick={() => onShowDistribution(estimate)}
+                              className="p-1.5 hover:bg-safer-blue/10 rounded-lg transition-colors"
+                              aria-label={`Show distribution for ${modelId}`}
+                              title="View distribution"
+                            >
+                              <BarChart3 className="w-4 h-4 text-safer-blue" />
+                            </button>
+                          )}
                         </td>
                       </tr>
                     ))}

@@ -1,16 +1,24 @@
 # Data Guide: Populating the SaferAI Risk Dashboard
 
-This guide explains where and how to provide real data to make the dashboard functional. It is written for researchers (or AI agents) who have Bayesian network simulation outputs and need to plug them into the website.
+This guide explains how to provide data for the dashboard. It is written for researchers (or AI agents) who have Bayesian network simulation outputs and need to plug them into the website.
 
 ---
 
 ## Quick Overview
 
-The website reads all its data from static JSON files in `public/data/`. There is no backend — everything is fetched client-side. To populate the dashboard you need to:
+The website reads all its data from static JSON files in `public/data/`. There is no backend — everything is fetched client-side. Data is split into **3 purpose-specific file types**:
 
-1. Create **3 JSON files per risk model** (baseline, SOTA, saturated)
-2. Register each model in the **index file**
-3. Optionally provide a **Bayesian network image** and **benchmark mappings**
+| File type | Contains | Size | When loaded |
+|-----------|----------|------|-------------|
+| **Rationales** | Node metadata, per-scenario rationale strings, benchmark mappings | ~5–9 KB | Always (on model select) |
+| **Percentiles** | User-supplied p5/p50/p95 for all 3 scenarios | ~5–8 KB | Always (on model select) |
+| **Samples** | Raw Monte Carlo samples for KDE distribution charts | ~250–350 KB each | Optional (for distribution charts) |
+
+To add a new model you need to:
+1. Create **1 rationales file** (shared across scenarios)
+2. Create **1 percentiles file** (all 3 scenarios in one file)
+3. Optionally create **3 samples files** (one per scenario)
+4. Register the model in the **index file**
 
 ---
 
@@ -27,9 +35,11 @@ This is the master registry. Every model you want to appear on the landing page 
       "id": "RM1",
       "name": "OC4 + Infrastructure (small) + Disruption",
       "description": "State-sponsored APT targeting regional power utilities...",
-      "baselineFile": "monte_carlo/RM1_distributions_baseline.json",
-      "sotaFile": "monte_carlo/RM1_distributions_sota.json",
-      "saturatedFile": "monte_carlo/RM1_distributions_saturated.json"
+      "rationalesFile": "rationales/RM1_rationales.json",
+      "percentilesFile": "percentiles/RM1_percentiles.json",
+      "baselineSamplesFile": "samples/RM1_samples_baseline.json",
+      "sotaSamplesFile": "samples/RM1_samples_sota.json",
+      "saturatedSamplesFile": "samples/RM1_samples_saturated.json"
     }
   ]
 }
@@ -40,258 +50,189 @@ This is the master registry. Every model you want to appear on the landing page 
 | `id` | Short identifier (e.g. `RM1`, `RM2`). Shown as a badge on the landing page. |
 | `name` | Human-readable scenario name. Shown in model cards and the selector. |
 | `description` | 1–3 sentence scenario summary. Shown on landing page cards and the scenario card. |
-| `baselineFile` | Relative path (from `public/data/`) to the baseline Monte Carlo JSON. |
-| `sotaFile` | Same, for the SOTA (state-of-the-art AI uplift) scenario. |
-| `saturatedFile` | Same, for the saturated (full AI capability) scenario. |
+| `rationalesFile` | Relative path (from `public/data/`) to the rationales JSON. |
+| `percentilesFile` | Relative path to the percentiles JSON. |
+| `baselineSamplesFile` | *(Optional)* Relative path to baseline samples. |
+| `sotaSamplesFile` | *(Optional)* Relative path to SOTA samples. |
+| `saturatedSamplesFile` | *(Optional)* Relative path to saturated samples. |
+
+When samples files are omitted, the dashboard still displays tables and percentiles — the distribution chart button is simply hidden.
 
 **Important:** The landing page currently hardcodes which models have data in `src/components/LandingPage.tsx` (line ~12):
 ```ts
 const modelsWithData = new Set(['RM1', 'RM2']);
 ```
-When you add data files for RM3–RM9 (or any new model), **add its ID to this set** so the "Load Model" button becomes active.
+When you add data files for a new model, **add its ID to this set** so the "Load Model" button becomes active.
 
 ---
 
-## 2. Monte Carlo Distribution Files (the main data)
+## 2. Rationales File
 
-**Location:** `public/data/monte_carlo/`
-**Naming convention:** `{ModelID}_distributions_{scenario}.json`
-**Example:** `RM3_distributions_baseline.json`
+**Location:** `public/data/rationales/`
+**Naming:** `{ModelID}_rationales.json`
+**Example:** `RM1_rationales.json`
 
-Each file represents one scenario's simulation output. You need **three files per model**: baseline, sota, saturated.
-
-### Full JSON Structure
+One file per model, shared across all scenarios. Contains node metadata and per-scenario rationale strings.
 
 ```json
 {
-  "exportTimestamp": "2026-01-27T20:26:16.276Z",
-  "modelName": "OC4 + Infrastructure (small) + Disruption",
-  "modelDescription": "State-sponsored APT targeting regional power utilities. This scenario models sophisticated actors with nation-state resources...",
-  "totalSamples": 1000,
-  "cancelled": false,
-  "completed": true,
-
-  "metadata": {
-    "nodes": [ ... ],
-    "links": [ ... ]
-  },
-
-  "samples": { ... },
-  "marginals": { ... },
-  "marginalProbabilities": { ... },
-  "statistics": { ... },
-
-  "benchmarkMappings": { ... }
-}
-```
-
-### 2a. Nodes (`metadata.nodes`)
-
-Every variable in the Bayesian network is a node. There are three types:
-
-#### Probability nodes (categorical/discrete)
-
-These are benchmark categories. Their samples are **string arrays**. They appear in `marginals` but are **not shown in the estimates tables**.
-
-```json
-{
-  "id": "RM1-prob-1",
-  "name": "CyBench",
-  "nodeType": "probability",
-  "description": "Cybersecurity benchmark category",
-  "position": { "x": 100, "y": 100 },
-  "parents": [],
-  "states": ["None", "LootStash", "Urgent", "Flag Command", "Primary Knowledge"],
-  "distributionType": "discrete"
-}
-```
-
-#### Continuous nodes (MITRE ATT&CK tactics/techniques)
-
-These represent probabilities (0–1 range, Beta distributions). They appear in the **Probability Estimates** table.
-
-```json
-{
-  "id": "RM1-cont-3",
-  "name": "Initial Access",
-  "nodeType": "continuous",
-  "description": "Probability of successful initial access to the target network given the threat actor capabilities and defensive posture.",
-  "position": { "x": 200, "y": 300 },
-  "parents": ["RM1-prob-1"],
-  "distributionType": "conditionalBeta"
-}
-```
-
-The `description` field is displayed as the **rationale** in the table. Make it meaningful — it explains *why* this parameter has the value it does.
-
-#### Technique nodes (children of tactics)
-
-These are continuous nodes with extra fields that make them nest under a parent tactic:
-
-```json
-{
-  "id": "RM1-tech-ia-1",
-  "name": "Phishing",
-  "nodeType": "continuous",
-  "description": "Spear-phishing campaigns targeting utility employees...",
-  "parentTactic": "RM1-cont-3",
-  "combinationMode": "OR",
-  "position": { "x": 350, "y": 150 },
-  "parents": ["RM1-cont-3"],
-  "distributionType": "beta",
-  "alpha": 3.5,
-  "beta": 4.5
-}
-```
-
-| Field | Purpose |
-|-------|---------|
-| `parentTactic` | The `id` of the parent continuous (tactic) node. This creates the nested drill-down in the Probability table. |
-| `combinationMode` | `"AND"` or `"OR"` — how techniques combine into the tactic. Displayed as a color-coded connector (blue = AND, red = OR). |
-
-All technique nodes under the same parent tactic should share the same `combinationMode`. The dashboard displays an inline explanation row above technique groups: AND nodes show "probabilities multiply" and OR nodes show "combined via inclusion-exclusion".
-
-#### Quantity nodes (computed real-valued outputs)
-
-These represent counts, dollar amounts, rates, etc. They appear in the **Quantity Estimates** or **Impact Estimates** tables (impact if the name contains "damage" or the unit contains "$").
-
-```json
-{
-  "id": "RM1-qty-1",
-  "name": "Number of Actors",
-  "nodeType": "quantity",
-  "description": "Estimated number of threat actors with sufficient capability...",
-  "position": { "x": 500, "y": 100 },
-  "parents": ["RM1-cont-1"],
-  "unit": "actors",
-  "computationMode": "direct",
-  "distributionType": null
-}
-```
-
-The `unit` field is displayed in column headers and chart axes.
-
-**Special node:** A quantity node named exactly `"Total Risk"` is required for the Overall Risk Distribution chart at the top. Its samples drive the big KDE chart and the Expected Value / 95th Percentile Risk stat cards.
-
-### 2b. Links (`metadata.links`)
-
-Directed edges in the Bayesian network. Currently used for the network visualization placeholder (future use).
-
-```json
-{
-  "source": "RM1-prob-1",
-  "target": "RM1-cont-1",
-  "linkType": "probability",
-  "parameterName": null
-}
-```
-
-### 2c. Samples (`samples`)
-
-This is where the actual simulation data lives. It's a flat object mapping node IDs to arrays of exactly `totalSamples` (typically 1000) values.
-
-```json
-{
-  "RM1-prob-1": ["LootStash", "Urgent", "Primary Knowledge", ...],
-  "RM1-cont-1": [0.784, 0.644, 0.879, ...],
-  "RM1-qty-1": [33.9, 51.9, 39.3, ...],
-  "RM1-qty-5": [52624175.3, 134030538.5, ...]
-}
-```
-
-- **Probability nodes:** array of 1000 strings (state names)
-- **Continuous nodes:** array of 1000 floats, typically in [0, 1]
-- **Quantity nodes:** array of 1000 floats, in whatever unit applies
-
-The dashboard computes percentiles (5th, 50th, 95th), means, standard deviations, and KDE curves from these samples. More samples = smoother KDE curves, but 1000 is sufficient.
-
-### 2d. Other fields
-
-These are present in the JSON but only lightly used:
-
-| Field | Used for |
-|-------|----------|
-| `marginals` | Not currently displayed. Maps probability node IDs to state→probability objects. |
-| `marginalProbabilities` | Not currently displayed. Same as marginals but 1000 repeated values per state. |
-| `statistics` | Not currently displayed. Maps node IDs to `{ mean, variance, count }`. |
-
-You can include these as empty objects `{}` if your simulation tool doesn't produce them.
-
-### 2e. Benchmark Mappings (`benchmarkMappings`)
-
-If present in the baseline JSON, a "Show KRI Mappings" button appears inside the scenario description card, opening a modal that explains Key Risk Indicators and shows which benchmarks map to which parameters.
-
-```json
-{
+  "modelId": "RM1",
+  "modelDescription": "State-sponsored APT targeting regional power utilities...",
   "benchmarkMappings": {
-    "CyBench": ["Reconnaissance", "Initial Access", "Execution"],
-    "BountyBench": ["Initial Access", "Privilege Escalation"],
-    "NIST CSF": ["Number of Actors", "Total Risk"]
+    "CyBench": ["Reconnaissance", "Initial Access", "Execution"]
+  },
+  "nodes": [
+    {
+      "id": "RM1-cont-3",
+      "name": "Initial Access",
+      "nodeType": "continuous",
+      "baselineRationale": "Probability of initial access under current threat landscape...",
+      "sotaRationale": "With SOTA AI tools, phishing detection bypass rates increase...",
+      "saturatedRationale": "Full AI saturation enables automated exploit generation..."
+    },
+    {
+      "id": "RM1-qty-1",
+      "name": "Number of Actors",
+      "nodeType": "quantity",
+      "unit": "actors",
+      "baselineRationale": "Based on OSINT analysis of active threat groups...",
+      "sotaRationale": "AI lowers barriers to entry, increasing actor count...",
+      "saturatedRationale": "Maximum projected actor pool with fully accessible AI..."
+    },
+    {
+      "id": "RM1-tech-ia-1",
+      "name": "Phishing",
+      "nodeType": "continuous",
+      "parentTactic": "RM1-cont-3",
+      "combinationMode": "OR",
+      "baselineRationale": "Spear-phishing campaigns targeting utility employees...",
+      "sotaRationale": "AI-generated phishing content with improved social engineering...",
+      "saturatedRationale": "Fully automated, personalized phishing at scale..."
+    }
+  ]
+}
+```
+
+### Node fields
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| `id` | Yes | Unique identifier (must match across percentiles and samples files). |
+| `name` | Yes | Display name shown in tables. |
+| `nodeType` | Yes | `"continuous"` (probabilities), `"quantity"` (counts/dollars), or `"probability"` (categorical — skipped by tables). |
+| `unit` | For quantity | Unit string (e.g. `"actors"`, `"$ / year"`). If it contains `$`, the node appears in Impact Estimates. |
+| `parentTactic` | For techniques | The `id` of the parent tactic node. Creates nested drill-down in tables. |
+| `combinationMode` | For techniques | `"AND"` or `"OR"` — how techniques combine into the tactic. |
+| `baselineRationale` | Yes | Rationale text for the baseline scenario. Supports markdown: `**bold**`, `*italic*`, `[link](url)`. |
+| `sotaRationale` | Yes | Rationale text for the SOTA scenario. |
+| `saturatedRationale` | Yes | Rationale text for the saturated scenario. |
+
+### Benchmark mappings
+
+The `benchmarkMappings` field is optional. When present, a "Show KRI Mappings" button appears in the scenario card, opening a modal listing Key Risk Indicators.
+
+Keys are benchmark/KRI names. Values are arrays of **node names** (not IDs).
+
+---
+
+## 3. Percentiles File
+
+**Location:** `public/data/percentiles/`
+**Naming:** `{ModelID}_percentiles.json`
+
+One file per model containing all 3 scenarios' percentiles. These are the **source of truth** for the table values displayed in the dashboard.
+
+```json
+{
+  "modelId": "RM1",
+  "nodes": {
+    "RM1-cont-3": {
+      "baseline": { "p5": 0.12, "p50": 0.35, "p95": 0.67 },
+      "sota":     { "p5": 0.18, "p50": 0.48, "p95": 0.79 },
+      "saturated":{ "p5": 0.25, "p50": 0.61, "p95": 0.88 }
+    },
+    "RM1-qty-1": {
+      "baseline": { "p5": 15, "p50": 33, "p95": 68 },
+      "sota":     { "p5": 20, "p50": 45, "p95": 95 },
+      "saturated":{ "p5": 30, "p50": 60, "p95": 120 }
+    }
   }
 }
 ```
 
-Keys are benchmark/KRI names. Values are arrays of **node names** (not IDs) that the benchmark maps to.
+`nodes` is a `Record<nodeId, { baseline, sota, saturated }>` where each scenario has `p5`, `p50`, `p95`.
 
-Place this at the **top level** of the **baseline** Monte Carlo JSON file (same level as `metadata`, `samples`, etc.). The code reads it from the baseline file only. Every model that should display KRI mappings must have this field in its baseline JSON.
-
----
-
-## 3. Bayesian Network Visualization
-
-**Current state:** Placeholder card with dashed border and text "Network visualization will be inserted here."
-
-**File:** `src/components/BayesianNetworkPlaceholder.tsx`
-
-The placeholder contains a `<div data-network-container>` element. To add a real visualization, you have two options:
-
-### Option A: Static image (simplest)
-
-Replace the placeholder content with an `<img>` tag pointing to your network diagram:
-
-1. Place your image at `public/images/bayesian_network_RM1.png` (or SVG)
-2. Edit `BayesianNetworkPlaceholder.tsx` to accept a `modelId` prop and render:
-   ```tsx
-   <img src={`/images/bayesian_network_${modelId}.png`} alt="Bayesian Network" />
-   ```
-
-### Option B: Interactive visualization (future)
-
-The `metadata.nodes` (with `position.x`, `position.y`) and `metadata.links` (with `source`, `target`) provide everything needed to render an interactive graph using D3, Cytoscape.js, or similar. The `data-network-container` div is reserved for this purpose.
+**Important:** You can supply these directly from expert elicitation — they do not need to be computed from samples.
 
 ---
 
-## 4. Scenarios Explained
+## 4. Samples Files (Optional)
+
+**Location:** `public/data/samples/`
+**Naming:** `{ModelID}_samples_{scenario}.json`
+**Example:** `RM1_samples_baseline.json`, `RM1_samples_sota.json`, `RM1_samples_saturated.json`
+
+One file per scenario. Only needed for KDE distribution chart overlays.
+
+```json
+{
+  "modelId": "RM1",
+  "scenario": "baseline",
+  "samples": {
+    "RM1-cont-3": [0.31, 0.45, 0.22, 0.55, ...],
+    "RM1-qty-1": [33.9, 51.9, 39.3, ...],
+    "RM1-qty-5": [52624175.3, 134030538.5, ...]
+  }
+}
+```
+
+- `samples` is a `Record<nodeId, number[]>` — numeric arrays only (no strings).
+- Typically 1000 samples per node. More samples = smoother KDE curves.
+- Continuous nodes: floats in [0, 1].
+- Quantity nodes: floats in their natural units.
+
+### Graceful degradation
+
+When samples files are absent (or their paths omitted from the index):
+- Tables display percentiles normally (from the percentiles file).
+- Rationales display normally.
+- The distribution chart button is **hidden** for all parameters.
+- The Total Risk Distribution chart at the top is hidden.
+
+---
+
+## 5. Scenarios Explained
 
 Each model has three scenarios with distinct colours:
 
 | Scenario | Colour | Hex | Meaning |
 |----------|--------|-----|---------|
-| Baseline | Blue | `#2B6CB0` | Current threat landscape without AI assistance |
+| Baseline | Blue | `#5B86B5` | Current threat landscape without AI assistance |
 | SOTA | Purple | `#700C8C` | Threat actors using current best AI capabilities |
-| Saturated | Dark forest green | `#2D6A4F` | Threat actors with fully mature/saturated AI tools |
+| Saturated | Teal | `#5B7B7A` | Threat actors with fully mature/saturated AI tools |
 
-The three JSON files per model should contain the same node structure (same IDs, same names) but different sample values reflecting each scenario's assumptions.
+The percentiles file contains all 3 scenarios. Each rationale node has 3 separate rationale strings (one per scenario), allowing you to explain the reasoning behind each scenario's estimates independently.
 
 ---
 
-## 5. Adding a New Risk Model (Step-by-Step)
+## 6. Adding a New Risk Model (Step-by-Step)
 
-1. **Run your Bayesian network simulation** three times (baseline, SOTA, saturated), producing 1000 samples per node each time.
+1. **Create the rationales file** at `public/data/rationales/RM3_rationales.json`:
+   - List all nodes with per-scenario rationale strings.
+   - Include benchmark mappings if available.
+   - A node named `"Total Risk"` with `nodeType: "quantity"` is needed for the overall risk chart.
 
-2. **Export to JSON** following the structure in Section 2. Ensure:
-   - All three files have identical `metadata.nodes` and `metadata.links`
-   - Each file has a `samples` object with 1000 values per node
-   - There is a node named `"Total Risk"` with `nodeType: "quantity"`
-   - Continuous nodes have values in [0, 1]
-   - Quantity nodes have values in their natural units
+2. **Create the percentiles file** at `public/data/percentiles/RM3_percentiles.json`:
+   - Provide p5/p50/p95 for each node under each scenario.
+   - These can come from expert elicitation or computed from simulation.
 
-3. **Place the files** in `public/data/monte_carlo/`:
+3. *(Optional)* **Create samples files** at `public/data/samples/`:
    ```
-   RM3_distributions_baseline.json
-   RM3_distributions_sota.json
-   RM3_distributions_saturated.json
+   RM3_samples_baseline.json
+   RM3_samples_sota.json
+   RM3_samples_saturated.json
    ```
+   Each with ~1000 numeric samples per node.
 
 4. **Register in the index** — add an entry to `public/data/risk_models_index.json`:
    ```json
@@ -299,139 +240,144 @@ The three JSON files per model should contain the same node structure (same IDs,
      "id": "RM3",
      "name": "Your Scenario Name",
      "description": "Your scenario description...",
-     "baselineFile": "monte_carlo/RM3_distributions_baseline.json",
-     "sotaFile": "monte_carlo/RM3_distributions_sota.json",
-     "saturatedFile": "monte_carlo/RM3_distributions_saturated.json"
+     "rationalesFile": "rationales/RM3_rationales.json",
+     "percentilesFile": "percentiles/RM3_percentiles.json",
+     "baselineSamplesFile": "samples/RM3_samples_baseline.json",
+     "sotaSamplesFile": "samples/RM3_samples_sota.json",
+     "saturatedSamplesFile": "samples/RM3_samples_saturated.json"
    }
    ```
+   Omit the `*SamplesFile` fields if you don't have samples.
 
 5. **Enable on landing page** — edit `src/components/LandingPage.tsx` and add `'RM3'` to the `modelsWithData` set.
 
-6. **Optionally add benchmark mappings** — add a `benchmarkMappings` field to the baseline JSON.
-
-7. **Optionally add a network image** — place it in `public/images/` and update the placeholder component.
+6. *(Optional)* **Add a Bayesian network screenshot** — place it in `public/images/` and update `BayesianNetworkPlaceholder.tsx`.
 
 ---
 
-## 6. File Tree Summary
+## 7. File Tree Summary
 
 ```
 public/
 ├── data/
 │   ├── risk_models_index.json          ← Model registry
-│   └── monte_carlo/
-│       ├── RM1_distributions_baseline.json
-│       ├── RM1_distributions_sota.json
-│       ├── RM1_distributions_saturated.json
-│       ├── RM2_distributions_baseline.json
-│       ├── RM2_distributions_sota.json
-│       ├── RM2_distributions_saturated.json
-│       └── ... (add more as needed)
+│   ├── rationales/
+│   │   ├── RM1_rationales.json         ← Node metadata + per-scenario rationales
+│   │   └── RM2_rationales.json
+│   ├── percentiles/
+│   │   ├── RM1_percentiles.json        ← User-supplied p5/p50/p95
+│   │   └── RM2_percentiles.json
+│   ├── samples/                        ← Optional, for KDE charts
+│   │   ├── RM1_samples_baseline.json
+│   │   ├── RM1_samples_sota.json
+│   │   ├── RM1_samples_saturated.json
+│   │   └── ...
+│   └── monte_carlo/                    ← Legacy monolithic files (can be removed)
+│       └── ...
 ├── fonts/
-│   ├── SeasonSans-*.woff2             ← Body font (12 variants)
-│   └── SeasonSerif-*.woff2            ← Heading font (2 variants)
+│   ├── SeasonSans-*.woff2
+│   └── SeasonSerif-*.woff2
 └── images/
-    └── SaferAI_Logo_White_RGB.svg     ← Header logo
+    └── SaferAI_Logo_White_RGB.svg
 
 src/
 ├── components/
 │   ├── LandingPage.tsx                ← Edit modelsWithData set here
-│   ├── ScenarioCard.tsx               ← Shows KRI Mappings button if data present
-│   ├── FeedbackButton.tsx             ← Floating feedback link (all pages)
-│   ├── ByParameterView.tsx            ← Tree-view parameter selector + cross-model table
-│   └── BayesianNetworkPlaceholder.tsx ← Replace with real visualization
+│   ├── EstimatesTable.tsx             ← Per-scenario rationales, gated dist button
+│   ├── ByParameterView.tsx            ← Cross-model comparison using split data
+│   └── BayesianNetworkPlaceholder.tsx ← Replace with real screenshot
 ├── hooks/
-│   └── useModelData.ts                ← Data loading and processing logic
+│   └── useModelData.ts                ← Two-phase data loading
 ├── utils/
-│   ├── formatters.ts                  ← Number/currency/percentage formatting
-│   ├── statistics.ts                  ← Percentile, KDE, summary statistics
-│   └── tickFormatter.ts              ← Currency axis tick labels ($X Billion/Million)
+│   ├── formatters.ts
+│   ├── statistics.ts
+│   └── tickFormatter.ts
 └── types/
     └── index.ts                       ← All TypeScript type definitions
 ```
 
 ---
 
-## 7. Troubleshooting
+## 8. Troubleshooting
 
 | Symptom | Likely Cause |
 |---------|-------------|
 | Model card says "Coming Soon" | Model ID not in `modelsWithData` set in `LandingPage.tsx` |
-| "Error loading risk model" after clicking Load | JSON file missing, wrong path in index, or malformed JSON |
-| Table shows no rows | No `continuous` or `quantity` nodes in `metadata.nodes`, or samples missing |
+| "Error loading risk model" after clicking Load | Rationales or percentiles file missing, wrong path in index, or malformed JSON |
+| Table shows no rows | No `continuous` or `quantity` nodes in rationales, or no matching percentiles |
+| Distribution chart button is hidden | No samples files, or samples file paths omitted from index |
 | Distribution chart is blank | Samples array empty or contains non-numeric values |
-| No "Show KRI Mappings" button in scenario card | No `benchmarkMappings` field in the baseline JSON |
+| No "Show KRI Mappings" button | No `benchmarkMappings` field in the rationales file |
 | Techniques not nesting under tactics | Missing `parentTactic` field on technique nodes |
 | AND/OR connector not showing | Missing `combinationMode` field on technique nodes |
-| Total Risk chart missing | No node with `name: "Total Risk"` and `nodeType: "quantity"` |
-| Rationale says "Toggle to view rationales" | This is expected behaviour — expand the row to see per-scenario rationales |
-| Expanded rationale is empty | Node's `description` field is empty or missing |
+| Total Risk chart missing | No node named `"Total Risk"` with `nodeType: "quantity"`, or no samples |
+| Rationale says "Toggle to view rationales" | Expected — expand the row to see per-scenario rationales |
+| Expanded rationale is empty | Node's rationale fields are empty or missing |
 
 ---
 
-## 8. Minimal Working Example
+## 9. Minimal Working Example
 
-The smallest possible model that will display everything:
+The smallest possible model needs a rationales file, a percentiles file, and an index entry. Samples are optional.
 
+**rationales/RM_test_rationales.json:**
 ```json
 {
-  "exportTimestamp": "2026-01-01T00:00:00.000Z",
-  "modelName": "Minimal Example",
+  "modelId": "RM_test",
   "modelDescription": "A minimal risk model for testing.",
-  "totalSamples": 100,
-  "cancelled": false,
-  "completed": true,
-  "metadata": {
-    "nodes": [
-      {
-        "id": "n1",
-        "name": "Initial Access",
-        "nodeType": "continuous",
-        "description": "Probability of gaining initial access.",
-        "position": { "x": 100, "y": 100 },
-        "parents": [],
-        "distributionType": "conditionalBeta"
-      },
-      {
-        "id": "n2",
-        "name": "Damage per Attack",
-        "nodeType": "quantity",
-        "description": "Expected financial damage per successful attack.",
-        "position": { "x": 300, "y": 100 },
-        "parents": ["n1"],
-        "unit": "$ / attack",
-        "computationMode": "direct",
-        "distributionType": null
-      },
-      {
-        "id": "n3",
-        "name": "Total Risk",
-        "nodeType": "quantity",
-        "description": "Annualized total risk in dollars.",
-        "position": { "x": 500, "y": 100 },
-        "parents": ["n2"],
-        "unit": "$ / year",
-        "computationMode": "multiply",
-        "distributionType": null
-      }
-    ],
-    "links": [
-      { "source": "n1", "target": "n2", "linkType": "probability", "parameterName": null },
-      { "source": "n2", "target": "n3", "linkType": "probability", "parameterName": null }
-    ]
-  },
-  "samples": {
-    "n1": [0.3, 0.45, 0.2, 0.55, 0.4, "... 100 floats in [0,1]"],
-    "n2": [50000, 120000, 30000, 80000, "... 100 floats in dollars"],
-    "n3": [500000, 1200000, 300000, "... 100 floats in $/year"]
-  },
-  "marginals": {},
-  "marginalProbabilities": {},
-  "statistics": {},
-  "benchmarkMappings": {
-    "Example Benchmark": ["Initial Access", "Total Risk"]
+  "nodes": [
+    {
+      "id": "n1",
+      "name": "Initial Access",
+      "nodeType": "continuous",
+      "baselineRationale": "Probability of gaining initial access.",
+      "sotaRationale": "With SOTA AI, initial access probability increases.",
+      "saturatedRationale": "Full AI saturation maximizes initial access."
+    },
+    {
+      "id": "n2",
+      "name": "Damage per Attack",
+      "nodeType": "quantity",
+      "unit": "$ / attack",
+      "baselineRationale": "Expected damage based on current threat landscape.",
+      "sotaRationale": "AI-enhanced attacks cause more damage.",
+      "saturatedRationale": "Maximum projected damage per attack."
+    },
+    {
+      "id": "n3",
+      "name": "Total Risk",
+      "nodeType": "quantity",
+      "unit": "$ / year",
+      "baselineRationale": "Annualized total risk.",
+      "sotaRationale": "Annualized risk with SOTA AI uplift.",
+      "saturatedRationale": "Annualized risk at full AI saturation."
+    }
+  ]
+}
+```
+
+**percentiles/RM_test_percentiles.json:**
+```json
+{
+  "modelId": "RM_test",
+  "nodes": {
+    "n1": {
+      "baseline":  { "p5": 0.10, "p50": 0.30, "p95": 0.60 },
+      "sota":      { "p5": 0.15, "p50": 0.45, "p95": 0.75 },
+      "saturated": { "p5": 0.25, "p50": 0.60, "p95": 0.85 }
+    },
+    "n2": {
+      "baseline":  { "p5": 30000, "p50": 80000, "p95": 200000 },
+      "sota":      { "p5": 50000, "p50": 120000, "p95": 350000 },
+      "saturated": { "p5": 80000, "p50": 180000, "p95": 500000 }
+    },
+    "n3": {
+      "baseline":  { "p5": 300000, "p50": 800000, "p95": 2000000 },
+      "sota":      { "p5": 500000, "p50": 1200000, "p95": 3500000 },
+      "saturated": { "p5": 800000, "p50": 1800000, "p95": 5000000 }
+    }
   }
 }
 ```
 
-Create three copies of this (adjusting sample values for each scenario) and you'll have a working model.
+Register in the index with `rationalesFile` and `percentilesFile` (omit samples paths) and you'll have a working model with tables and rationales — just no distribution charts.

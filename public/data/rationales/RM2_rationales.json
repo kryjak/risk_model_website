@@ -1,0 +1,144 @@
+{
+  "modelId": "RM2",
+  "modelDescription": "Cyber syndicate conducting ransomware attacks...",
+  "benchmarkMappings": {
+    "CyBench": [
+      "Reconnaissance",
+      "Initial Access",
+      "Execution"
+    ],
+    "BountyBench": [
+      "Initial Access",
+      "Privilege Escalation",
+      "Defense Evasion"
+    ],
+    "MITRE ATT&CK Evaluations": [
+      "Persistence",
+      "Lateral Movement",
+      "Command and Control"
+    ],
+    "NIST CSF": [
+      "Number of Actors",
+      "Total Damage per Incident",
+      "Total Risk"
+    ]
+  },
+  "nodes": [
+    {
+      "id": "RM2-cont-1",
+      "name": "Reconnaissance",
+      "nodeType": "continuous",
+      "baselineRationale": "Probability of successful reconnaissance phase",
+      "sotaRationale": "Probability of successful reconnaissance phase",
+      "saturatedRationale": "Probability of successful reconnaissance phase"
+    },
+    {
+      "id": "RM2-cont-2",
+      "name": "Resource Development",
+      "nodeType": "continuous",
+      "baselineRationale": "Probability of successful resource development",
+      "sotaRationale": "Probability of successful resource development",
+      "saturatedRationale": "Probability of successful resource development"
+    },
+    {
+      "id": "RM2-cont-3",
+      "name": "Initial Access",
+      "nodeType": "continuous",
+      "baselineRationale": "Probability of gaining initial access to target systems",
+      "sotaRationale": "Probability of gaining initial access to target systems",
+      "saturatedRationale": "Probability of gaining initial access to target systems"
+    },
+    {
+      "id": "RM2-cont-4",
+      "name": "Execution",
+      "nodeType": "continuous",
+      "baselineRationale": "Probability of successful code execution",
+      "sotaRationale": "Probability of successful code execution",
+      "saturatedRationale": "Probability of successful code execution"
+    },
+    {
+      "id": "RM2-cont-5",
+      "name": "Privilege Escalation",
+      "nodeType": "continuous",
+      "baselineRationale": "Probability of escalating privileges",
+      "sotaRationale": "Probability of escalating privileges",
+      "saturatedRationale": "Probability of escalating privileges"
+    },
+    {
+      "id": "RM2-cont-6",
+      "name": "Lateral Movement",
+      "nodeType": "continuous",
+      "baselineRationale": "Probability of successful lateral movement",
+      "sotaRationale": "Probability of successful lateral movement",
+      "saturatedRationale": "Probability of successful lateral movement"
+    },
+    {
+      "id": "RM2-cont-7",
+      "name": "Collection",
+      "nodeType": "continuous",
+      "baselineRationale": "Probability of successful data collection",
+      "sotaRationale": "Probability of successful data collection",
+      "saturatedRationale": "Probability of successful data collection"
+    },
+    {
+      "id": "RM2-cont-8",
+      "name": "Exfiltration",
+      "nodeType": "continuous",
+      "baselineRationale": "Probability of successful data exfiltration",
+      "sotaRationale": "Probability of successful data exfiltration",
+      "saturatedRationale": "Probability of successful data exfiltration"
+    },
+    {
+      "id": "RM2-cont-9",
+      "name": "Impact",
+      "nodeType": "continuous",
+      "baselineRationale": "Probability of achieving intended impact",
+      "sotaRationale": "Probability of achieving intended impact",
+      "saturatedRationale": "Probability of achieving intended impact"
+    },
+    {
+      "id": "RM2-qty-1",
+      "name": "Number of Actors",
+      "nodeType": "quantity",
+      "unit": "actors",
+      "baselineRationale": "Estimated number of threat actors",
+      "sotaRationale": "Estimated number of threat actors",
+      "saturatedRationale": "Estimated number of threat actors"
+    },
+    {
+      "id": "RM2-qty-2",
+      "name": "Number of Attempts per Actor",
+      "nodeType": "quantity",
+      "unit": "attempts / year",
+      "baselineRationale": "Average attack attempts per actor per year",
+      "sotaRationale": "Average attack attempts per actor per year",
+      "saturatedRationale": "Average attack attempts per actor per year"
+    },
+    {
+      "id": "RM2-qty-3",
+      "name": "Damage per Attack",
+      "nodeType": "quantity",
+      "unit": "$ / attack",
+      "baselineRationale": "Estimated damage per successful attack",
+      "sotaRationale": "Estimated damage per successful attack",
+      "saturatedRationale": "Estimated damage per successful attack"
+    },
+    {
+      "id": "RM2-qty-4",
+      "name": "Successful Attack Rate",
+      "nodeType": "quantity",
+      "baselineRationale": "Overall probability of attack success",
+      "sotaRationale": "Overall probability of attack success",
+      "saturatedRationale": "Overall probability of attack success"
+    },
+    {
+      "id": "RM2-qty-5",
+      "name": "Total Risk",
+      "nodeType": "quantity",
+      "unit": "$ / year",
+      "baselineRationale": "Expected annual loss from this threat scenario",
+      "sotaRationale": "Expected annual loss from this threat scenario",
+      "saturatedRationale": "Expected annual loss from this threat scenario"
+    }
+  ]
+}

@@ -3,116 +3,75 @@ export interface RiskModelIndexEntry {
   id: string;
   name: string;
   description: string;
-  baselineFile: string;
-  sotaFile: string;
-  saturatedFile: string;
+  rationalesFile: string;
+  percentilesFile: string;
+  baselineSamplesFile?: string;
+  sotaSamplesFile?: string;
+  saturatedSamplesFile?: string;
 }
 
 export interface RiskModelsIndex {
   models: RiskModelIndexEntry[];
 }
 
-// Node Types
+// --- New split-file shapes ---
+
+// Rationales file
 export type NodeType = 'probability' | 'continuous' | 'quantity';
-export type DistributionType = 'discrete' | 'conditionalBeta' | null;
 export type CombinationMode = 'AND' | 'OR';
 
-export interface NodePosition {
-  x: number;
-  y: number;
-}
-
-export interface BaseNode {
+export interface RationaleNode {
   id: string;
   name: string;
   nodeType: NodeType;
-  description: string;
-  position: NodePosition;
-  parents: string[];
-  // Optional fields for technique-level nodes
+  unit?: string;
   parentTactic?: string;
   combinationMode?: CombinationMode;
+  baselineRationale: string;
+  sotaRationale: string;
+  saturatedRationale: string;
 }
 
-export interface ProbabilityNode extends BaseNode {
-  nodeType: 'probability';
-  distributionType: 'discrete';
-  states: string[];
-}
-
-export interface ContinuousNode extends BaseNode {
-  nodeType: 'continuous';
-  distributionType: 'conditionalBeta';
-}
-
-export interface QuantityNode extends BaseNode {
-  nodeType: 'quantity';
-  distributionType: null;
-  unit: string;
-  computationMode: string;
-}
-
-export type Node = ProbabilityNode | ContinuousNode | QuantityNode;
-
-// Link Types
-export interface Link {
-  source: string;
-  target: string;
-  linkType: string;
-  parameterName: string | null;
-}
-
-// Metadata
-export interface Metadata {
-  nodes: Node[];
-  links: Link[];
-}
-
-// Marginals (for discrete probability nodes)
-export type Marginals = Record<string, Record<string, number>>;
-
-// Marginal Probabilities
-// For probability nodes: { nodeId: { stateName: number[] } }
-// For quantity nodes: { nodeId: number[] }
-export type MarginalProbabilities = Record<string, Record<string, number[]> | number[] | null>;
-
-// Statistics (for continuous nodes)
-export interface NodeStatistics {
-  mean: number;
-  variance: number;
-  count: number;
-}
-
-export type Statistics = Record<string, NodeStatistics>;
-
-// Samples
-// For probability nodes: string[]
-// For continuous/quantity nodes: number[]
-export type Samples = Record<string, (string | number)[]>;
-
-// Complete Monte Carlo Results Structure
-export interface MonteCarloResults {
-  exportTimestamp: string;
-  modelName: string;
+export interface ModelRationales {
+  modelId: string;
   modelDescription: string;
-  totalSamples: number;
-  cancelled: boolean;
-  completed: boolean;
-  metadata: Metadata;
-  samples: Samples;
-  marginals: Marginals;
-  marginalProbabilities: MarginalProbabilities;
-  statistics: Statistics;
+  benchmarkMappings?: Record<string, string[]>;
+  nodes: RationaleNode[];
 }
 
-// Computed Types for UI
+// Percentiles file
+export interface ScenarioPercentiles {
+  p5: number;
+  p50: number;
+  p95: number;
+}
+
+export interface NodePercentiles {
+  baseline: ScenarioPercentiles;
+  sota: ScenarioPercentiles;
+  saturated: ScenarioPercentiles;
+}
+
+export interface ModelPercentiles {
+  modelId: string;
+  nodes: Record<string, NodePercentiles>;
+}
+
+// Samples file (one per scenario)
+export interface ModelSamples {
+  modelId: string;
+  scenario: string;
+  samples: Record<string, number[]>;
+}
+
+// --- Computed types for UI ---
+
 export interface PercentileData {
   p5: number;
   p50: number;
   p95: number;
 }
 
-// Technique child for nested MITRE display
 export interface TechniqueChild {
   nodeId: string;
   name: string;
@@ -123,7 +82,10 @@ export interface TechniqueChild {
   baselineSamples: number[];
   sotaSamples: number[];
   saturatedSamples: number[];
-  rationale: string;
+  baselineRationale: string;
+  sotaRationale: string;
+  saturatedRationale: string;
+  samplesAvailable: boolean;
 }
 
 export interface ParameterEstimate {
@@ -137,7 +99,10 @@ export interface ParameterEstimate {
   baselineSamples: number[];
   sotaSamples: number[];
   saturatedSamples: number[];
-  rationale: string;
+  baselineRationale: string;
+  sotaRationale: string;
+  saturatedRationale: string;
+  samplesAvailable: boolean;
   techniqueChildren?: TechniqueChild[];
 }
 

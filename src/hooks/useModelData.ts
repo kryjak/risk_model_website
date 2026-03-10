@@ -1,40 +1,58 @@
 import { useState, useEffect, useCallback } from 'react';
 import type {
-  MonteCarloResults,
   LoadingState,
   RiskModelIndexEntry,
   ParameterEstimate,
   TechniqueChild,
   BenchmarkMappings,
-  Node
+  ModelRationales,
+  ModelPercentiles,
+  ModelSamples,
+  RationaleNode,
 } from '../types';
-import { getPercentiles } from '../utils/statistics';
 
-interface ModelDataTriple {
-  baseline: MonteCarloResults | null;
-  sota: MonteCarloResults | null;
-  saturated: MonteCarloResults | null;
+export interface SplitModelData {
+  rationales: ModelRationales | null;
+  percentiles: ModelPercentiles | null;
+  samples: {
+    baseline: ModelSamples | null;
+    sota: ModelSamples | null;
+    saturated: ModelSamples | null;
+  };
 }
 
 interface UseModelDataResult extends LoadingState {
-  data: ModelDataTriple;
+  data: SplitModelData;
   parameterEstimates: ParameterEstimate[];
   benchmarkMappings: BenchmarkMappings;
+  totalRiskSamples: { baseline: number[]; sota: number[]; saturated: number[] };
+  modelDescription: string;
+  samplesAvailable: boolean;
   refetch: () => void;
 }
 
 export function useModelData(model: RiskModelIndexEntry | null): UseModelDataResult {
-  const [data, setData] = useState<ModelDataTriple>({ baseline: null, sota: null, saturated: null });
+  const [data, setData] = useState<SplitModelData>({
+    rationales: null,
+    percentiles: null,
+    samples: { baseline: null, sota: null, saturated: null },
+  });
   const [parameterEstimates, setParameterEstimates] = useState<ParameterEstimate[]>([]);
   const [benchmarkMappings, setBenchmarkMappings] = useState<BenchmarkMappings>({});
+  const [totalRiskSamples, setTotalRiskSamples] = useState<{ baseline: number[]; sota: number[]; saturated: number[] }>({ baseline: [], sota: [], saturated: [] });
+  const [modelDescription, setModelDescription] = useState('');
+  const [samplesAvailable, setSamplesAvailable] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const fetchModelData = useCallback(async () => {
     if (!model) {
-      setData({ baseline: null, sota: null, saturated: null });
+      setData({ rationales: null, percentiles: null, samples: { baseline: null, sota: null, saturated: null } });
       setParameterEstimates([]);
       setBenchmarkMappings({});
+      setTotalRiskSamples({ baseline: [], sota: [], saturated: [] });
+      setModelDescription('');
+      setSamplesAvailable(false);
       return;
     }
 
@@ -42,40 +60,87 @@ export function useModelData(model: RiskModelIndexEntry | null): UseModelDataRes
     setError(null);
 
     try {
-      const [baselineRes, sotaRes, saturatedRes] = await Promise.all([
-        fetch(`/data/${model.baselineFile}`),
-        fetch(`/data/${model.sotaFile}`),
-        fetch(`/data/${model.saturatedFile}`),
+      // Phase 1: fetch rationales + percentiles (fast, ~13KB)
+      const [rationalesRes, percentilesRes] = await Promise.all([
+        fetch(`/data/${model.rationalesFile}`),
+        fetch(`/data/${model.percentilesFile}`),
       ]);
 
-      if (!baselineRes.ok || !sotaRes.ok || !saturatedRes.ok) {
+      if (!rationalesRes.ok || !percentilesRes.ok) {
         throw new Error(`Error loading risk model ${model.name}. Please select another risk model.`);
       }
 
-      const [baseline, sota, saturated] = await Promise.all([
-        baselineRes.json() as Promise<MonteCarloResults>,
-        sotaRes.json() as Promise<MonteCarloResults>,
-        saturatedRes.json() as Promise<MonteCarloResults>,
+      const [rationales, percentiles] = await Promise.all([
+        rationalesRes.json() as Promise<ModelRationales>,
+        percentilesRes.json() as Promise<ModelPercentiles>,
       ]);
 
-      setData({ baseline, sota, saturated });
+      setBenchmarkMappings(rationales.benchmarkMappings || {});
+      setModelDescription(rationales.modelDescription || model.description);
 
-      // Extract benchmark mappings if available
-      const mappings = (baseline as any).benchmarkMappings || {};
-      setBenchmarkMappings(mappings);
+      // Phase 2: fetch samples (optional, ~1MB)
+      let baselineSamples: ModelSamples | null = null;
+      let sotaSamples: ModelSamples | null = null;
+      let saturatedSamples: ModelSamples | null = null;
+      let hasSamples = false;
 
-      // Compute parameter estimates from all three datasets
-      const estimates = computeParameterEstimates(baseline, sota, saturated);
+      if (model.baselineSamplesFile && model.sotaSamplesFile && model.saturatedSamplesFile) {
+        try {
+          const [bRes, sRes, satRes] = await Promise.all([
+            fetch(`/data/${model.baselineSamplesFile}`),
+            fetch(`/data/${model.sotaSamplesFile}`),
+            fetch(`/data/${model.saturatedSamplesFile}`),
+          ]);
+
+          if (bRes.ok && sRes.ok && satRes.ok) {
+            [baselineSamples, sotaSamples, saturatedSamples] = await Promise.all([
+              bRes.json() as Promise<ModelSamples>,
+              sRes.json() as Promise<ModelSamples>,
+              satRes.json() as Promise<ModelSamples>,
+            ]);
+            hasSamples = true;
+          }
+        } catch {
+          // Samples are optional — degrade gracefully
+          console.warn(`Could not load samples for ${model.id}`);
+        }
+      }
+
+      const splitData: SplitModelData = {
+        rationales,
+        percentiles,
+        samples: { baseline: baselineSamples, sota: sotaSamples, saturated: saturatedSamples },
+      };
+      setData(splitData);
+      setSamplesAvailable(hasSamples);
+
+      // Compute estimates
+      const estimates = computeParameterEstimates(rationales, percentiles, baselineSamples, sotaSamples, saturatedSamples);
       setParameterEstimates(estimates);
+
+      // Total Risk samples
+      const totalRiskNode = rationales.nodes.find(n => n.name === 'Total Risk');
+      if (totalRiskNode && hasSamples) {
+        setTotalRiskSamples({
+          baseline: baselineSamples?.samples[totalRiskNode.id] || [],
+          sota: sotaSamples?.samples[totalRiskNode.id] || [],
+          saturated: saturatedSamples?.samples[totalRiskNode.id] || [],
+        });
+      } else {
+        setTotalRiskSamples({ baseline: [], sota: [], saturated: [] });
+      }
     } catch (err) {
       setError(
         err instanceof Error
           ? err.message
           : `Error loading risk model ${model?.name || 'unknown'}. Please select another risk model.`
       );
-      setData({ baseline: null, sota: null, saturated: null });
+      setData({ rationales: null, percentiles: null, samples: { baseline: null, sota: null, saturated: null } });
       setParameterEstimates([]);
       setBenchmarkMappings({});
+      setTotalRiskSamples({ baseline: [], sota: [], saturated: [] });
+      setModelDescription('');
+      setSamplesAvailable(false);
     } finally {
       setIsLoading(false);
     }
@@ -89,6 +154,9 @@ export function useModelData(model: RiskModelIndexEntry | null): UseModelDataRes
     data,
     parameterEstimates,
     benchmarkMappings,
+    totalRiskSamples,
+    modelDescription,
+    samplesAvailable,
     isLoading,
     error,
     refetch: fetchModelData,
@@ -96,71 +164,59 @@ export function useModelData(model: RiskModelIndexEntry | null): UseModelDataRes
 }
 
 function computeParameterEstimates(
-  baseline: MonteCarloResults,
-  sota: MonteCarloResults,
-  saturated: MonteCarloResults
+  rationales: ModelRationales,
+  percentiles: ModelPercentiles,
+  baselineSamples: ModelSamples | null,
+  sotaSamples: ModelSamples | null,
+  saturatedSamples: ModelSamples | null,
 ): ParameterEstimate[] {
   const estimates: ParameterEstimate[] = [];
+  const hasSamples = !!(baselineSamples && sotaSamples && saturatedSamples);
 
-  // Build a map of technique nodes grouped by parent tactic
-  const techniquesByTactic = new Map<string, Node[]>();
-  for (const node of baseline.metadata.nodes) {
+  // Build technique lookup by parent tactic
+  const techniquesByTactic = new Map<string, RationaleNode[]>();
+  const techniqueNodeIds = new Set<string>();
+
+  for (const node of rationales.nodes) {
     if (node.parentTactic) {
       const existing = techniquesByTactic.get(node.parentTactic) || [];
       existing.push(node);
       techniquesByTactic.set(node.parentTactic, existing);
-    }
-  }
-
-  // Track which nodes are techniques (so we skip them at the top level)
-  const techniqueNodeIds = new Set<string>();
-  for (const nodes of techniquesByTactic.values()) {
-    for (const node of nodes) {
       techniqueNodeIds.add(node.id);
     }
   }
 
-  for (const node of baseline.metadata.nodes) {
-    // Skip probability nodes (categorical) and technique nodes (handled as children)
+  for (const node of rationales.nodes) {
     if (node.nodeType === 'probability') continue;
     if (techniqueNodeIds.has(node.id)) continue;
 
-    const baselineSamples = baseline.samples[node.id] as number[];
-    const sotaSamples = sota.samples[node.id] as number[];
-    const saturatedSamples = saturated.samples[node.id] as number[];
+    const pctls = percentiles.nodes[node.id];
+    if (!pctls) continue;
 
-    if (!baselineSamples || !sotaSamples || !saturatedSamples) continue;
-
-    const [bp5, bp50, bp95] = getPercentiles(baselineSamples);
-    const [sp5, sp50, sp95] = getPercentiles(sotaSamples);
-    const [satp5, satp50, satp95] = getPercentiles(saturatedSamples);
-
-    const quantityNode = node as Node & { unit?: string };
-
-    // Build technique children if this node is a tactic with techniques
+    // Build technique children
     let techniqueChildren: TechniqueChild[] | undefined;
     const techniques = techniquesByTactic.get(node.id);
     if (techniques && techniques.length > 0) {
       techniqueChildren = techniques.map(techNode => {
-        const techBaselineSamples = baseline.samples[techNode.id] as number[];
-        const techSotaSamples = sota.samples[techNode.id] as number[];
-        const techSaturatedSamples = saturated.samples[techNode.id] as number[];
-
-        const [tbp5, tbp50, tbp95] = getPercentiles(techBaselineSamples || []);
-        const [tsp5, tsp50, tsp95] = getPercentiles(techSotaSamples || []);
-        const [tsatp5, tsatp50, tsatp95] = getPercentiles(techSaturatedSamples || []);
-
+        const techPctls = percentiles.nodes[techNode.id] || {
+          baseline: { p5: 0, p50: 0, p95: 0 },
+          sota: { p5: 0, p50: 0, p95: 0 },
+          saturated: { p5: 0, p50: 0, p95: 0 },
+        };
         return {
           nodeId: techNode.id,
           name: techNode.name,
           combinationMode: techNode.combinationMode || 'AND',
-          baseline: { p5: tbp5, p50: tbp50, p95: tbp95 },
-          sota: { p5: tsp5, p50: tsp50, p95: tsp95 },
-          saturated: { p5: tsatp5, p50: tsatp50, p95: tsatp95 },
-          baselineSamples: techBaselineSamples || [],
-          sotaSamples: techSotaSamples || [],
-          saturatedSamples: techSaturatedSamples || [],
-          rationale: techNode.description || '',
+          baseline: techPctls.baseline,
+          sota: techPctls.sota,
+          saturated: techPctls.saturated,
+          baselineSamples: hasSamples ? (baselineSamples.samples[techNode.id] || []) : [],
+          sotaSamples: hasSamples ? (sotaSamples.samples[techNode.id] || []) : [],
+          saturatedSamples: hasSamples ? (saturatedSamples.samples[techNode.id] || []) : [],
+          baselineRationale: techNode.baselineRationale || '',
+          sotaRationale: techNode.sotaRationale || '',
+          saturatedRationale: techNode.saturatedRationale || '',
+          samplesAvailable: hasSamples,
         };
       });
     }
@@ -169,30 +225,20 @@ function computeParameterEstimates(
       nodeId: node.id,
       name: node.name,
       nodeType: node.nodeType,
-      unit: quantityNode.unit,
-      baseline: { p5: bp5, p50: bp50, p95: bp95 },
-      sota: { p5: sp5, p50: sp50, p95: sp95 },
-      saturated: { p5: satp5, p50: satp50, p95: satp95 },
-      baselineSamples,
-      sotaSamples,
-      saturatedSamples,
-      rationale: node.description || '',
+      unit: node.unit,
+      baseline: pctls.baseline,
+      sota: pctls.sota,
+      saturated: pctls.saturated,
+      baselineSamples: hasSamples ? (baselineSamples.samples[node.id] || []) : [],
+      sotaSamples: hasSamples ? (sotaSamples.samples[node.id] || []) : [],
+      saturatedSamples: hasSamples ? (saturatedSamples.samples[node.id] || []) : [],
+      baselineRationale: node.baselineRationale || '',
+      sotaRationale: node.sotaRationale || '',
+      saturatedRationale: node.saturatedRationale || '',
+      samplesAvailable: hasSamples,
       techniqueChildren,
     });
   }
 
   return estimates;
-}
-
-// Helper to get node by ID from metadata
-export function getNodeById(
-  data: MonteCarloResults | null,
-  nodeId: string
-): Node | undefined {
-  return data?.metadata.nodes.find(n => n.id === nodeId);
-}
-
-// Helper to find Total Risk node
-export function getTotalRiskNode(data: MonteCarloResults | null): Node | undefined {
-  return data?.metadata.nodes.find(n => n.name === 'Total Risk');
 }

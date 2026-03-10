@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import ReactMarkdown from 'react-markdown';
 import { ChevronDown, ChevronRight, ChevronUp, BarChart3, Copy, Check, Info } from 'lucide-react';
 import type { ParameterEstimate, TechniqueChild, TableType } from '../types';
 import { formatValue, truncateText } from '../utils/formatters';
@@ -73,9 +74,9 @@ function ParameterRows({ estimate, tableType, onShowDistribution }: ParameterRow
 
   // Scenarios
   const scenarios = [
-    { name: 'Baseline', data: estimate.baseline, rationale: estimate.rationale || '', color: 'safer-blue' as const },
-    { name: 'SOTA', data: estimate.sota, rationale: 'State-of-the-art LLM capabilities applied', color: 'safer-purple' as const },
-    { name: 'Saturated', data: estimate.saturated, rationale: 'Full saturation of KRI benchmark', color: 'safer-teal' as const },
+    { name: 'Baseline', data: estimate.baseline, rationale: estimate.baselineRationale || '', color: 'safer-blue' as const },
+    { name: 'SOTA', data: estimate.sota, rationale: estimate.sotaRationale || '', color: 'safer-purple' as const },
+    { name: 'Saturated', data: estimate.saturated, rationale: estimate.saturatedRationale || '', color: 'safer-teal' as const },
   ];
 
   // Calculate ranges with dynamic colour assignment
@@ -137,17 +138,19 @@ function ParameterRows({ estimate, tableType, onShowDistribution }: ParameterRow
           </span>
         </td>
         <td className="py-3 px-3 text-center">
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onShowDistribution();
-            }}
-            className="p-1.5 hover:bg-safer-blue/10 rounded-lg transition-colors"
-            aria-label={`Show distribution for ${estimate.name}`}
-            title="View distribution"
-          >
-            <BarChart3 className="w-4 h-4 text-safer-blue" />
-          </button>
+          {estimate.samplesAvailable && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onShowDistribution();
+              }}
+              className="p-1.5 hover:bg-safer-blue/10 rounded-lg transition-colors"
+              aria-label={`Show distribution for ${estimate.name}`}
+              title="View distribution"
+            >
+              <BarChart3 className="w-4 h-4 text-safer-blue" />
+            </button>
+          )}
         </td>
       </tr>
 
@@ -235,9 +238,9 @@ function TechniqueRow({
   const [isExpanded, setIsExpanded] = useState(false);
 
   const scenarios = [
-    { name: 'Baseline', data: technique.baseline, rationale: technique.rationale || '', color: 'safer-blue' as const },
-    { name: 'SOTA', data: technique.sota, rationale: 'State-of-the-art LLM capabilities applied', color: 'safer-purple' as const },
-    { name: 'Saturated', data: technique.saturated, rationale: 'Full saturation of KRI benchmark', color: 'safer-teal' as const },
+    { name: 'Baseline', data: technique.baseline, rationale: technique.baselineRationale || '', color: 'safer-blue' as const },
+    { name: 'SOTA', data: technique.sota, rationale: technique.sotaRationale || '', color: 'safer-purple' as const },
+    { name: 'Saturated', data: technique.saturated, rationale: technique.saturatedRationale || '', color: 'safer-teal' as const },
   ];
 
   const getRange = (getValue: (s: typeof scenarios[0]) => number) => {
@@ -462,9 +465,25 @@ function RationaleCell({ text }: { text: string }) {
     setIsExpanded(!isExpanded);
   };
 
+  // Only allow safe inline elements — links, bold, italic, code
+  const allowedElements = ['a', 'strong', 'em', 'code', 'p'];
+  const markdownComponents = {
+    // Render <p> as inline <span> to keep rationale compact in table cells
+    p: ({ children }: { children?: React.ReactNode }) => <span>{children}</span>,
+    a: ({ href, children }: { href?: string; children?: React.ReactNode }) => (
+      <a href={href} target="_blank" rel="noopener noreferrer" className="text-safer-blue underline hover:text-safer-purple">
+        {children}
+      </a>
+    ),
+  };
+
   if (!needsTruncation) {
     return (
-      <span className="text-gray-600 text-sm">{text}</span>
+      <span className="text-gray-600 text-sm">
+        <ReactMarkdown allowedElements={allowedElements} components={markdownComponents} unwrapDisallowed>
+          {text}
+        </ReactMarkdown>
+      </span>
     );
   }
 
@@ -499,9 +518,13 @@ function RationaleCell({ text }: { text: string }) {
         </button>
       </div>
 
-      {/* Collapsed: truncated text. Expanded: full text */}
+      {/* Collapsed: truncated text. Expanded: full markdown text */}
       {isExpanded ? (
-        <p className="mt-1 text-sm text-gray-700 leading-relaxed bg-safer-grey/50 rounded p-2">{text}</p>
+        <div className="mt-1 text-sm text-gray-700 leading-relaxed bg-safer-grey/50 rounded p-2">
+          <ReactMarkdown allowedElements={allowedElements} components={markdownComponents} unwrapDisallowed>
+            {text}
+          </ReactMarkdown>
+        </div>
       ) : (
         <span className="text-gray-600 text-sm">{truncateText(text, maxLength)}</span>
       )}
