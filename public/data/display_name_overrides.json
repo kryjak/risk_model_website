@@ -1,0 +1,76 @@
+{
+  "OC1_SME_Phishing_and_BEC_llm": {
+    "Direct Cost of Invoice Payment": "Damage per Attack",
+    "T1565.001 - Stored Data Manipulation": "Impact: Stored Data Manipulation",
+    "T1657 - Financial Theft": "Impact: Financial Theft"
+  },
+  "OC2_Data_Rich_Data_Breach_and_Extortion_llm": {
+    "Damage": "Damage per Attack",
+    "T1074 - Data Staged": "Collection: Data Staged - Uncertainty",
+    "T1213 - Data from Information Repositories": "Collection: Data from Information Repositories"
+  },
+  "OC2_SME_Social_Eng_Initial_Access_Ransom_llm": {
+    "Command-and-Control": "Command and Control",
+    "Damage per Successful Attack": "Damage per Attack",
+    "Number of Attacks per Actor": "Number of Attempts per Actor",
+    "Initial Access: Spearphishing Link": "Initial Access",
+    "T1583 - Acquire Infrastructure": "Acquire Infrastructure",
+    "T1588 - Obtain Capabilities": "Obtain Capabilities"
+  },
+  "OC3_Financial_DDoS_llm": {
+    "Acquire Infrastructure: Botnet (T1583.005)": "Resource Development: Acquire Botnet - Uncertainty",
+    "Active Scanning (T1595)": "Reconnaissance: Active Scanning- Uncertainty",
+    "Command-and-Control": "Command and Control",
+    "Compromise Infrastructure: Botnet (T1584.005)": "Resource Development: Build Compromise Botnet - Uncertainty",
+    "Damage": "Damage per Attack",
+    "Defense Evasion": "Defense Evasion: Non-Standard Port - Uncertainty",
+    "Direct Network Flood (T1498.001)": "Impact: Direct Network Flood",
+    "Gather Victim Network Information (T1590)": "Reconnaissance: Gather Victim Network Information - Uncertainty",
+    "Masquerading (T1036)": "Defense Evasion: Masquerading - Uncertainty",
+    "Non-Standard Port (T1571)": "Defence Evasion",
+    "Reflection/Amplification Attack (T1498.002)": "Impact: Reflection/Amplification Attack"
+  },
+  "OC4_Infrastructure_small_Disruption_llm": {
+    "Damage": "Damage per Attack",
+    "Number of Attempts per Actor per Year": "Number of Attempts per Actor",
+    "T0803 Loss of Control": "Impact: Loss of Control",
+    "T0821 Modify Controller Tasking": "Impact: Modify Controller Tasking",
+    "T0829 Loss of View": "Impact: Loss of View",
+    "T0858 Change Operating Mode": "Impact: Change Operating Mode",
+    "T1055 Process Injection": "Privilege Escalation: Process Injection",
+    "T1068 Exploitation for Privilege Escalation": "Privilege Escalation: Local Exploit",
+    "T1133 External Remote Services": "Initial Access: External Remote Services",
+    "T1134 Access Token Manipulation": "Privilege Escalation: Token Manipulation",
+    "T1190 Exploit Public-Facing Application": "Initial Access: Exploit Public-Facing App",
+    "T1566.001 Spearphishing Attachment": "Initial Access: Spear-phishing Attachment"
+  },
+  "OC4_Infrastructure_large_Disruption_llm": {
+    "Damage": "Damage per Attack",
+    "Number of Attempts per Actor per Year": "Number of Attempts per Actor",
+    "T1021.001 - Remote Services: RDP into EMS servers": "Lateral Movement: RDP into EMS servers",
+    "T1021.002 - SMB/WMI into Engineering PCs": "Lateral Movement: SMB_WMI into Engineering PCs",
+    "T1048 - OT Protocol Tunnel (ICCP/MQTT)": "C2: OT Protocol Tunnel",
+    "T1055 - Process Injection": "Privilege Escalation: Process Injection",
+    "T1068 - Exploitation for Privilege Escalation": "Privilege Escalation: Exploitation for PrivEsc",
+    "T1071.001 - Web Protocols (HTTPS/443)": "C2: Web Protocols (HTTPS)",
+    "T1071.004 - DNS-over-HTTPS": "C2: DNS-over-HTTPS",
+    "T1105 - Ingress Tool Transfer via OT jump-server": "Lateral Movement: Ingress Tool Transfer",
+    "T1133 - External Remote Services (stolen vendor VPN creds)": "Initial Access: External Remote Services",
+    "T1134 - Access-Token Manipulation": "Privilege Escalation: Token Manipulation",
+    "T1190 - Exploit Public-Facing Application (FortiGate 0-day)": "Initial Access: Exploit Public-Facing App",
+    "T1566.001 - Spearphishing Attachment (utility staff)": "Initial Access: Spear-phishing Attachment"
+  },
+  "OC5_Espionage_Polymorphic_llm": {
+    "Damage": "Damage per Attack",
+    "Privilege Escalation": "Privillege Escalation",
+    "T1055 Process Injection": "Privilege Escalation: Process Injection",
+    "T1068 Exploitation for Priv-Esc": "Privilege Escalation: Exploitation for Priv-Esc",
+    "T1071.001 Web Protocols (HTTPS)": "C2: Web Protocols (HTTPS)",
+    "T1071.004 DNS-over-HTTPS": "C2: DNS-over-HTTPS",
+    "T1090.003 Multi-hop Proxy": "C2: Multi-hop Proxy",
+    "T1133 External Remote Services": "Initial Access: External Remote Services",
+    "T1134 Access-Token Manipulation": "Privilege Escalation: Access-Token Manipulation",
+    "T1195 Supply-Chain Compromise": "Initial Access: Supply-Chain Compromise",
+    "T1566.001 Spear-phishing Attachment": "Initial Access: Spear-phishing Attachment"
+  }
+}

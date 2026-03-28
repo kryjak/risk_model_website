@@ -2,23 +2,103 @@
   "models": [
     {
       "id": "RM1",
-      "name": "OC4 + Infrastructure (small) + Disruption",
-      "description": "State-sponsored APT (OC4) targeting regional power utilities with the goal of causing operational disruption. This scenario models sophisticated actors with nation-state resources attempting to compromise SCADA systems and industrial control infrastructure.",
-      "rationalesFile": "rationales/RM1_rationales.json",
-      "percentilesFile": "percentiles/RM1_percentiles.json",
-      "baselineSamplesFile": "samples/RM1_samples_baseline.json",
-      "sotaSamplesFile": "samples/RM1_samples_sota.json",
-      "saturatedSamplesFile": "samples/RM1_samples_saturated.json"
+      "name": "OC1 + SME + Phishing and BEC",
+      "description": "An actor with OC1-level operational capacity (single individual, low expertise, budget up to $1,000) targets a Small to Medium Enterprise (SME) with a Phishing and Business Email Compromise (BEC) attack for direct financial gain. The attack proceeds through these steps: Reconnaissance to gather employee contacts, Resource Development to set up a phishing site, Initial Access via a mass email campaign, Execution when an employee provides credentials, establishing Persistence in the compromised email account, Discovery to find an active invoice, and finally Impact, where the actor modifies the invoice to redirect a payment to a fraudulent account.",
+      "rationalesFile": "rationales/OC1_SME_Phishing_and_BEC_llm_rationales.json",
+      "percentilesFile": "percentiles/OC1_SME_Phishing_and_BEC_llm_percentiles.json",
+      "baselineSamplesFile": "samples/OC1_SME_Phishing_and_BEC_llm_samples_baseline.json",
+      "sotaSamplesFile": "samples/OC1_SME_Phishing_and_BEC_llm_samples_sota.json",
+      "saturatedSamplesFile": "samples/OC1_SME_Phishing_and_BEC_llm_samples_saturated.json"
     },
     {
       "id": "RM2",
-      "name": "OC3 + SME + Ransomware",
-      "description": "Cyber syndicate (OC3) conducting ransomware attacks against small and medium enterprises. This scenario models organized criminal groups deploying ransomware-as-a-service against targets with limited security resources.",
-      "rationalesFile": "rationales/RM2_rationales.json",
-      "percentilesFile": "percentiles/RM2_percentiles.json",
-      "baselineSamplesFile": "samples/RM2_samples_baseline.json",
-      "sotaSamplesFile": "samples/RM2_samples_sota.json",
-      "saturatedSamplesFile": "samples/RM2_samples_saturated.json"
+      "name": "OC2 + Data Rich + Data Breach and Extortion",
+      "description": "An actor with OC2-level operational capacity (defined as a single individual or small group, ~$10k budget, pre-existing infrastructure) targets a data-rich organization (e.g., healthcare, finance) with moderate (SL1-SL2) defenses. The attack begins with Reconnaissance to find a target, followed by Resource Development to acquire stolen credentials. The actor then gains Initial Access to the network, performs Privilege Escalation and Lateral Movement to find sensitive data. They then stage the data for Collection and Exfiltrate it. The attack culminates in the Impact phase, where they extort the victim for a ransom, threatening to leak the stolen data.",
+      "rationalesFile": "rationales/OC2_Data_Rich_Data_Breach_llm_rationales.json",
+      "percentilesFile": "percentiles/OC2_Data_Rich_Data_Breach_llm_percentiles.json",
+      "baselineSamplesFile": "samples/OC2_Data_Rich_Data_Breach_llm_samples_baseline.json",
+      "sotaSamplesFile": "samples/OC2_Data_Rich_Data_Breach_llm_samples_sota.json",
+      "saturatedSamplesFile": "samples/OC2_Data_Rich_Data_Breach_llm_samples_saturated.json"
+    },
+    {
+      "id": "RM3",
+      "name": "OC2 + SME + Phishing + Initial-Access Broker",
+      "description": "An actor with OC2-level operational capacity (defined as a 1-3 person professional group, ~$10k budget) operates as an Initial Access Broker (IAB), targeting Small to Medium Enterprises (SMEs). The attack begins with Reconnaissance to find targets and Resource Development to set up phishing infrastructure. The actor gains Initial Access by tricking an employee with a customized phishing email to download an infostealer. After Execution, the malware performs Credential Access and Discovery, which is then Collected and Exfiltrated via a Command and Control channel. The actor's goal is not to extort the victim directly, but to sell the stolen credentials and access on underground markets to other cybercriminals, such as ransomware affiliates.",
+      "rationalesFile": "rationales/OC2_SME_Social_Eng_Initial_Access_Ransom_llm_rationales.json",
+      "percentilesFile": "percentiles/OC2_SME_Social_Eng_Initial_Access_Ransom_llm_percentiles.json",
+      "baselineSamplesFile": "samples/OC2_SME_Social_Eng_Initial_Access_Ransom_llm_samples_baseline.json",
+      "sotaSamplesFile": "samples/OC2_SME_Social_Eng_Initial_Access_Ransom_llm_samples_sota.json",
+      "saturatedSamplesFile": "samples/OC2_SME_Social_Eng_Initial_Access_Ransom_llm_samples_saturated.json"
+    },
+    {
+      "id": "RM4 (human)",
+      "name": "OC3 + SME + Public Exploit and Ransomware (human-elicited)",
+      "description": "A small cybercrime syndicate with OC3-level operational capacity (defined as ~10 individuals with resources of ~$1m) operates as a ransomware affiliate. They conduct double extortion attacks (data encryption and exfiltration) against Small and Medium Enterprises (SMEs). The attack begins with Reconnaissance to find a vulnerable target, followed by Resource Development to acquire tools. The actor then gains Initial Access by exploiting an n-day vulnerability in a public-facing system. Once inside, they perform Execution of malicious code, Privilege Escalation to gain administrative rights, and Discovery to map the network. They then conduct Lateral Movement to spread to critical systems, Collection to stage sensitive data, and Exfiltration to steal it, all coordinated via a Command and Control channel. The final stage is the Impact, where data is encrypted and systems are disrupted, followed by Extortion to demand a ransom.",
+      "rationalesFile": "rationales/OC3_Ransomware_SME_target_human_rationales.json",
+      "percentilesFile": "percentiles/OC3_Ransomware_SME_target_human_percentiles.json",
+      "baselineSamplesFile": "samples/OC3_Ransomware_SME_target_human_samples_baseline.json",
+      "sotaSamplesFile": "samples/OC3_Ransomware_SME_target_human_samples_sota.json",
+      "saturatedSamplesFile": "samples/OC3_Ransomware_SME_target_human_samples_saturated.json"
+    },
+    {
+      "id": "RM4",
+      "name": "OC3 + SME + Public Exploit and Ransomware",
+      "description": "A small cybercrime syndicate with OC3-level operational capacity (defined as ~10 individuals with resources of ~$1m) operates as a ransomware affiliate. They conduct double extortion attacks (data encryption and exfiltration) against Small and Medium Enterprises (SMEs). The attack begins with Reconnaissance to find a vulnerable target, followed by Resource Development to acquire tools. The actor then gains Initial Access by exploiting an n-day vulnerability in a public-facing system. Once inside, they perform Execution of malicious code, Privilege Escalation to gain administrative rights, and Discovery to map the network. They then conduct Lateral Movement to spread to critical systems, Collection to stage sensitive data, and Exfiltration to steal it, all coordinated via a Command and Control channel. The final stage is the Impact, where data is encrypted and systems are disrupted, followed by Extortion to demand a ransom.",
+      "rationalesFile": "rationales/OC3_Ransomware_SME_target_llm_rationales.json",
+      "percentilesFile": "percentiles/OC3_Ransomware_SME_target_llm_percentiles.json",
+      "baselineSamplesFile": "samples/OC3_Ransomware_SME_target_llm_samples_baseline.json",
+      "sotaSamplesFile": "samples/OC3_Ransomware_SME_target_llm_samples_sota.json",
+      "saturatedSamplesFile": "samples/OC3_Ransomware_SME_target_llm_samples_saturated.json"
+    },
+    {
+      "id": "RM5",
+      "name": "OC3 + Large Enterprise + Public Exploit + Ransomware",
+      "description": "An actor with OC3-level operational capacity (defined as ~10 individuals, ~$1M budget, state-sponsored) targets a large enterprise ($250M-$1B revenue) for a high-value ransom (~$1M). The attack begins with Reconnaissance to find a vulnerable target and Resource Development to acquire tools and exploits. The actor gains Initial Access by exploiting an n-day vulnerability in a public-facing web application. Once inside, they perform Execution of malicious code, Privilege Escalation to gain administrative rights, and Discovery to map the network. They then conduct Lateral Movement to spread to critical systems, Collection to stage sensitive data, and Exfiltration to steal it, all coordinated via a Command and Control channel. The final stage is the Impact, where data is encrypted and systems are disrupted, followed by Extortion to demand a ransom.",
+      "rationalesFile": "rationales/OC3_Ransomware_Large_enterprise_target_llm_rationales.json",
+      "percentilesFile": "percentiles/OC3_Ransomware_Large_enterprise_target_llm_percentiles.json",
+      "baselineSamplesFile": "samples/OC3_Ransomware_Large_enterprise_target_llm_samples_baseline.json",
+      "sotaSamplesFile": "samples/OC3_Ransomware_Large_enterprise_target_llm_samples_sota.json",
+      "saturatedSamplesFile": "samples/OC3_Ransomware_Large_enterprise_target_llm_samples_saturated.json"
+    },
+    {
+      "id": "RM6",
+      "name": "OC3 + Financial + DDoS",
+      "description": "An actor with OC3-level operational capacity (defined as ~10 individuals, ~$1M budget, major pre-existing infrastructure) targets a financial institution for extortion using a Ransom Distributed Denial of Service (RDDoS) attack. The attack chain begins with Reconnaissance to find a vulnerable target and Resource Development to acquire or build a botnet. The actor then evades defenses (Defense Evasion) while maintaining Command and Control over their botnet. The final stage is Impact, where they launch a high-volume network flood to disrupt the target's services, followed by a ransom demand.",
+      "rationalesFile": "rationales/OC3_Financial_DDoS_llm_rationales.json",
+      "percentilesFile": "percentiles/OC3_Financial_DDoS_llm_percentiles.json",
+      "baselineSamplesFile": "samples/OC3_Financial_DDoS_llm_samples_baseline.json",
+      "sotaSamplesFile": "samples/OC3_Financial_DDoS_llm_samples_sota.json",
+      "saturatedSamplesFile": "samples/OC3_Financial_DDoS_llm_samples_saturated.json"
+    },
+    {
+      "id": "RM7",
+      "name": "OC4 + Infrastructure (small) + Disruption",
+      "description": "An actor with OC4-level operational capacity (defined as ~100 individuals, ~$10M budget, state-sponsored) targets a small-scale critical infrastructure provider, like a regional electric utility, for disruption. The attack begins with Reconnaissance to map the target and Resource Development to acquire a zero-day exploit. The actor then gains Initial Access to the IT network via a compromised VPN. Once inside, they perform Execution of initial scripts, establish Persistence, and conduct Credential Access and Privilege Escalation to become a domain admin. From there, they perform Discovery to map the control systems, and Lateral Movement to pivot from the IT network into the OT environment. They Collect system configurations, establish a covert Command-and-Control channel, and wait. The attack culminates with the Impact phase, where they issue commands to disrupt physical processes, causing a regional power outage.",
+      "rationalesFile": "rationales/OC4_Infrastructure_small_Disruption_llm_rationales.json",
+      "percentilesFile": "percentiles/OC4_Infrastructure_small_Disruption_llm_percentiles.json",
+      "baselineSamplesFile": "samples/OC4_Infrastructure_small_Disruption_llm_samples_baseline.json",
+      "sotaSamplesFile": "samples/OC4_Infrastructure_small_Disruption_llm_samples_sota.json",
+      "saturatedSamplesFile": "samples/OC4_Infrastructure_small_Disruption_llm_samples_saturated.json"
+    },
+    {
+      "id": "RM8",
+      "name": "OC4 + Infrastructure (large) + Disruption",
+      "description": "An actor with OC4-level operational capacity (defined as ~100 individuals, ~$10M budget, state-sponsored GRU team like APT28) targets a large, multi-state electric utility for major disruption. The attack begins with Reconnaissance to map the target and Resource Development to acquire a zero-day exploit. The actor gains Initial Access to the IT network via a compromised vendor VPN. Once inside, they perform Execution, establish Persistence, conduct Credential Access and Privilege Escalation across multiple Active Directory forests. From there, they perform Discovery to map the OT environment, and Lateral Movement to pivot from IT into OT. They Collect system configurations, establish a covert Command-and-Control channel, and wait for a geopolitical trigger. The attack culminates with the Impact phase, where they issue synchronized commands to open breakers at dozens of substations, causing a multi-state power outage.",
+      "rationalesFile": "rationales/OC4_Infrastructure_large_Disruption_llm_rationales.json",
+      "percentilesFile": "percentiles/OC4_Infrastructure_large_Disruption_llm_percentiles.json",
+      "baselineSamplesFile": "samples/OC4_Infrastructure_large_Disruption_llm_samples_baseline.json",
+      "sotaSamplesFile": "samples/OC4_Infrastructure_large_Disruption_llm_samples_sota.json",
+      "saturatedSamplesFile": "samples/OC4_Infrastructure_large_Disruption_llm_samples_saturated.json"
+    },
+    {
+      "id": "RM9",
+      "name": "OC5 + Espionage + Polymorphic Malware",
+      "description": "A top-tier nation-state actor with OC5-level operational capacity (defined as ~1,000 individuals with a budget up to $1B, state-level infrastructure, and access years ahead of the state of the art) conducts a strategic espionage campaign against a high-value defense contractor. The primary vector is sophisticated polymorphic malware delivered via a supply-chain compromise. The attack proceeds through these steps: Reconnaissance, Resource Development, Initial Access (via one of several vectors), Execution, Persistence, Privilege Escalation (via one of several methods), Discovery, Lateral Movement, Collection, establishing Command-and-Control (via one of several channels), and finally Exfiltration of sensitive intellectual property.",
+      "rationalesFile": "rationales/OC5_Espionage_Polymorphic_llm_rationales.json",
+      "percentilesFile": "percentiles/OC5_Espionage_Polymorphic_llm_percentiles.json",
+      "baselineSamplesFile": "samples/OC5_Espionage_Polymorphic_llm_samples_baseline.json",
+      "sotaSamplesFile": "samples/OC5_Espionage_Polymorphic_llm_samples_sota.json",
+      "saturatedSamplesFile": "samples/OC5_Espionage_Polymorphic_llm_samples_saturated.json"
     }
   ]
 }
