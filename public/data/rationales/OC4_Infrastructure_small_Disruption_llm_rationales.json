@@ -1,0 +1,259 @@
+{
+  "modelId": "OC4_Infrastructure_small_Disruption_llm",
+  "modelDescription": "A covert Russian GRU unit operating at the OC-4 capability tier (e.g. APT44/Sandworm) targets a mid-size US electric distribution utility (~500k customers). Leveraging a FortiGate VPN zero-day, the operators gain access through contractor remote-access infrastructure, escalate privileges through Active Directory, and pivot from IT into the OT environment. Over several weeks they map feeder-level breakers and install backdoors on legacy PLC engineering workstations. On a go-order triggered by geopolitical escalation, embedded implants issue malicious reconfiguration commands to substations, causing localized blackouts across several counties lasting hours to days.",
+  "benchmarkMappings": {
+    "BountyBench": [
+      "T1190 Exploit Public-Facing Application",
+      "T1133 External Remote Services",
+      "T1566.001 Spearphishing Attachment",
+      "T1068 Exploitation for Privilege Escalation",
+      "T1055 Process Injection",
+      "Credential Access",
+      "Lateral Movement",
+      "Number of Actors",
+      "Number of Attempts per Actor per Year"
+    ],
+    "Cybench": [
+      "T1134 Access Token Manipulation",
+      "T0821 Modify Controller Tasking",
+      "T0858 Change Operating Mode",
+      "T0803 Loss of Control",
+      "T0829 Loss of View",
+      "Damage"
+    ]
+  },
+  "nodes": [
+    {
+      "id": "OC4-infra-small-cont-1",
+      "name": "Reconnaissance",
+      "nodeType": "continuous",
+      "baselineRationale": "An OC-4 team needs at least one viable initial-access vector. This could be either mapping and probing the utility's internet-facing assets or harvesting staff details and phishing for credentials. [Dragos](https://www.dragos.com/ot-cybersecurity-year-in-review/) lists recon capability at 100% for every OT-focused group it tracks. Their research into the target through open-source asset data, vendor docs and Shodan scans almost always works. [Academic OSINT reviews](https://academic.oup.com/cybersecurity/article/8/1/tyac003/6574440) found 70% of queried keywords in critical-infra web content produced architecture or contact details useful to attackers.",
+      "sotaRationale": "Not elicited due to high baseline probability.",
+      "saturatedRationale": "Not elicited due to high baseline probability."
+    },
+    {
+      "id": "OC4-infra-small-cont-2",
+      "name": "Resource Development",
+      "nodeType": "continuous",
+      "baselineRationale": "The unit must craft a deliverable capability. OT-APT units have state budgets, so buying servers or a fresh exploit is easy. [Researchers](https://www.rapid7.com/blog/post/2025/01/16/etr-fortinet-firewalls-hit-with-new-zero-day-attack-older-data-leak/) saw the 2024 FortiGate flaw being used just days after it became public. [Brokers](https://www.crowdfense.com/exploit-acquisition-program/) advertise VPN/ICS 0-days for $200k–$2m. They can also build their own. [CISA advisory](https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-108) shows APTs repeatedly building bespoke loaders for Cisco & router exploits.",
+      "sotaRationale": "Not elicited due to high baseline probability.",
+      "saturatedRationale": "Not elicited due to high baseline probability."
+    },
+    {
+      "id": "OC4-infra-small-cont-3",
+      "name": "Initial Access",
+      "nodeType": "continuous",
+      "baselineRationale": "",
+      "sotaRationale": "",
+      "saturatedRationale": ""
+    },
+    {
+      "id": "OC4-infra-small-cont-3a",
+      "name": "T1190 Exploit Public-Facing Application",
+      "nodeType": "continuous",
+      "parentTactic": "OC4-infra-small-cont-3",
+      "combinationMode": "OR",
+      "baselineRationale": "Exploiting edge devices were the #1 initial vector in 33% of 2024 intrusions according to [Mandiant](https://services.google.com/fh/files/misc/m-trends-2025-en.pdf). Utilities patch slowly, so success can be high when a fresh VPN bug appears. [Bishop Fox](https://bishopfox.com/blog/cve-2023-27997-exploitable-fortigate-vulnerable) scan of 490k FortiGate SSL-VPNs showed that 69% remained unpatched for three weeks post-advisory. [Dragos](https://www.dragos.com/blog/why-adversaries-target-vpn-appliances-the-pathway-from-it-to-ot-cyber-attack/) notes that 70% of OT attacks originate in IT.",
+      "sotaRationale": "Experts consistently assess that an LLM at this capability level provides minimal marginal value to OC4 actors deploying a FortiGate VPN zero-day. The demonstrated capability in basic path-traversal exploitation is far below what sophisticated VPN zero-day deployment requires. Since the actor already possesses the exploit — the primary technical bottleneck — the LLM can only assist with scripting, basic troubleshooting, and reconnaissance automation. The fundamental failure modes (SOC detection, complex environmental variables, and patching timelines) remain unaffected. The core mismatch between web-application vulnerability pattern-matching and operational VPN exploitation limits any uplift to modest efficiency gains.",
+      "saturatedRationale": "An LLM demonstrating expert-level application security exploitation capability provides genuine but still limited value for deploying an already-acquired zero-day. Experts note partial transferability through modern web-based VPN management interfaces and APIs, and acknowledge benefits in operational troubleshooting, payload adaptation, and reduced error rates. However, the critical constraint remains that the zero-day exploit was already developed in Resource Development, and the domain mismatch between Python/web exploitation and proprietary VPN firmware significantly limits impact. The wide range of expert assessments reflects uncertainty about how well application-security skills translate to FortiGate-specific exploitation."
+    },
+    {
+      "id": "OC4-infra-small-cont-3b",
+      "name": "T1133 External Remote Services",
+      "nodeType": "continuous",
+      "parentTactic": "OC4-infra-small-cont-3",
+      "combinationMode": "OR",
+      "baselineRationale": "Stolen VPN / RDP log-ins featured in 22% of techniques used according to [Mandiant](https://services.google.com/fh/files/misc/m-trends-2025-en.pdf). Contractor VPN reuse in small utilities keeps this path viable.",
+      "sotaRationale": "Experts uniformly find a significant domain mismatch between the demonstrated code vulnerability analysis capability and the operational requirements of using stolen VPN credentials. The success barriers for this technique — credential validity, MFA presence, and behavioural monitoring — are environmental rather than technical, and largely immune to LLM assistance. The LLM can provide minor operational optimisation such as troubleshooting connection issues and evasion timing, but for OC4 actors who already possess sophisticated tradecraft, the incremental benefit is negligible.",
+      "saturatedRationale": "Even at expert-level exploitation capability, the fundamental mismatch between code analysis skills and credential-based VPN access persists. The primary bottlenecks — credential validity, MFA enforcement, and behavioural detection — remain largely unaffected by the LLM's demonstrated prowess in Python vulnerability research. Experts note modest assistance with VPN architecture research, scripting efficiency, and OPSEC refinement, but the core operational task of logging in with stolen credentials depends on environmental factors that no amount of exploitation skill can overcome."
+    },
+    {
+      "id": "OC4-infra-small-cont-3c",
+      "name": "T1566.001 Spearphishing Attachment",
+      "nodeType": "continuous",
+      "parentTactic": "OC4-infra-small-cont-3",
+      "combinationMode": "OR",
+      "baselineRationale": "Email phishing was the initial vector in 14% of cases according to [Mandiant](https://services.google.com/fh/files/misc/m-trends-2025-en.pdf). Multifactor authentication (MFA) for remote access is recommended but [not universally implemented](https://www.cybersecuritydive.com/news/doe-naruc-publish-cybersecurity-baselines-utilities-distributed-energy-resources-der/708902/?web_view=true). Better user training and MFA driving success rate lower.",
+      "sotaRationale": "The demonstrated basic code analysis and exploit-writing capabilities have weak correlation with spear-phishing success. Experts identify modest assistance with email content crafting and iteration speed — a core LLM text-generation strength — but the LLM cannot reliably bypass 2025-era email security, EDR, or sandbox detection. The primary challenges of social engineering plausibility against security-aware utility staff and evading modern email filtering remain beyond this capability level. The overall uplift is assessed as small.",
+      "saturatedRationale": "Expert-level technical exploitation capability translates to meaningful but not transformative assistance for spear-phishing. The primary value comes from more sophisticated malicious attachments and better payload evasion techniques. One expert notes the LLM directly addresses a major bottleneck by enabling creation of malware that evades endpoint detection. However, phishing success against a regulated utility depends heavily on social engineering factors, user awareness training, and MFA adoption — areas where even advanced exploitation skills offer limited leverage. The overall improvement is modest, with experts highlighting the persistent domain gap between technical exploit development and social engineering."
+    },
+    {
+      "id": "OC4-infra-small-cont-4",
+      "name": "Execution",
+      "nodeType": "continuous",
+      "baselineRationale": "Once attackers run a script (PowerShell etc.) it usually fires - PowerShell showed up in a quarter of all investigations and Command/Scripting Interpreter was seen in 45% of all investigations, according to [Mandiant](https://services.google.com/fh/files/misc/m-trends-2025-en.pdf).",
+      "sotaRationale": "Not elicited due to high baseline probability.",
+      "saturatedRationale": "Not elicited due to high baseline probability."
+    },
+    {
+      "id": "OC4-infra-small-cont-5",
+      "name": "Persistence",
+      "nodeType": "continuous",
+      "baselineRationale": "[Dragos](https://www.dragos.com/blog/industry-news/2022-dragos-year-in-review-now-available/) finds 54% of utilities still allow auto-start or shared passwords and patch windows on OT workstations are quarterly, giving attackers many chances to stay in after their first entry. Average [dwell-time](https://services.google.com/fh/files/misc/m-trends-2025-en.pdf) is still 10–11 days.",
+      "sotaRationale": "Not elicited due to high baseline probability.",
+      "saturatedRationale": "Not elicited due to high baseline probability."
+    },
+    {
+      "id": "OC4-infra-small-cont-6",
+      "name": "Privilege Escalation",
+      "nodeType": "continuous",
+      "baselineRationale": "",
+      "sotaRationale": "",
+      "saturatedRationale": ""
+    },
+    {
+      "id": "OC4-infra-small-cont-6a",
+      "name": "T1068 Exploitation for Privilege Escalation",
+      "nodeType": "continuous",
+      "parentTactic": "OC4-infra-small-cont-6",
+      "combinationMode": "XOR",
+      "baselineRationale": "Many [OT PCs](https://hub.dragos.com/hubfs/312-Year-in-Review/2022/Dragos_Year-In-Review-Exec-Summary-2022.pdf?hsLang=en) run old Windows or drivers, so a kernel bug often works. However, it doesn't always, giving a wide range.",
+      "sotaRationale": "Experts identify a significant capability mismatch between web path-traversal skills and kernel exploitation requirements. The demonstrated ceiling — basic pattern-matching in Python source code — represents entry-level vulnerability identification, while kernel exploitation involves memory corruption, exploit mitigation bypasses, and binary-level debugging. For OC4 actors who already possess dedicated exploit development teams, the LLM provides modest value primarily through systematic CVE research and exploit documentation parsing. The consensus is that kernel exploitation remains substantially beyond this capability level's reach.",
+      "saturatedRationale": "At expert-level Python exploitation capability, the skills become highly transferable to Windows privilege escalation, which is a well-documented problem space with abundant public exploits. For OC4 actors targeting characteristically unpatched OT workstations running older Windows versions, the LLM provides meaningful assistance through superior exploit research, systematic enumeration, and code analysis. However, experts note that OC4 actors already possess sophisticated capability at baseline, and the primary bottlenecks — unpredictable patch states, environmental variability, and EDR presence — are operational rather than knowledge-based. The uplift is moderate, reflecting both the stronger skill transfer and the already-high baseline competence."
+    },
+    {
+      "id": "OC4-infra-small-cont-6b",
+      "name": "T1134 Access Token Manipulation",
+      "nodeType": "continuous",
+      "parentTactic": "OC4-infra-small-cont-6",
+      "combinationMode": "XOR",
+      "baselineRationale": "Long-lived service accounts let attackers \"borrow\" high-level tickets; this shows up in a third of [Dragos](https://hub.dragos.com/hubfs/312-Year-in-Review/2022/Dragos_Year-In-Review-Exec-Summary-2022.pdf?hsLang=en) cases.",
+      "sotaRationale": "Experts assess that an LLM demonstrating intermediate SSTI exploitation capability provides meaningful procedural assistance for token manipulation, a well-documented Windows technique. The capability translates well because both tasks involve applying documented techniques with correct syntax and multi-step execution. The LLM offers perfect recall of Mimikatz and Rubeus syntax, accelerated troubleshooting, and rapid suggestion of alternative approaches. However, OC4 actors already possess extensive expertise in this domain, so the LLM's contribution is primarily efficiency gains and reduced operational errors rather than enabling fundamentally new capabilities.",
+      "saturatedRationale": "Token manipulation is substantially simpler than the demonstrated cryptanalysis capability, placing it well within the LLM's competence zone. The LLM can reliably generate correct API sequences, troubleshoot failures, and suggest alternative approaches — addressing the primary technical friction points. Experts consistently note meaningful but not revolutionary improvement, as the LLM significantly reduces technical bottlenecks without eliminating operational challenges such as EDR evasion, environmental constraints, and detection risk. The moderate uplift from baseline reflects that OC4 actors already possess significant expertise, limiting the transformative impact."
+    },
+    {
+      "id": "OC4-infra-small-cont-6c",
+      "name": "T1055 Process Injection",
+      "nodeType": "continuous",
+      "parentTactic": "OC4-infra-small-cont-6",
+      "combinationMode": "XOR",
+      "baselineRationale": "Once they have admin and system rights, loading their own code into a trusted process succeeds the great majority of the time. PowerShell & service execution (> 25%) are top sub-techniques, according to [Mandiant](https://services.google.com/fh/files/misc/m-trends-2025-en.pdf).",
+      "sotaRationale": "Experts unanimously find a severe mismatch between the demonstrated capability (simple vulnerability pattern recognition) and process injection requirements (advanced systems programming, binary-level debugging, and evasion technique customisation). Process injection against defended infrastructure demands deep OS internals knowledge that is far beyond this capability level. For OC4 actors with an already-high baseline success rate, the LLM provides only marginal value through code template generation, API reference, and minor error reduction. The fundamental bottleneck — active EDR and SOC monitoring — remains entirely unaffected.",
+      "saturatedRationale": "At expert-level static code analysis capability, the LLM demonstrates skills applicable to process injection implementation, though domain transfer from Python application security to Windows systems programming remains imperfect. Experts note the LLM provides faster iteration, better code quality, and solid technique selection and debugging assistance. However, the already-high baseline for OC4 actors and the well-documented nature of process injection techniques limit transformative impact. Success against SL3 defences remains substantially dependent on human operational skill, particularly in real-time adaptation to EDR responses and environmental conditions."
+    },
+    {
+      "id": "OC4-infra-small-cont-7",
+      "name": "Credential Access",
+      "nodeType": "continuous",
+      "baselineRationale": "Password-dump tools or key-loggers work in most cases; [Mandiant](https://services.google.com/fh/files/misc/m-trends-2025-en.pdf) saw stolen credentials involved in 16% of breaches. Weak segmentation keeps the upper tail high. 58% of [Fortinet](https://www.nccgroup.com/us/newsroom/ncc-group-2024-annual-research-report/) config dumps reviewed across red team engagements contained at least one re-usable VPN or AD credential, often in plaintext or lightly encoded. OC4 groups [frequently bypassed](https://www.crowdstrike.com/en-us/global-threat-report/) login security using valid credentials, especially when password rotation was infrequent or vendor logins were shared. Policies to remove access for departing employees within 24 hours are recommended but [not always enforced](https://www.cybersecuritydive.com/news/doe-naruc-publish-cybersecurity-baselines-utilities-distributed-energy-resources-der/708902/?web_view=true). Only [12% of organizations](https://www.sans.org/blog/the-2024-state-of-ics-ot-cybersecurity-our-past-and-our-future/) have \"extensive\" OT network monitoring that would quickly spot illicit credential harvesting.",
+      "sotaRationale": "For OC4-level state-sponsored actors like APT44/Sandworm, credential dumping post-privilege-escalation is well-rehearsed operational tradecraft. The baseline success rate already reflects their elite capabilities with Mimikatz, DCSync, and registry extraction techniques. An LLM capped at basic path-traversal detection provides marginal value — documentation-level guidance on alternative techniques and troubleshooting when standard approaches encounter obstacles. The primary failure modes (technical countermeasures, EDR detection, and credential lifecycle management) are not addressable at this capability level. Experts unanimously assess minimal uplift for actors who already routinely perform this operation.",
+      "saturatedRationale": "The LLM's demonstrated expert-level exploitation capability far exceeds the requirements for credential dumping, a well-documented post-exploitation technique. However, OC4's strong baseline limits absolute gains. Experts identify the primary value as reducing operational errors, providing OT-specific credential store identification, and offering troubleshooting for edge cases — but note that credential dumping is already highly automated with mature tooling. The modest uplift reflects the fundamental constraint that this is mature tradecraft where OC4 actors already excel, and the domain transfer from web exploitation to Windows credential harvesting, while non-trivial, adds only incremental capability."
+    },
+    {
+      "id": "OC4-infra-small-cont-8",
+      "name": "Discovery",
+      "nodeType": "continuous",
+      "baselineRationale": "File shares and flat networks mean network-mapping commands usually run unhindered. File/Directory Discovery was observed in 34% of cases ([Mandiant](https://services.google.com/fh/files/misc/m-trends-2025-en.pdf)). Only [31% run a SOC with OT visibility](https://www.sans.org/blog/the-2024-state-of-ics-ot-cybersecurity-our-past-and-our-future/).",
+      "sotaRationale": "Not elicited due to high baseline probability.",
+      "saturatedRationale": "Not elicited due to high baseline probability."
+    },
+    {
+      "id": "OC4-infra-small-cont-9",
+      "name": "Lateral Movement",
+      "nodeType": "continuous",
+      "baselineRationale": "Segregation of OT and IT networks is a best practice, but [many utilities still have flat network architectures](https://www.controleng.com/six-best-practices-for-ot-cybersecurity/). [Dragos](https://www.dragos.com/ot-cybersecurity-year-in-review/) found 54% of utility sites still have segmentation gaps, so jumping from IT to OT works more often than not. 45% of utilities have *no* OT visibility. [70% of successful breaches](https://www.elisity.com/blog/the-top-11-cyberattacks-using-lateral-movement-a-2023-2024-analysis-for-enterprise-security-leaders) leverage lateral movement techniques. Only [20% of organizations](https://www.dragos.com/blog/how-fortinet-and-dragos-partner-to-improve-ot-cybersecurity/) have even \"basic visibility & segmentation\".",
+      "sotaRationale": "Experts consistently assess that an LLM at this capability level provides minimal marginal benefit to OC4-tier actors performing IT-to-OT lateral movement. The demonstrated capability in code vulnerability analysis correlates weakly with the requirements of dynamic network operations — live system interaction, network protocol expertise, and defensive evasion. For already-sophisticated actors with a high baseline success rate, the LLM can provide command references, script generation, and troubleshooting assistance, but these are not the primary bottlenecks. Success or failure hinges on environmental factors such as network segmentation, OT visibility, and whether valid credentials carry through to the control network.",
+      "saturatedRationale": "Even at expert-level exploitation capability, the LLM provides modest uplift for lateral movement. Experts note the demonstrated multi-step reasoning and technical depth transfer moderately to lateral movement scenarios, offering tactical optimisation through specific protocol guidance, evasion technique refinement, and troubleshooting. However, the high baseline for OC4 actors with domain-admin credentials limits potential improvement. Environmental factors — segmentation architecture, firewall configurations, and OT monitoring — dominate success outcomes and are largely immune to LLM assistance. The LLM serves as an expert advisory tool, optimising technique selection and reducing operational friction, but does not fundamentally alter the probability landscape."
+    },
+    {
+      "id": "OC4-infra-small-cont-10",
+      "name": "Collection",
+      "nodeType": "continuous",
+      "baselineRationale": "[Dragos](https://www.dragos.com/resources/reports/2023-ot-cybersecurity-year-in-review-report/) states that files are rarely protected by strong access controls, and file copying is seldom monitored or blocked, so the attacker can take breaker maps and relay settings and are likely to succeed unless EDR or least-privilege blocks their actions. OT-specific monitoring present in [52% of organizations](https://industrialcyber.co/threats-attacks/sans-institute-2024-survey-reveals-progress-and-gaps-in-ics-ot-cybersecurity-for-critical-infrastructure/) in 2024.",
+      "sotaRationale": "Not elicited due to high baseline probability.",
+      "saturatedRationale": "Not elicited due to high baseline probability."
+    },
+    {
+      "id": "OC4-infra-small-cont-11",
+      "name": "Command and Control",
+      "nodeType": "continuous",
+      "baselineRationale": "Cloud-proxy or DNS-over-HTTPS channels are hard to spot; [Mandiant](https://services.google.com/fh/files/misc/m-trends-2025-en.pdf) sees these in 22% of intrusions. [Cisco's DNS Threat Trend Report](https://learn-cloudsecurity.cisco.com/umbrella-library/2022-dns-discoveries) highlights that many sophisticated cyberattacks rely on DNS activity, with DNS tunneling being a prevalent method for establishing C2 channels.",
+      "sotaRationale": "Not elicited due to high baseline probability.",
+      "saturatedRationale": "Not elicited due to high baseline probability."
+    },
+    {
+      "id": "OC4-infra-small-cont-12",
+      "name": "Impact",
+      "nodeType": "continuous",
+      "baselineRationale": "",
+      "sotaRationale": "",
+      "saturatedRationale": ""
+    },
+    {
+      "id": "OC4-infra-small-cont-12a",
+      "name": "T0821 Modify Controller Tasking",
+      "nodeType": "continuous",
+      "parentTactic": "OC4-infra-small-cont-12",
+      "combinationMode": "OR",
+      "baselineRationale": "Requires controller/logic write access and protocol fluency; higher operator detectability during/after write. Feasible if engineering workstation or protocol gateway is reachable; many small utilities still have inconsistent change-control.",
+      "sotaRationale": "An LLM at intermediate CTF capability provides modest but meaningful assistance with ICS controller manipulation. The primary value comes from protocol syntax reference and synthesis of documented ICS attack patterns — analogous to the template syntax skills demonstrated in the benchmark. Experts note the substantial domain gap between web application exploitation and industrial control system manipulation, which limits capability transfer. The LLM accelerates protocol research and command construction, but the primary bottlenecks — specific implementation knowledge of target PLC families, operational constraints, and detection avoidance during write operations — remain areas where the LLM has limited depth.",
+      "saturatedRationale": "An LLM demonstrating expert-level technical execution meaningfully assists OC4 actors with the protocol-heavy aspects of PLC modification — specifically rapid ICS/SCADA protocol mastery, command sequence generation, and PLC logic analysis. The strong technical implementation capability is directly applicable to ICS protocol coding and command crafting. However, experts note that OC4 actors like APT44/Sandworm already possess deep ICS attack expertise, limiting transformative impact. The domain transfer from cryptanalysis to ICS operations is substantial but incomplete, and the LLM's primary value lies in reducing technical execution time and improving command precision rather than enabling fundamentally new attack paths."
+    },
+    {
+      "id": "OC4-infra-small-cont-12b",
+      "name": "T0858 Change Operating Mode",
+      "nodeType": "continuous",
+      "parentTactic": "OC4-infra-small-cont-12",
+      "combinationMode": "OR",
+      "baselineRationale": "Often simpler than logic changes (STOP/PROGRAM) and can be issued over common field/serial-over-IP protocols once in the OT cell. More likely to be noticed quickly; success hinges on device family and whether mode-change is password-gated.",
+      "sotaRationale": "An LLM at the SSTI exploitation ceiling demonstrates strong documentation retrieval and syntax generation capabilities, which directly address the primary bottleneck in changing PLC operating modes: protocol specification knowledge and correct command syntax. Experts assess meaningful but bounded assistance — the LLM helps with knowledge-based barriers such as command formats for Modbus, DNP3, and other common ICS protocols. However, the baseline success rate reflects operational and defensive complexities that lie outside the LLM's competence zone. The domain mismatch between web application security and ICS/OT creates uncertainty about training data coverage of industrial protocols.",
+      "saturatedRationale": "The LLM's expert-level capability exceeds the intellectual demands of applying documented OT protocols for mode changes. Experts consistently note the primary uplift comes from eliminating protocol knowledge gaps — instantly parsing PLC manuals and generating correct Modbus/DNP3 command sequences. The LLM demonstrates strong technical documentation comprehension and precise command construction directly applicable to OT protocol engineering. However, for OC4 actors with existing OT expertise, the improvement is meaningful but not transformative. Operational bottlenecks such as detection risk, safety system interlocks, and password-gated mode changes remain outside the LLM's ability to influence."
+    },
+    {
+      "id": "OC4-infra-small-cont-12c",
+      "name": "T0803 Loss of Control",
+      "nodeType": "continuous",
+      "parentTactic": "OC4-infra-small-cont-12",
+      "combinationMode": "OR",
+      "baselineRationale": "Achieved via network ACL tampering, controller comms blocking, or HMI lockout. Less ICS-specific expertise needed, but countermeasures (manual switching, field crews) can restore control; success depends on how thoroughly both primary and fallback control paths are blocked.",
+      "sotaRationale": "Experts assess minimal LLM value for this technique. The binding constraint is identifying and blocking all backup control paths — a reconnaissance-dependent task requiring site-specific topology knowledge that the LLM cannot provide. The demonstrated pattern-based web exploitation transfers only partially to ICS network manipulation. The LLM offers systematic enumeration assistance and ACL syntax generation, but the primary bottlenecks — target-specific architecture knowledge, identification of fallback control mechanisms, and preventing manual intervention by field crews — are not meaningfully addressable at this capability level.",
+      "saturatedRationale": "An LLM with strong technical problem-solving capability provides meaningful assistance through more comprehensive identification of control paths, ACL manipulation guidance, and systematic network analysis. The demonstrated capability in complex multi-stage technical problems transfers moderately well to OT network manipulation. However, the core challenge of discovering and blocking all control paths — including site-specific backups — remains dependent on environmental knowledge. Experts note a modest relative improvement, primarily through technical execution efficiency and guidance on network manipulation, but the fundamental operational constraints persist."
+    },
+    {
+      "id": "OC4-infra-small-cont-12d",
+      "name": "T0829 Loss of View",
+      "nodeType": "continuous",
+      "parentTactic": "OC4-infra-small-cont-12",
+      "combinationMode": "OR",
+      "baselineRationale": "Telemetry suppression/poisoning can delay response and sometimes cause unsafe states, but on its own is a weaker, slower route to outage; more valuable as a cover to sustain T0821/T0858. Success sensitive to out-of-band indications (alarms, field calls).",
+      "sotaRationale": "Experts provide mixed assessments of the LLM's utility for Loss of View attacks. The capability ceiling of intermediate web exploitation provides limited marginal benefit for OT-specific telemetry suppression. Some experts note moderate assistance through protocol documentation, payload generation, and automation scripting for standard SCADA protocols such as Modbus and DNP3. Others assess minimal incremental value given that OC4 actors already possess world-class ICS attack capabilities demonstrated in prior operations. The consensus is a modest improvement, with the LLM excelling at command crafting for documented protocols but struggling at the margins of specialised OT/SCADA knowledge.",
+      "saturatedRationale": "An LLM at expert-level capability substantially outperforms on Loss of View attacks, which require applying documented ICS/SCADA protocol knowledge rather than novel problem-solving. Experts note meaningful assistance with protocol analysis, payload automation, and SCADA data poisoning script generation. The strong algorithmic problem-solving and implementation skills transfer moderately well to protocol manipulation tasks. However, the uplift is constrained by domain transfer uncertainty from cryptanalysis to ICS/SCADA operations, the need for site-specific environmental knowledge, and the specialised nature of telemetry systems. Experts assess a meaningful but not transformative improvement over baseline."
+    },
+    {
+      "id": "OC4-infra-small-qty-1",
+      "name": "Number of Actors",
+      "nodeType": "quantity",
+      "unit": "actors",
+      "baselineRationale": "Multiple data sources converge on a range of 15 to 80 OC4-level actors capable of targeting small critical infrastructure. [Mandiant](https://services.google.com/fh/files/misc/m-trends-2025-en.pdf) tracks 44 APT groups and [Dragos](https://www.dragos.com/blog/dragos-8th-annual-ot-cybersecurity-year-in-review-is-now-available/) tracks 23 OT-focused threat groups in 2024-25, of which 9 were active. At least 2 Western state teams have declared offensive remit ([US Cyber Command](https://www.cybercom.mil/Portals/56/USCC_CC_2024_v2.pdf) and [UK National Cyber Force](https://www.theregister.com/2025/06/04/uk_cyberem_command_details/)). Dragos notes a near-doubling in OT groups since 2019. [MITRE ATT&CK](https://attack.mitre.org/resources/updates/) tracks 170 groups across all levels, of which roughly 60 may operate at OC4 level after excluding profit-driven actors and OC5-level operations. A majority of these would be capable of performing this type of attack.",
+      "sotaRationale": "Experts unanimously assess that an LLM at this capability level provides no meaningful uplift to the number of OC4-level actors. The primary constraints on actor count are political authorisation, OT/ICS domain expertise, and geopolitical motivation — not general technical capability. The demonstrated ability to exploit known path-traversal vulnerabilities is fundamentally mismatched to OC4 infrastructure disruption requirements, which demand zero-day acquisition, OT specialisation, and state-level resourcing. The binding bottleneck is strategic decision-making by nation-states, not the availability of technical tools.",
+      "saturatedRationale": "Even at expert-level web application exploitation capability, the LLM does not meaningfully expand the pool of OC4-level actors. Experts note that the primary constraints — strategic motivation to attack US infrastructure, zero-day acquisition, and deep OT/ICS domain expertise — remain unaffected. While the LLM's capabilities could improve IT-side penetration efficiency, they do not address the fundamental bottleneck of OT domain knowledge required for this scenario. The number of actors is determined by geopolitical factors and institutional capability, not by the availability of automated exploitation tools."
+    },
+    {
+      "id": "OC4-infra-small-qty-2",
+      "name": "Number of Attempts per Actor per Year",
+      "nodeType": "quantity",
+      "unit": "attempts / actor / year",
+      "baselineRationale": "Historical data suggests under ten observed attempts per actor, with [Sandworm/ELECTRUM](https://www.wired.com/story/sandworm-russia-ukraine-blackout-gru/) launching 3 grid-sabotage operations over 10 years. [Dragos](https://www.dragos.com/ot-cybersecurity-year-in-review/) data shows roughly 0.33 observed attempts per actor per year among active groups, with adjustment for unobserved attempts suggesting a 3x multiplier. Cost and operational capacity are not binding constraints — state budgets can finance far more attempts than operators can execute. [RAND](https://www.rand.org/content/dam/rand/pubs/research_reports/RRA2800/RRA2849-1/RAND_RRA2849-1.pdf) notes top cyber nations can field over 100 OC4 operations per year across all vectors.",
+      "sotaRationale": "Experts consistently assess negligible uplift from an LLM at this capability level. The demonstrated skills in simple path-traversal exploitation have minimal correlation with the requirements for sophisticated OT infrastructure attack campaigns. State-sponsored actors like Sandworm are already unconstrained by inability to find basic IT vulnerabilities — they are primarily constrained by strategic and political factors, operational security requirements, and the months-long preparation that OT disruption operations demand. The LLM does not accelerate the rate-limiting steps of zero-day development, OT reconnaissance, and implant engineering.",
+      "saturatedRationale": "An LLM at expert-level capability provides meaningful but not transformative acceleration of attack tempo. Experts note it can significantly speed up IT-side exploitation phases (reconnaissance, initial access, privilege escalation) and provide modest efficiency improvements in technical exploit development. However, the OT disruption phase — which dominates overall operation time — sees minimal benefit due to limited ICS/SCADA domain transfer. The primary constraints on attempt rate remain strategic decision-making, operational risk management, and the inherent time requirements of OT-specific preparation. Experts estimate a modest increase in annual attempts, reflecting efficiency gains in the IT portion of the kill chain."
+    },
+    {
+      "id": "OC4-infra-small-qty-3",
+      "name": "Damage",
+      "nodeType": "quantity",
+      "unit": "$",
+      "baselineRationale": "Total estimated damage from a successful attack ranges from $9.6M to $72M, with a median of $33M. This includes downtime and service disruption ([Berkeley Lab's ICE 2.0 tool](https://emp.lbl.gov/news/berkeley-lab-helps-utilities-understand-power-outage-costs) shows single-digit-million total customer costs for a 12-24h outage at 500k meters), recovery and remediation ($8M median, with [Dragos](https://www.dragos.com/ot-cybersecurity-year-in-review/) IR putting whole-site rebuilds in the $10-15M range), regulatory and compliance response (NERC-CIP penalties typically $0.4M to [$1.8M](https://www.certrec.com/resources/nerc-penalties/exelon-companies-receive-a-180000-penalty-in-violation-of-fac-009-1-standard/)), financial exposure and contractual liabilities ($3M median), and intangible costs estimated at roughly equal to tangible costs ($16.5M median).",
+      "sotaRationale": "Experts unanimously assess that an LLM at intermediate CTF capability provides minimal benefit to OC4 actors whose human operators already exceed this capability level. The economic damage from successful power grid attacks is primarily determined by physical outage scope and recovery complexity, not cyber attack sophistication. The LLM's capability ceiling falls far short of the critical success factors — zero-day development, OT expertise, and creative problem-solving during the sabotage phase. The baseline already assumes expert nation-state execution, so incremental automation provides negligible additional damage amplification.",
+      "saturatedRationale": "An LLM at elite capability provides moderate but not transformative improvements to damage outcomes. Experts note incremental uplift through faster execution that reduces detection windows, better OT system targeting that identifies cascading failure opportunities, and more sophisticated persistence mechanisms that increase recovery complexity. Advanced technical capability enables more precise targeting of critical infrastructure components. However, the baseline already reflects OC4's elite capability, and the primary determinants of damage magnitude — physical outage scope, recovery logistics, and regulatory response — are largely independent of cyber sophistication. The uplift reflects marginal tactical improvements within an already well-executed attack framework."
+    },
+    {
+      "id": "OC4-infra-small-qty-4",
+      "name": "Total Risk",
+      "nodeType": "quantity",
+      "unit": "$ / year",
+      "baselineRationale": "",
+      "sotaRationale": "",
+      "saturatedRationale": ""
+    }
+  ]
+}

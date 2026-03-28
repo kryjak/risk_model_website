@@ -1,0 +1,246 @@
+{
+  "modelId": "OC5_Espionage_Polymorphic_llm",
+  "modelDescription": "A top-priority cyber unit of a leading nation-state (OC5-tier) targets a large Tier-1 aerospace and weapons contractor for espionage using polymorphic malware. The campaign centres on custom self-modifying code delivered via a compromised supply-chain vendor, exploiting zero-day vulnerabilities and DNS-over-HTTPS exfiltration channels to steal high-value intellectual property such as next-generation missile and aircraft designs.",
+  "benchmarkMappings": {
+    "BountyBench": [
+      "Reconnaissance",
+      "T1566.001 Spear-phishing Attachment",
+      "T1133 External Remote Services",
+      "Execution",
+      "Persistence",
+      "T1068 Exploitation for Priv-Esc",
+      "T1055 Process Injection",
+      "Discovery",
+      "Lateral Movement",
+      "Number of Actors",
+      "Number of Attempts per Actor",
+      "Damage"
+    ],
+    "Cybench": [
+      "Resource Development",
+      "T1195 Supply-Chain Compromise",
+      "T1134 Access-Token Manipulation",
+      "T1071.004 DNS-over-HTTPS",
+      "T1071.001 Web Protocols (HTTPS)",
+      "T1090.003 Multi-hop Proxy",
+      "Collection",
+      "Exfiltration"
+    ]
+  },
+  "nodes": [
+    {
+      "id": "OC5-espionage-cont-1",
+      "name": "Reconnaissance",
+      "nodeType": "continuous",
+      "baselineRationale": "Open-source and HUMINT collection is routine and rarely blocked. Elite state-backed hackers can roam the internet and talk to insiders almost at will. They [routinely](https://ics-cert.kaspersky.com/publications/reports/2025/03/25/apt-and-financial-attacks-on-industrial-organizations-in-q4-2024/) collect company and supplier details long before an attack, and almost nothing stops them.",
+      "sotaRationale": "The LLM's capability ceiling at basic vulnerability pattern matching has minimal transfer to reconnaissance activities, which rely on OSINT, HUMINT, strategic analysis, and operational tradecraft. OC5 actors already achieve near-perfect reconnaissance success through sophisticated intelligence infrastructure including SIGINT, HUMINT, and classified databases. The extremely high baseline leaves almost no room for improvement. The LLM may provide marginal efficiency gains through faster OSINT aggregation and data correlation, but it cannot address the fundamental bottlenecks — information that is simply unavailable publicly or requires privileged intelligence access. The remaining failure rate stems from target OPSEC and novel supplier relationships rather than analytical capability gaps.",
+      "saturatedRationale": "The LLM demonstrates strong analytical and multi-step reasoning capabilities, but these have limited direct applicability to reconnaissance tasks where OC5 actors already operate near the practical ceiling. The actor's existing capabilities — decades of tradecraft, proprietary intelligence sources, and expert human analysts — dwarf the LLM's potential contribution. The LLM provides marginal value through enhanced OSINT correlation, more systematic supply chain mapping, and faster document analysis. However, the primary bottlenecks remain data access and strategic judgment rather than analytical capability, and the task dissimilarity between technical exploitation and intelligence gathering introduces significant transfer uncertainty."
+    },
+    {
+      "id": "OC5-espionage-cont-2",
+      "name": "Resource Development",
+      "nodeType": "continuous",
+      "baselineRationale": "Top-tier teams nearly always finish their custom malware and buy or develop at least one fresh zero-day exploit. They can generally finish a working polymorphic loader and obtain at least one viable exploit. Failure occurs only if a flagship zero-day gets patched during QA or similar. Most years see dozens of brand-new exploits; many are used by espionage groups, so high-end teams rarely run out of options. OC-5 actors [routinely build bespoke implants](https://blackpointcyber.com/wp-content/uploads/2024/06/Threat-Profile-APT29_Blackpoint-Adversary-Pursuit-Group-APG_2024.pdf) and buy zero-days before operations. Historical incident reviews show at least nine in ten campaigns have no tooling failure. [Google](https://cloud.google.com/blog/topics/threat-intelligence/2024-zero-day-trends) logged 75 zero-days exploited in 2024, over half by espionage actors, confirming that top-tier units regularly field fresh exploits. [CISA/NIST data](https://www.cisa.gov/news-events/cybersecurity-advisories/aa21-259a) show a handful of high-profile zero-days each year are neutralised quickly, but most exploits remain viable for weeks.",
+      "sotaRationale": "The LLM's demonstrated capability at intermediate CTF-level exploitation is fundamentally mismatched with Resource Development requirements for OC5 actors. Creating polymorphic malware requires sophisticated anti-analysis techniques, novel evasion engineering, and deep systems knowledge well beyond the LLM's ceiling. The baseline already reflects a mature, well-resourced state programme with systematic zero-day acquisition and expert malware development teams. The LLM might provide minor efficiency in procedural tasks such as documentation and basic scripting, but cannot meaningfully assist with the core challenges of novel vulnerability discovery, creative evasion technique development, or operational security design. The primary failure mode — unexpected exploit patching — is an external timing issue entirely unaffected by LLM assistance.",
+      "saturatedRationale": "The LLM demonstrates strong technical implementation skills applicable to well-defined problems, but Resource Development bottlenecks for elite OC5 actors are primarily non-technical: exploit availability, operational security tradecraft, and external factors like emergency patches. The actor already achieves very high success through elite expertise and systematic programmes with over a thousand experts and substantial budget. The LLM could provide marginal efficiency gains — accelerating polymorphic loader development, catching subtle implementation bugs, and improving code quality — but it cannot address the core failure mode of exploit availability or replace the creative innovation required for novel evasion techniques. The modest improvement reflects that the LLM functions as a competent assistant to an already-expert team rather than a transformative capability enabler."
+    },
+    {
+      "id": "OC5-espionage-cont-3",
+      "name": "Initial Access",
+      "nodeType": "continuous",
+      "baselineRationale": "",
+      "sotaRationale": "",
+      "saturatedRationale": ""
+    },
+    {
+      "id": "OC5-espionage-tech-ia-1",
+      "name": "T1566.001 Spear-phishing Attachment",
+      "nodeType": "continuous",
+      "parentTactic": "OC5-espionage-cont-3",
+      "combinationMode": "OR",
+      "baselineRationale": "For ordinary attackers, only about one in ten people fall for a malicious email attachment. Only around 9% of users generally fail attachment tests in [Proofpoint's 183 million simulations](https://webobjects2.cdw.com/is/content/CDW/cdw/on-domain-cdw/brands/proofpoint/2024-state-of-the-phish-report.pdf). OC-5 operators do much better because they spend more time researching their targets and tailoring their lures.",
+      "sotaRationale": "The LLM's capability ceiling at basic code vulnerability detection has very weak correlation with spear-phishing operational success. While it could provide marginal efficiency in email drafting and attachment variation, the core success factors — targeting judgment, pretext authenticity, operational timing, and sophisticated polymorphic malware creation — remain primarily human capabilities where the LLM adds minimal value. OC5 actors already possess world-class expertise in all relevant domains including social engineering, intelligence gathering, and custom malware development. The wide uncertainty range primarily reflects the baseline uncertainty about OC5 spear-phishing effectiveness against hardened targets rather than uncertainty about LLM contribution.",
+      "saturatedRationale": "The LLM demonstrates advanced technical capability that translates to incremental improvements in polymorphic malware sophistication and behavioural evasion techniques. However, spear-phishing success depends primarily on social engineering, operational tradecraft, and bypassing human-plus-technical defences — areas with weak correlation to the benchmark. OC5 already operates near the technical capability ceiling with elite personnel, so the LLM's primary contribution is efficiency gains: faster payload iteration, automated variation generation, and quicker evasion technique testing. These represent only a modest absolute improvement because the target's mature EDR with behavioural detection limits the impact of code-level improvements, and the dominant success factors remain outside the LLM's domain."
+    },
+    {
+      "id": "OC5-espionage-tech-ia-2",
+      "name": "T1133 External Remote Services",
+      "nodeType": "continuous",
+      "parentTactic": "OC5-espionage-cont-3",
+      "combinationMode": "OR",
+      "baselineRationale": "Depends on zero-day quality and patch cadence.",
+      "sotaRationale": "The LLM's capability ceiling at basic path traversal detection is fundamentally mismatched with the requirements of zero-day VPN and RDP exploitation. Discovering and exploiting vulnerabilities in hardened network appliances requires binary reverse engineering, memory corruption expertise, and protocol-level analysis — all multiple levels above the LLM's demonstrated capability. For OC5 actors with state-level zero-day programmes, substantial budgets, and hundreds of specialist personnel, the LLM is entirely redundant. It cannot contribute to novel vulnerability discovery in closed-source VPN products and cannot address the primary bottleneck of zero-day availability and exploit weaponisation. Any marginal benefit is limited to peripheral automation tasks like reconnaissance scripting and environment profiling.",
+      "saturatedRationale": "The LLM demonstrates expert-level code analysis and exploit chain construction capabilities that can meaningfully assist with exploit weaponisation, target-specific customisation, and security control bypass development. However, OC5's baseline success rate already reflects substantial expertise from specialist personnel and existing zero-day programmes. The improvement is constrained by significant domain transfer gaps between web application exploitation and network appliance binary exploitation, the target's strong defensive posture including zero-trust architecture and continuous monitoring, and the fact that the LLM cannot discover novel zero-days in hardened VPN and RDP systems. The LLM provides genuine acceleration in exploit adaptation and testing but not transformative capability for an already-elite team."
+    },
+    {
+      "id": "OC5-espionage-tech-ia-3",
+      "name": "T1195 Supply-Chain Compromise",
+      "nodeType": "continuous",
+      "parentTactic": "OC5-espionage-cont-3",
+      "combinationMode": "OR",
+      "baselineRationale": "Requires compromising a smaller PCB (Printed Circuit Board) vendor and undetected push; harder, but not impossible. SolarWinds Orion back-door reached 18,000 customers, [proving feasibility but lower frequency](https://blackpointcyber.com/wp-content/uploads/2024/06/Threat-Profile-APT29_Blackpoint-Adversary-Pursuit-Group-APG_2024.pdf). Adjusting upwards since the scenario features a smaller, more insecure vendor.",
+      "sotaRationale": "Supply-chain compromise requires capabilities far beyond the LLM's demonstrated ceiling, including novel problem-solving in unique environments, extended operational security, and strategic multi-organisational coordination. The LLM can provide marginal technical assistance with malware development and reconnaissance components, but the operation's success depends heavily on strategic and operational factors — target vendor selection, social engineering for access, custom firmware development, and long-term persistence maintenance — that are entirely beyond the benchmark's scope. For OC5 actors with elite existing capabilities, the primary constraints are operational complexity and detection risk rather than routine technical tasks, leaving the LLM with minimal room to contribute.",
+      "saturatedRationale": "The LLM demonstrates expert-level capability in structured technical domains that correlates with useful skills for supply-chain compromise technical components: polymorphic malware development, supplier reconnaissance, and vulnerability analysis. However, supply-chain compromise is predominantly constrained by operational factors — strategic targeting, timing, operational security, and human intelligence requirements — rather than technical analysis bottlenecks. For OC5 actors already at high baseline success, the LLM functions as an expert technical assistant, accelerating supplier reconnaissance and exploit development. Three factors limit overall impact: the actor already possesses equivalent human expertise, the LLM's domain mismatch between web exploitation and firmware-level operations, and the dominance of non-technical failure modes that remain entirely unaffected by LLM assistance."
+    },
+    {
+      "id": "OC5-espionage-cont-4",
+      "name": "Execution",
+      "nodeType": "continuous",
+      "baselineRationale": "Well-secured computers or endpoint-detection tools can stop some malware from running, but advanced in-memory payloads usually slip through. Memory-only loaders such as [Cobalt Strike beacon succeed](https://cloud.google.com/blog/topics/threat-intelligence/defining-cobalt-strike-components) on most hosts despite EDR controls.",
+      "sotaRationale": "The LLM's capability ceiling at basic path traversal detection represents capabilities several levels below what is required for assisting with in-memory polymorphic malware execution against EDR. The execution phase requires advanced anti-forensics, EDR evasion, and runtime adaptation skills that are orthogonal to static code vulnerability detection. OC5 actors already possess all relevant expertise, and none of their bottlenecks — behavioural detection, environmental variance, and stochastic defensive responses — would be addressed by this LLM. The already-high baseline reflects expert-level capabilities that the LLM cannot enhance; at most, trivial time savings on peripheral tasks might yield a negligible improvement.",
+      "saturatedRationale": "The LLM demonstrates elite-level capability in code-based vulnerability discovery, but this translates to only marginal improvements for the Execution step. The high baseline already indicates mature, well-refined polymorphic malware and evasion techniques that a programme with over a thousand experts and substantial funding has already optimised. There is a significant domain mismatch between the LLM's peak capability in Python web exploitation and the Execution step's requirements for binary manipulation, EDR evasion, and OS internals. The remaining failure rate represents hard technical barriers — sophisticated behavioural detection, environmental issues, and stochastic defensive responses — rather than knowledge gaps that the LLM could fill. Minor assistance with debugging and variant generation is possible but heavily constrained by baseline saturation and domain factors."
+    },
+    {
+      "id": "OC5-espionage-cont-5",
+      "name": "Persistence",
+      "nodeType": "continuous",
+      "baselineRationale": "Once inside, the attackers set up scheduled tasks or registry entries to make sure they stay, and modern defence tools catch them only sometimes. Polymorphic autoruns usually stick. Scheduled tasks and registry runs noted as [standard SVR persistence TTPs](https://blackpointcyber.com/wp-content/uploads/2024/06/Threat-Profile-APT29_Blackpoint-Adversary-Pursuit-Group-APG_2024.pdf).",
+      "sotaRationale": "An LLM whose capability ceiling is basic vulnerability pattern recognition provides essentially zero marginal capability to OC5-level actors for polymorphic malware persistence. The technical domains are fundamentally different — web application security versus advanced malware development, OS internals, and EDR evasion. The OC5 actor already operates at the frontier with mature persistence frameworks and sophisticated polymorphic capabilities far exceeding the LLM's demonstrated level. The LLM does not address the actual bottlenecks of behavioural detection by EDR, SOC monitoring, and environmental adaptation. At most, trivial code generation tasks might provide marginal efficiency, but these are not the factors limiting OC5 persistence success.",
+      "saturatedRationale": "The LLM demonstrates strong code reasoning and multi-step technical problem-solving capabilities, but persistence with polymorphic malware requires operational tradecraft and malware engineering expertise in domains the benchmark does not directly assess. The OC5 actor already possesses sophisticated polymorphic malware frameworks and extensive operational experience, so the LLM provides incremental rather than transformative value. Potential contributions include faster polymorphic variant generation, improved code quality, and alternative persistence mechanism suggestions when primary approaches fail. However, the baseline failure rate primarily stems from behavioural detection by mature EDR and SOC and operational security factors that LLM assistance cannot meaningfully address."
+    },
+    {
+      "id": "OC5-espionage-cont-6",
+      "name": "Privilege Escalation",
+      "nodeType": "continuous",
+      "baselineRationale": "",
+      "sotaRationale": "",
+      "saturatedRationale": ""
+    },
+    {
+      "id": "OC5-espionage-tech-pe-1",
+      "name": "T1068 Exploitation for Priv-Esc",
+      "nodeType": "continuous",
+      "parentTactic": "OC5-espionage-cont-6",
+      "combinationMode": "XOR",
+      "baselineRationale": "Kernel-level exploits are common at this level, though the best security tools block a few of them. [Verizon DBIR](https://www.verizon.com/business/resources/reports/2024-dbir-executive-summary.pdf) shows a significant year-on-year surge in vulnerability-led breaches, mirroring kernel-exploit use.",
+      "sotaRationale": "The LLM's capability ceiling at identifying application-layer path traversal vulnerabilities is fundamentally divorced from kernel-level zero-day exploitation requirements. Kernel exploitation demands binary reverse engineering, assembly language expertise, deep OS internals knowledge, and advanced memory corruption techniques — none of which are demonstrated by the benchmark. OC5 actors already possess state-developed kernel exploits and deep expertise through dedicated teams and zero-day programmes. The LLM cannot meaningfully contribute to zero-day weaponisation, kernel-level exploitation, or modern mitigation bypass, making its assistance essentially negligible for this attack step.",
+      "saturatedRationale": "The LLM demonstrates advanced reasoning in complex exploit development, but there is a significant domain mismatch between application-level source code exploitation and kernel-level binary exploitation. OC5 already operates at high baseline success with elite kernel teams and zero-day access through state-level programmes. The LLM can provide marginal assistance with target reconnaissance, exploit adaptation workflows, and structured troubleshooting, but the fundamental gap between web application security and kernel memory corruption limits capability transfer. The modest improvement reflects the LLM's value as a general technical assistant rather than a kernel exploitation specialist, with most gains coming from peripheral acceleration of known techniques rather than novel capability."
+    },
+    {
+      "id": "OC5-espionage-tech-pe-2",
+      "name": "T1134 Access-Token Manipulation",
+      "nodeType": "continuous",
+      "parentTactic": "OC5-espionage-cont-6",
+      "combinationMode": "XOR",
+      "baselineRationale": "Relies on harvested credentials and AD hygiene; usually effective once inside. [2024 CISA advisory](https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-057a) says SVR repeatedly abuses service and dormant tokens to regain privileged cloud access.",
+      "sotaRationale": "The LLM at its capability ceiling provides marginal assistance for access-token manipulation in a heavily defended environment. The high baseline indicates OC5 already possesses requisite knowledge and tooling for these techniques. The LLM primarily adds efficiency through faster documentation access, technique enumeration, and code generation, reducing operator cognitive load and time-to-execution. However, the primary bottlenecks — active EDR and SOC defences, target-specific environmental factors, credential protection mechanisms, and operational security requirements — lie beyond the LLM's ability to address. Token manipulation failures stem predominantly from defensive measures rather than implementation complexity.",
+      "saturatedRationale": "The LLM provides modest benefit primarily through faster technical implementation of token manipulation tools and broader technique awareness. It can generate custom tooling, suggest novel evasion approaches, and assist with debugging — capabilities well within its demonstrated technical level. However, the primary bottleneck remains detection evasion in a monitored zero-trust environment, which the benchmark's cryptanalysis capabilities do not directly assess. The OC5 actor's baseline success already reflects elite capability limited by the target's strong defensive posture including continuous SOC monitoring and EDR. Fundamental defensive constraints prevent higher success rates regardless of the LLM's technical assistance, with improvement concentrated in reducing the subset of failures attributable to implementation complexity."
+    },
+    {
+      "id": "OC5-espionage-tech-pe-3",
+      "name": "T1055 Process Injection",
+      "nodeType": "continuous",
+      "parentTactic": "OC5-espionage-cont-6",
+      "combinationMode": "XOR",
+      "baselineRationale": "Memory-only injection bypasses many controls; still needs right privileges. [Mandiant](https://cloud.google.com/blog/topics/threat-intelligence/defining-cobalt-strike-components) notes process-injection loaders as default for Cobalt Strike beacons in live incident response cases.",
+      "sotaRationale": "The LLM demonstrates pattern recognition for known vulnerabilities but lacks the Windows internals expertise and detection evasion capabilities critical for process injection against strong defences. For OC5 actors with substantial existing capabilities — custom tools, deep internals knowledge, and advanced evasion frameworks — the LLM provides only marginal efficiency gains through basic code generation and documentation. The core challenge of evading sophisticated EDR behavioural detection requires capabilities far beyond what the benchmark demonstrates. Several experts noted the LLM might occasionally steer actors toward detected techniques, partially offsetting any positive contribution.",
+      "saturatedRationale": "The LLM demonstrates advanced exploitation capabilities that partially transfer to process injection through enhanced research, broader technique catalogues, and improved shellcode patterns. However, OC5 actors already possess sophisticated injection capabilities, and the fundamental challenge at this stage is evading behavioural detection rather than implementing the technique correctly. The domain mismatch between Python web exploitation and Windows binary operations limits direct capability transfer. The LLM provides meaningful but modest assistance through faster prototyping of injection variants, research acceleration on alternative techniques, and implementation optimisation, with the primary bottleneck of EDR evasion remaining largely unaddressed."
+    },
+    {
+      "id": "OC5-espionage-cont-7",
+      "name": "Discovery",
+      "nodeType": "continuous",
+      "baselineRationale": "Network segmentation slows the attackers, but misconfigured systems leave enough clues for them to map the environment. [Industrial APT reports](https://ics-cert.kaspersky.com/publications/reports/2025/03/25/apt-and-financial-attacks-on-industrial-organizations-in-q4-2024/) show systematic domain and segment enumeration before lateral moves.",
+      "sotaRationale": "The LLM provides marginal assistance to OC5 actors in the Discovery phase, primarily through faster enumeration script generation, more systematic output parsing, and minor efficiency gains in documentation lookup. However, the capability ceiling at simple path traversal has weak relevance to operational reconnaissance tasks within a compromised network. The high baseline reflects that Discovery is already a high-success phase for elite operators with administrative rights. The LLM cannot meaningfully address the actual failure modes — detection by sophisticated SOC monitoring, operational tradecraft errors, and environmental factors — which drive most of the baseline uncertainty.",
+      "saturatedRationale": "The LLM demonstrates expert-tier capabilities that translate moderately well to Discovery operations through rapid script generation, comprehensive enumeration strategies, and enhanced data analysis. However, the high baseline already assumes highly skilled OC5 execution, leaving limited improvement room. The LLM provides genuine benefits through better detection evasion techniques, faster environmental adaptation, and reduced operational errors, achieving a meaningful reduction in the failure rate. The improvement is constrained by the fact that network enumeration is a well-understood operation for elite actors, and the primary failure modes — SOC detection and operational constraints — are not fully addressable by technical assistance alone. Domain transfer uncertainty between exploitation and reconnaissance introduces additional limitations."
+    },
+    {
+      "id": "OC5-espionage-cont-8",
+      "name": "Lateral Movement",
+      "nodeType": "continuous",
+      "baselineRationale": "Extra log-in steps like multi-factor authentication add friction, yet forged tickets and remote-execution tools (e.g., PsExec or WMI) usually let them jump between machines, documented across [APT29 incidents](https://blackpointcyber.com/wp-content/uploads/2024/06/Threat-Profile-APT29_Blackpoint-Adversary-Pursuit-Group-APG_2024.pdf).",
+      "sotaRationale": "The LLM's capability ceiling at basic vulnerability detection has limited relevance to lateral movement, which primarily fails due to detection by advanced defences rather than lack of technical knowledge. OC5's high baseline indicates mature operational capability with proprietary tools, zero-day exploits, and operational tradecraft far exceeding the LLM's level. The LLM provides marginal value through command verification, error troubleshooting, and quick documentation lookup, but cannot address the core failure modes of detection evasion and zero-trust architectural controls. The wide uncertainty range is driven primarily by baseline uncertainty rather than LLM contribution.",
+      "saturatedRationale": "The LLM demonstrates expert-level vulnerability research capability that far exceeds what is required for standard lateral movement techniques such as PsExec and Kerberos forging. However, this translates weakly to operational lateral movement because OC5 actors already possess the necessary technical knowledge and their baseline success reflects this maturity. The LLM may provide benefits through faster command generation, reduced trivial errors, alternative technique suggestions, and improved evasion variant generation. The core challenges — evading real-time SOC detection, navigating zero-trust micro-segmentation, and maintaining operational security — are operational rather than deeply technical, limiting the LLM's contribution despite its strong demonstrated capabilities."
+    },
+    {
+      "id": "OC5-espionage-cont-9",
+      "name": "Collection",
+      "nodeType": "continuous",
+      "baselineRationale": "Data-loss-prevention tools and at-rest encryption stop some theft, but careful staging still allows large data grabs, as seen in the [SolarWinds case](https://blackpointcyber.com/wp-content/uploads/2024/06/Threat-Profile-APT29_Blackpoint-Adversary-Pursuit-Group-APG_2024.pdf): bulk mailbox and source-code theft once inside enclaves.",
+      "sotaRationale": "The Collection phase requires operational intelligence and target-specific knowledge rather than technical exploitation capabilities. Once inside a trusted enclave with the right credentials, data access is rarely blocked. The LLM's demonstrated ceiling at moderate CTF challenges provides no meaningful assistance for navigating file systems, locating sensitive data, or maintaining operational security during collection. OC5 actors already operate at peak capability for this phase with existing tooling and experience far exceeding what the LLM could provide. The extremely high baseline success rate indicates Collection is rarely a bottleneck post-lateral-movement, and the remaining failure rate stems from unexpected security responses and operational errors under pressure rather than technical capability gaps.",
+      "saturatedRationale": "The LLM provides minimal marginal value over the already-high baseline because the demonstrated cryptanalysis capability does not transfer meaningfully to operational Collection tradecraft. The success rate already reflects minimal technical barriers once lateral movement has been achieved, and OC5 actors possess sophisticated collection frameworks and operational expertise. The LLM can generate automation scripts and potentially identify missed data repositories, but the primary failure modes — behavioural detection, organisational controls, and operational timing constraints — are not addressable by the LLM's technical capabilities. The improvement is concentrated in minor edge case resolution and efficiency gains in an already near-ceiling operation."
+    },
+    {
+      "id": "OC5-espionage-cont-10",
+      "name": "Command and Control",
+      "nodeType": "continuous",
+      "baselineRationale": "",
+      "sotaRationale": "",
+      "saturatedRationale": ""
+    },
+    {
+      "id": "OC5-espionage-tech-c2-1",
+      "name": "T1071.004 DNS-over-HTTPS",
+      "nodeType": "continuous",
+      "parentTactic": "OC5-espionage-cont-10",
+      "combinationMode": "XOR",
+      "baselineRationale": "DNS-over-HTTPS (DoH) traffic blends into normal web use, making it an almost ideal channel to talk to malware or move stolen data. Some enterprises now block known DoH resolvers. 2024 [DoH risk report](https://www.approach-cyber.com/blog-article/doh-cybersecurity-risk-in-enterprise/) calls DoH a near-perfect conduit for malware C2 and data exfiltration.",
+      "sotaRationale": "An intermediate-CTF-capable LLM provides minimal marginal value to an already-elite OC5 actor conducting DoH C2. The high baseline success rate reflects that DoH is technically straightforward for sophisticated actors, and the failure rate stems primarily from defensive measures — resolver blocking, behavioural detection, and network controls — that LLM assistance cannot overcome. The LLM's contribution is limited to slight improvements in code quality and minor troubleshooting assistance, addressing at most a small fraction of failures. OC5 actors already possess mature tooling, operational expertise, and comprehensive understanding of the technique.",
+      "saturatedRationale": "The LLM's capability ceiling in complex cryptanalysis far exceeds the technical requirements of DoH C2 implementation, but OC5's existing baseline is already very high, indicating mature capability with limited room for improvement. The LLM provides marginal value through slightly cleaner implementation — reducing bug-related failures — and minor optimisation of evasion tactics. The primary failure modes remain detection by sophisticated defences and operational factors rather than implementation quality. Several experts noted that the LLM's strong coding capabilities could improve traffic mimicry and robust error handling, addressing approximately one-fifth of baseline failures, but the domain mismatch between cryptanalysis and operational C2 configuration limits the overall impact."
+    },
+    {
+      "id": "OC5-espionage-tech-c2-2",
+      "name": "T1071.001 Web Protocols (HTTPS)",
+      "nodeType": "continuous",
+      "parentTactic": "OC5-espionage-cont-10",
+      "combinationMode": "XOR",
+      "baselineRationale": "Using ordinary HTTPS with cloud fronting is also common; it hides malicious traffic behind well-known websites. Cloud-fronted Transport Layer Security is widely allowed; Secure Sockets Layer inspection occasionally spots beacons. [Cobalt Strike's](https://cloud.google.com/blog/topics/threat-intelligence/defining-cobalt-strike-components) default and most common listener is HTTPS with malleable profiles and domain-fronting.",
+      "sotaRationale": "HTTPS C2 with cloud provider fronting is a mature, well-understood technique that OC5 already executes at very high baseline success. The LLM at its capability ceiling can assist with implementation details and troubleshooting, but the primary failure modes — behavioural detection by sophisticated SOC, network constraints, and operational factors — are largely unaffected by LLM assistance. OC5 actors already possess world-class operational maturity with comprehensive tooling and decades of experience with domain fronting techniques. The LLM's demonstrated capability of systematic exploitation of known patterns does not transfer meaningfully to the operational and behavioural challenges of evading continuous monitoring.",
+      "saturatedRationale": "The LLM's exceptional cryptanalytic capability is largely orthogonal to the operational and behavioural challenges of evading SOC detection via HTTPS C2. The baseline success rate already reflects near-optimal performance by actors with vast resources and expertise, leaving minimal room for improvement. Critical skill mismatch between advanced cryptanalysis and operational tradecraft and infrastructure management means the LLM's contribution is confined to marginal benefits from configuration automation, error reduction, and minor protocol optimisation. The dominant failure modes — target-specific defences, operational security lapses, and probabilistic detection by sophisticated monitoring — remain fundamentally unchanged regardless of LLM capability level."
+    },
+    {
+      "id": "OC5-espionage-tech-c2-3",
+      "name": "T1090.003 Multi-hop Proxy",
+      "nodeType": "continuous",
+      "parentTactic": "OC5-espionage-cont-10",
+      "combinationMode": "XOR",
+      "baselineRationale": "Adding extra hops boosts stealth but introduces a few more ways things can break. Even so, encrypted channels like DoH and HTTPS still beat many older security filters. Extra relay increases stealth, but adds complexity and failure points. [Google notes](https://cloud.google.com/blog/topics/threat-intelligence/defining-cobalt-strike-components) operators chain redirects and CDN fronting for stealth, but added complexity can fail.",
+      "sotaRationale": "Multi-hop proxy establishment is operational infrastructure management requiring sustained OPSEC against active defence, not the vulnerability exploitation pattern demonstrated by the benchmark. OC5 actors already operate at elite levels with mature automation and playbooks. The real bottlenecks are detection by sophisticated SOC capabilities and infrastructure reliability — neither addressed by the LLM's capabilities at this ceiling. The LLM can assist with configuration generation and syntax troubleshooting, but the core failure modes are operational rather than technical. The modest improvement reflects marginal automation benefits for already-sophisticated operators.",
+      "saturatedRationale": "The LLM's demonstrated capability far exceeds the technical requirements for multi-hop proxy configuration, translating to improved automation quality with better error handling and connection management. For an OC5 actor with existing expert-level infrastructure and procedures, the LLM provides incremental rather than transformative value. The primary contribution is reducing configuration-related errors and improving script robustness, while operational constraints — node failures, defender detection, and environmental factors — remain fundamentally unaddressable. About three-quarters of failure modes stem from SOC detection and infrastructure reliability rather than technical implementation quality, setting a hard ceiling on LLM-driven improvement regardless of technical sophistication."
+    },
+    {
+      "id": "OC5-espionage-cont-11",
+      "name": "Exfiltration",
+      "nodeType": "continuous",
+      "baselineRationale": "Outbound filtering forces low-and-slow; still high odds with covert C2. [2024-25 studies](https://cymulate.com/blog/navigating-rising-tide-of-data-exfiltration/) show encryption and DoH/TLS beat many legacy DLP controls.",
+      "sotaRationale": "The LLM provides modest technical assistance — exfiltration scripts, encoding schemes, and protocol selection — that marginally improves success above the baseline. However, OC5 already possesses excellent exfiltration capabilities, and the operational sophistication required for low-and-slow exfiltration against a mature SOC is beyond what moderate exploitation capability demonstrates. The LLM's demonstrated capability ceiling has limited relevance to operational exfiltration tradecraft against sophisticated defences. OC5 actors already operate near the practical success ceiling for this task, and the remaining failure rate largely stems from advanced behavioural detection and operational factors where the LLM's contribution is minimal.",
+      "saturatedRationale": "The LLM demonstrates strong algorithmic and analytical skills that can meaningfully optimise exfiltration operations through superior traffic shaping, protocol selection, and code generation. However, the high baseline indicates OC5 already excels at exfiltration, and the remaining failures stem from advanced behavioural detection, DLP correlation, and operational factors where the LLM's assistance is limited. The LLM provides genuine value in faster custom tool development and sophisticated traffic encoding, but the domain mismatch between cryptanalysis and network operations introduces significant transfer uncertainty. The improvement is concentrated in addressing technical bottlenecks — roughly half of failures — while operational and environmental constraints remain unchanged."
+    },
+    {
+      "id": "OC5-espionage-qty-1",
+      "name": "Number of Actors",
+      "nodeType": "quantity",
+      "unit": "actors",
+      "baselineRationale": "The number of nation-state teams that historically pursue state IP and have demonstrated polymorphic-malware tradecraft at OC5-operation level, that are currently funded, staffed, and operational is very small. It mostly includes a few operations from Russia, China and the US. Examples include Russia's APT 29 / Midnight Blizzard and Chinese-run APT 10 Stone Panda. [Crowdstrike](https://cybermagazine.com/articles/chinas-cyber-espionage-surges-150-says-crowdstrike) identified seven new advanced persistent threat groups linked to China in 2024, five of which were unique in their specialisation and sophistication.",
+      "sotaRationale": "The LLM's demonstrated capability at basic vulnerability pattern matching is orders of magnitude below OC5 operational requirements and provides essentially zero meaningful assistance. The binding constraints on the number of OC5-level actors are geopolitical factors — only a handful of nations possess the necessary resources — political authorisation requirements, and organisational infrastructure built over decades. An LLM that can detect simple code vulnerabilities does not lower any of these barriers. The estimate remains at the baseline level with the small number of nation-states capable of and motivated for such operations unchanged, as the LLM addresses none of the primary constraints: state-level budgets, strategic positioning, and institutional expertise.",
+      "saturatedRationale": "The LLM provides significant technical capability including expert-level exploitation and potential assistance with polymorphic malware generation, but this addresses only a modest fraction of an OC5-level operation's difficulty. The dominant constraints on actor count are organisational — massive resource requirements, political authorisation, strategic motivation, and decades of institutional investment — rather than technical. The LLM's efficiency improvements help existing actors operate more effectively but do not fundamentally lower the barriers to entry for new actors. There is a small possibility that one near-threshold actor might be enabled to attempt this class of operation, but the primary bottlenecks of supply-chain access, operational capacity, and strategic intent remain unchanged."
+    },
+    {
+      "id": "OC5-espionage-qty-2",
+      "name": "Number of Attempts per Actor",
+      "nodeType": "quantity",
+      "unit": "attempts / actor / year",
+      "baselineRationale": "Starting with the one successful attack per year historical data, adjusting this upwards to go to attempts instead of successes and further with the dark number of unknown attack attempts, but also adjusting downwards to acknowledge that not all OC5 attack attempts are for espionage purposes and not all OC5 attack attempts use this kind of vector. We distinguish between observed activity and actual activity, which is crucial for realistic risk assessment, noting that documented attacks are attacks that succeeded at achieving impact. A significant number of attack attempts and even successful breaches against sensitive targets in the defence and espionage sectors are not publicly disclosed. The 2025 [Verizon Data Breach Investigations Report](https://www.verizon.com/business/resources/T9ab/reports/2025-dbir-data-breach-investigations-report.pdf) notes a significant rise in espionage-motivated breaches. China-nexus adversaries escalated state-sponsored attacks by [150%](https://cybermagazine.com/articles/chinas-cyber-espionage-surges-150-says-crowdstrike). [Mandiant's M-Trends 2025 report](https://services.google.com/fh/files/misc/m-trends-2025-en.pdf) consistently places government and defence among the most targeted industries.",
+      "sotaRationale": "The LLM's capability ceiling at basic path traversal detection is irrelevant to OC5 operations against mature defence contractors. The scenario requires polymorphic malware development, supply-chain compromise, EDR evasion, and zero-day exploitation — all far beyond this LLM's demonstrated capabilities. Operational constraints dominate attempt frequency: multi-year timelines, personnel capacity limits, approval processes, and risk management considerations. OC5's thousand-plus expert personnel do not struggle with the trivial tasks this LLM can automate, and the strategic factors constraining operational tempo — target scarcity, attribution risk, and operational security requirements — remain entirely unaffected.",
+      "saturatedRationale": "The LLM provides genuine acceleration in technical phases — polymorphic malware development, exploit chain construction, and reconnaissance — where its expert-level code analysis capabilities are applicable. However, OC5 campaigns against well-defended targets are primarily constrained by operational factors: supply-chain infiltration timelines spanning months, intelligence preparation requirements, personnel and management capacity limits, and risk tolerance regarding detection and attribution. The LLM enables modest efficiency gains and force multiplication by enhancing the effective technical workforce, but hard constraints remain unchanged: target scarcity, operational security requirements, and strategic risk calculations. The moderate increase in attempts reflects time compression in technical phases rather than a fundamental change in operational tempo."
+    },
+    {
+      "id": "OC5-espionage-qty-3",
+      "name": "Damage",
+      "nodeType": "quantity",
+      "unit": "$",
+      "baselineRationale": "The relevant costs conditional on a successful attack include incident response, recovery and supply-chain hardening; business interruption and programme delay; regulatory, compliance and contractual liabilities; and intangible costs such as reputation damage and lost R&D value. [SolarWinds](https://www.reuters.com/technology/solarwinds-says-dealing-with-hack-fallout-cost-least-18-million-2021-04-13/) had to pay about $18 million in just one quarter, with combined customer costs around [$90 million](https://www.bitsight.com/blog/the-financial-impact-of-solarwinds-a-cyber-catastrophe-but-insurance-disaster-avoided). Full clean-ups can reach nine-figure sums, with US federal estimates showing large organisations often spend well over [$100 million](https://rollcall.com/2021/01/11/cleaning-up-solarwinds-hack-may-cost-as-much-as-100-billion/). [IBM's 2024 data-breach report](https://www.morganlewis.com/blogs/sourcingatmorganlewis/2025/05/study-finds-average-cost-of-data-breaches-significantly-increased-globally-in-2024) finds that downtime, missed sales, and customers walking away are the biggest expenses for industrial companies after a breach. [Intangible losses are often about half or more of the total bill](https://wp.table.media/wp-content/uploads/2024/07/30132828/Cost-of-a-Data-Breach-Report-2024.pdf).",
+      "sotaRationale": "An LLM whose capability ceiling is solving basic path traversal vulnerabilities adds essentially zero capability to an OC5 nation-state actor with over a thousand expert personnel and a billion-dollar budget. Every task this LLM can perform is already trivial for the OC5 team. The sophisticated attack components — supply-chain compromise, polymorphic malware, EDR evasion, stealth exfiltration — are completely beyond the LLM's capability level. The damage estimate remains at the baseline level because the LLM provides no meaningful enhancement to the attack's reach, dwell time, or data collection scope. The uncertainty range captures the inherent stochasticity of attack outcomes rather than any LLM-driven variance.",
+      "saturatedRationale": "An LLM at expert-level capability provides meaningful augmentation to elite OC5 operations, primarily through enhanced IP targeting and collection efficiency, improved scale and speed of operations, and better detection avoidance extending dwell time. The improvement is concentrated in intangible costs where automation has maximum leverage — improved identification and exfiltration of high-value intellectual property. However, the increase is bounded by the fact that OC5 actors already possess comparable human expertise, limiting transformational impact. The target's strong defensive posture continues to constrain attack outcomes, and the domain mismatch between the benchmark and real-world espionage operations introduces uncertainty about the actual magnitude of LLM contribution."
+    },
+    {
+      "id": "OC5-espionage-qty-4",
+      "name": "Total Risk",
+      "nodeType": "quantity",
+      "unit": "$ / year",
+      "baselineRationale": "",
+      "sotaRationale": "",
+      "saturatedRationale": ""
+    }
+  ]
+}

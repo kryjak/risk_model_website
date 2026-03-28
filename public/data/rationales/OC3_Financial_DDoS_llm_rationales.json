@@ -1,0 +1,180 @@
+{
+  "modelId": "OC3_Financial_DDoS_llm",
+  "modelDescription": "An OC3-level criminal syndicate conducts a Ransom Distributed Denial of Service (RDDoS) attack against a mid-sized European financial institution. The actor leverages a mix of compromised cloud servers, rented botnets, and reflection-based amplification to saturate the target's bandwidth and overload its network infrastructure. A ransom demand accompanies the attack, threatening sustained outages unless payment is made. The target has partial DDoS mitigation in place but lacks fully resilient protection against an OC3-scale assault.",
+  "benchmarkMappings": {
+    "BountyBench": [
+      "Active Scanning (T1595)",
+      "Gather Victim Network Information (T1590)",
+      "Compromise Infrastructure: Botnet (T1584.005)",
+      "Command-and-Control",
+      "Direct Network Flood (T1498.001)",
+      "Reflection/Amplification Attack (T1498.002)",
+      "Number of Actors",
+      "Number of Attempts per Actor",
+      "Damage"
+    ],
+    "Cybench": [
+      "Acquire Infrastructure: Botnet (T1583.005)",
+      "Masquerading (T1036)",
+      "Non-Standard Port (T1571)"
+    ]
+  },
+  "nodes": [
+    {
+      "id": "oc3-ddos-cont-1",
+      "name": "Reconnaissance",
+      "nodeType": "continuous",
+      "baselineRationale": "",
+      "sotaRationale": "",
+      "saturatedRationale": ""
+    },
+    {
+      "id": "oc3-ddos-cont-1a",
+      "name": "Active Scanning (T1595)",
+      "nodeType": "continuous",
+      "parentTactic": "oc3-ddos-cont-1",
+      "combinationMode": "OR",
+      "baselineRationale": "There are [tens of thousands](https://www.greynoise.io/blog/how-internet-noise-makes-security-harder) of devices scanning the internet constantly, therefore scanning often blends into the background noise. As a result of this scanning, [even basic attacks are able to bypass established defenses.](https://thehackernews.com/expert-insights/2025/03/the-surprising-gap-in-ddos-protections.html) Nearly [90%](https://www.comparitech.com/blog/information-security/ddos-statistics-facts/) of DDoS attacks are short hit-and-run operations to test defenses before a larger attack. Many organisations have open vulnerabilities, with one large international bank still having [57% DDoS vulnerability](https://info.mazebolt.com/hubfs/Case%20Studies/MazeBolt_Financial%20Services_CS411.pdf) before intervention in one example.",
+      "sotaRationale": "OC3 actors are already highly capable at reconnaissance, and an LLM demonstrating junior-analyst-level code vulnerability identification provides only marginal assistance. The domain mismatch between code analysis and network scanning is significant, and the actors already possess mature tools and methodologies for active scanning. The LLM may offer modest help with OSINT correlation, systematic analysis, and organisational thoroughness, but these gains are small given that active scanning is already largely automated and blends into normal internet background noise. The fundamental constraints on failure at this step — such as target-specific configurations and adaptive defences — are not meaningfully addressed by the LLM's capabilities.",
+      "saturatedRationale": "An LLM with expert-level analytical capabilities provides modest uplift in identifying gaps in DDoS coverage and improving the systematic thoroughness of scans. However, the already-high baseline reflects that OC3-level actors already excel at this procedural, well-understood task. The significant domain difference between application exploitation and network reconnaissance limits how much the LLM's demonstrated skills transfer. The LLM can help with better organisation of scan results, correlation of OSINT data, and systematic coverage suggestions, but the fundamental constraints — target-specific defences and the inherently high success rate of internet scanning — remain unchanged."
+    },
+    {
+      "id": "oc3-ddos-cont-1b",
+      "name": "Gather Victim Network Information (T1590)",
+      "nodeType": "continuous",
+      "parentTactic": "oc3-ddos-cont-1",
+      "combinationMode": "OR",
+      "baselineRationale": "Over [70%](https://geekflare.com/cybersecurity/test-origin-ip-exposed/) of cloud-based security-protected websites still expose their real IP address. An OC3 actor is very likely to find a vulnerability. By researching a target's infrastructure (e.g. identifying if a public-facing site is not behind a known cloud DDoS scrubbing service), an actor can often assess the likelihood of a successful attack.",
+      "sotaRationale": "An LLM at this capability ceiling can provide automation and methodological assistance for OSINT reconnaissance, generating comprehensive checklists, enumeration scripts, and structured workflows. The reconnaissance task is arguably simpler than the benchmark's vulnerability exploitation, suggesting competent LLM performance in this domain. However, OC3 actors already possess strong reconnaissance capabilities at baseline, and the primary value-add is systematisation and parallel execution of OSINT tools rather than fundamental capability enhancement. The LLM offers measurable but bounded improvements through faster alternative lookup and more thorough infrastructure mapping.",
+      "saturatedRationale": "An LLM with elite-tier security knowledge vastly exceeding reconnaissance requirements can provide systematic methodology, comprehensive tool selection, and efficient data analysis. It offers more comprehensive enumeration, better identification of hidden infrastructure, and faster correlation of OSINT data. However, the baseline already reflects mature OC3 reconnaissance capabilities, and reconnaissance is a different domain from deep exploitation — it emphasises breadth over depth. The LLM provides incremental automation benefits including faster, more systematic enumeration and improved correlation of disparate data sources, but the fundamental constraints of target-specific configurations and information availability remain."
+    },
+    {
+      "id": "oc3-ddos-cont-2",
+      "name": "Resource Development",
+      "nodeType": "continuous",
+      "baselineRationale": "",
+      "sotaRationale": "",
+      "saturatedRationale": ""
+    },
+    {
+      "id": "oc3-ddos-cont-2a",
+      "name": "Acquire Infrastructure: Botnet (T1583.005)",
+      "nodeType": "continuous",
+      "parentTactic": "oc3-ddos-cont-2",
+      "combinationMode": "OR",
+      "baselineRationale": "A [large proportion](https://www.f5.com/labs/articles/threat-intelligence/2024-ddos-attack-trends) of DDoS traffic originates from malicious DDoS-as-a-Service platforms. With the budget of an OC3 group, it is likely that the group can acquire a sufficient botnet. Even when botnet services are taken down, they have been seen to be reimplemented in [less than ten hours](https://krebsonsecurity.com/2025/05/krebsonsecurity-hit-with-near-record-6-3-tbps-ddos/). Large botnets are well within the budget of an OC3 actor, with one such botnet offering [$150/day subscription charges for up to 2 Tbps](https://krebsonsecurity.com/2025/05/krebsonsecurity-hit-with-near-record-6-3-tbps-ddos/). Even with the potential of misadvertised botnets, it is likely that the actor can find other services within their budget. [The affordability of DDoS-as-a-service](https://blogs.infoblox.com/threat-intelligence/cyber-threat-advisory/ddos-extortion-and-mitigation/) has been suggested as one explanation for why more DDoS threats are followed through since 2020.",
+      "sotaRationale": "Botnet acquisition is fundamentally a transactional, market-based activity rather than a technical challenge, making the LLM's demonstrated exploitation capabilities poorly transferable. The high baseline success rate indicates that this step is already trivial for OC3 actors with established criminal market access. The DDoS-as-a-Service market is mature and accessible, and the LLM can provide only marginal value through enhanced provider evaluation and structured due diligence frameworks. The primary failure modes — scam providers, misadvertised capacity, and law enforcement takedowns — are not meaningfully addressed by an LLM's technical capabilities.",
+      "saturatedRationale": "The LLM's demonstrated expert-level analytical capabilities have minimal relevance to botnet acquisition, which operates in underground criminal economies and depends on marketplace navigation, vendor assessment, and operational security. The high baseline reflects OC3 actors' existing competence in criminal service procurement. While the LLM might provide slightly more systematic research and analysis of available providers, the task is transactional rather than technical, and the actor's existing expertise and market relationships remain the dominant success factors. The remaining failure modes are largely outside the scope of what an LLM can influence."
+    },
+    {
+      "id": "oc3-ddos-cont-2b",
+      "name": "Compromise Infrastructure: Botnet (T1584.005)",
+      "nodeType": "continuous",
+      "parentTactic": "oc3-ddos-cont-2",
+      "combinationMode": "OR",
+      "baselineRationale": "Actively building a botnet by compromising vulnerable systems is feasible but more technically demanding than purchasing one. There are numerous examples of cybercriminals successfully creating botnets, such as the well-known [Mirai botnet](https://en.wikipedia.org/wiki/Mirai_(malware)) in 2016 created by several 21-year-olds. New IoT botnet [variants](https://www.trendmicro.com/en_us/research/25/a/iot-botnet-linked-to-ddos-attacks.html) have been constantly created since. A large number of unpatched IoT devices and servers remain vulnerable. OC3-level threat actors also actively develop new vulnerabilities. One such vulnerability accounted for [40% of active scanning](https://www.f5.com/labs/articles/threat-intelligence/2024-ddos-attack-trends) in 2024.",
+      "sotaRationale": "An LLM at this capability ceiling provides modest efficiency gains for botnet building through knowledge synthesis and automation assistance, particularly with basic vulnerability enumeration and exploit adaptation for known vulnerable device patterns. However, botnet building is fundamentally an operational engineering challenge — not primarily a vulnerability research problem — and the operational challenges of infrastructure deployment, C2 setup, scale management, and evasion remain largely unaffected. OC3 actors already possess the core technical skills needed, and the LLM's contribution is limited to accelerating scripting tasks and providing reconnaissance support rather than enabling fundamentally new capabilities.",
+      "saturatedRationale": "An LLM with senior security researcher-level capabilities can meaningfully accelerate exploit development, improve code reliability, and assist with automation frameworks for botnet building. It possesses technical capabilities substantially exceeding typical botnet-building requirements, as most IoT vulnerabilities resemble simpler patterns rather than the complex exploitation chains the LLM can handle. The LLM provides genuine value through faster vulnerability discovery, better exploit adaptation, and improved propagation code. However, the primary remaining bottlenecks — infrastructure deployment, scale management, operational security, and C2 architecture — are operational challenges that the LLM addresses only partially."
+    },
+    {
+      "id": "oc3-ddos-cont-3",
+      "name": "Defense Evasion",
+      "nodeType": "continuous",
+      "baselineRationale": "",
+      "sotaRationale": "",
+      "saturatedRationale": ""
+    },
+    {
+      "id": "oc3-ddos-cont-3a",
+      "name": "Masquerading (T1036)",
+      "nodeType": "continuous",
+      "parentTactic": "oc3-ddos-cont-3",
+      "combinationMode": "AND",
+      "baselineRationale": "Masquerading remains a widely used and effective evasion technique in DDoS campaigns. A large count of major DDoS attacks [begin with IP spoofing](https://idea.popcount.org/2016-09-20-strange-loop---ip-spoofing/). Around 80% of the internet cannot be used to send spoofed IP packets. The remaining [20% however is heavily targeted to attack networks.](https://www.senki.org/everyone-should-be-deploying-bcp-38-wait-they-are/) This prevents simple IP-based rate limiting or blacklisting. DDoS attacks also increasingly imitate legitimate client behaviour. [16.9%](https://www.imperva.com/resources/reports/Report-Global_DDoS_Threat_Landscape_Q4_2017.pdf) of DDoS attacks in 2017 were able to bypass common security challenges. Today, [most attacks attempt to masquerade as legitimate Chrome clients](https://www.imperva.com/blog/early-2025-ddos-attacks-signal-a-dangerous-trend-in-cybersecurity/), only prevented with advanced classification. This illustrates that average mitigation measures can be bypassed by well-crafted masquerading.",
+      "sotaRationale": "OC3-level actors already possess sophisticated DDoS capabilities, reflected in the high baseline. An LLM demonstrating intermediate CTF-level competency can provide modest optimisation assistance primarily through traffic pattern refinement, automation scripting for generating diverse and realistic traffic patterns, and configuration debugging. However, the core constraint is that network-level factors dominate success probability — IP spoofing feasibility depends on network topology, and financial institution defences are sophisticated and adaptive. The LLM's contribution is concentrated in the narrow area where software-based evasion techniques can be refined, rather than addressing the fundamental infrastructure and network constraints.",
+      "saturatedRationale": "An LLM capable of expert-level cryptanalysis can meaningfully assist with DDoS defence evasion through traffic pattern optimisation, evasion technique refinement, and faster iteration on bypassing detection mechanisms. It provides genuine value in traffic mimicry and detection evasion implementation. However, OC3 actors already operate at a sophisticated baseline with substantial budgets, and financial institution defences are multilayered. Failures increasingly stem from fundamental constraints — ISP-level filtering, target-specific infrastructure bottlenecks, and unpredictable configuration variations — rather than traffic sophistication alone. The LLM's primary value is in the software-implementable aspects of evasion rather than in overcoming structural network limitations."
+    },
+    {
+      "id": "oc3-ddos-cont-3b",
+      "name": "Non-Standard Port (T1571)",
+      "nodeType": "continuous",
+      "parentTactic": "oc3-ddos-cont-3",
+      "combinationMode": "AND",
+      "baselineRationale": "The effectiveness of using non-standard ports for evasion is more situational, but can show notable success if the defender relies on port-based rules. Approximately [20%](https://www.sonicwall.com/blog/non-standard-ports-are-under-cyberattack) of DDoS attacks are directed at non-standard ports. A strong example is the SSDP diffraction DDoS technique: normally, SSDP reflection attacks are mitigated by blocking UDP port 1900 (the standard SSDP port), since most organisations don't use that protocol publicly, though [attackers have responded by using source ports other than 1900](https://www.securityweek.com/ssdp-diffraction-abused-ddos-amplification/).",
+      "sotaRationale": "The LLM at this capability ceiling can systematically apply documented port-based evasion techniques, providing improvement over the baseline through strategic port selection, filtering bypass recommendations, and configuration best practices. The non-standard port configuration task is significantly simpler than the demonstrated benchmark capability, falling well within the LLM's competence for providing strategic technical guidance. However, OC3 actors are already sophisticated professionals for whom general knowledge about port-based evasion is not a bottleneck. The primary constraints on success are target-specific — whether chosen ports actually evade the specific financial institution's defences — and these are largely unpredictable regardless of LLM assistance.",
+      "saturatedRationale": "An LLM with expert-level capabilities far exceeding the requirements for port selection strategy can provide optimal targeting recommendations for financial API ports, backend infrastructure, and typical mitigation service gaps. The task requires only straightforward configuration knowledge that is well within the LLM's demonstrated capabilities. However, OC3 actors already possess substantial expertise, and the LLM's transformative impact is limited. The primary constraints remain situational — whether the specific target monitors non-standard ports and how adaptive their defences are. The LLM provides systematic analytical frameworks for identifying defence gaps and optimising port selection, but cannot overcome the inherent unpredictability of target-specific configurations."
+    },
+    {
+      "id": "oc3-ddos-cont-4",
+      "name": "Command-and-Control",
+      "nodeType": "continuous",
+      "baselineRationale": "Actors increasingly make efforts to [render botnets resilient to takedowns](https://en.wikipedia.org/wiki/Botnet). Botnets have been noted to be [difficult to detect, and remain active for years](https://www.netscout.com/blog/successful-global-botnet-takedowns). The average lifespan of an individual bot however is short, up to [6 days](https://www.bleepingcomputer.com/news/security/58-percent-of-botnet-malware-infections-last-under-a-day/). Defensive efforts can therefore gradually reduce the size of a botnet, potentially causing failure if the individual bots are not replenished. As OC3 attacks may be sustained over several days, bot churn may cause more failures than for shorter lower-level DDoS attacks.",
+      "sotaRationale": "The LLM's demonstrated capability in application security has minimal relevance to botnet command-and-control operations. The fundamental mismatch is that exploitation skills do not transfer to distributed systems operations, and OC3-level actors already possess mature, battle-tested C2 infrastructure as their core competency. The primary failure modes for C2 — detection by defenders, infrastructure takedowns, bot churn, and communication disruption — are operational challenges that cannot be meaningfully addressed through code analysis assistance. The LLM may offer marginal help with troubleshooting and documentation retrieval, but the dominant constraints on C2 success are operational rather than knowledge-based.",
+      "saturatedRationale": "The LLM demonstrates expert-level capability in complex code exploitation, but this exists in a fundamentally different domain from botnet C2 operations. For OC3-level actors with major pre-existing infrastructure and operational experience, C2 success is determined by operational factors — bot churn management, resilience to takedowns, detection avoidance, and infrastructure maintenance — where LLM assistance provides limited value. The LLM's strong analytical and code reasoning skills have weak correlation with the operational C2 management challenges that dominate failure at this step. While it might provide marginal assistance with protocol optimisation or resilience architecture, the primary constraints remain infrastructural and operational."
+    },
+    {
+      "id": "oc3-ddos-cont-5",
+      "name": "Impact",
+      "nodeType": "continuous",
+      "baselineRationale": "",
+      "sotaRationale": "",
+      "saturatedRationale": ""
+    },
+    {
+      "id": "oc3-ddos-cont-5a",
+      "name": "Direct Network Flood (T1498.001)",
+      "nodeType": "continuous",
+      "parentTactic": "oc3-ddos-cont-5",
+      "combinationMode": "OR",
+      "baselineRationale": "Many RDoS attacks end up as [empty threats](https://www.networkcomputing.com/cybersecurity/the-ransom-ddos-phenomenon-pay-up-or-get-knocked-offline) as the actor does not have a sufficiently large volume to overwhelm the target — a number of Asian banks were targeted by RDDoS attacks which resulted in only 5–20 Gbps, insufficient to cause harm. The average size of a DDoS attack was [150 megabits](https://www.netscout.com/blog/every-3-seconds-evolution-ddos-attacks) per second in 2021, insufficient to cause outages in financial organisations. The claimed size of attacks by Fancy Lazarus was up to [2 terabits per second](https://www.proofpoint.com/us/blog/threat-insight/ransom-ddos-extortion-actor-fancy-lazarus-returns), and the RDDoS attack that took down ProtonMail was [100 gigabits](https://www.networkcomputing.com/cybersecurity/the-ransom-ddos-phenomenon-pay-up-or-get-knocked-offline) per second. Only [two attacks](https://www.netscout.com/blog/every-3-seconds-evolution-ddos-attacks) of the terabit scale were observed in 2021. It is therefore challenging for an actor to achieve sufficient volume to overwhelm the target by network flood alone.",
+      "sotaRationale": "The LLM provides minimal assistance for direct network flood execution because the benchmark capability in code vulnerability discovery has weak correlation with DDoS execution capabilities. Success at this step fundamentally depends on infrastructure capacity — specifically whether the botnet's traffic volume can overwhelm the target's DDoS mitigation services — which the LLM cannot influence. OC3 actors already possess the domain expertise needed for traffic generation and timing optimisation. The primary bottleneck is raw volumetric capacity versus commercial-grade defences, a physical infrastructure problem rather than a knowledge or skill gap that an LLM could address.",
+      "saturatedRationale": "The LLM demonstrates expert-level code analysis capability, but this expertise transfers only moderately to DDoS execution, a domain where success depends primarily on infrastructure capacity rather than tactical knowledge. The primary bottleneck — generating sufficient attack volume to overwhelm well-defended financial institutions — is a physical infrastructure constraint unaffected by LLM assistance. While the LLM can provide valuable reconnaissance on target architecture, strategic optimisation of attack timing, and better identification of mitigation gaps, the fundamental determinant of success remains raw traffic volume versus the target's DDoS mitigation capacity. OC3 actors already possess core DDoS expertise, and the LLM's contribution is limited to marginal tactical refinements."
+    },
+    {
+      "id": "oc3-ddos-cont-5b",
+      "name": "Reflection/Amplification Attack (T1498.002)",
+      "nodeType": "continuous",
+      "parentTactic": "oc3-ddos-cont-5",
+      "combinationMode": "OR",
+      "baselineRationale": "Amplification attacks are the default attack offered by services, due to their [high effectiveness](https://www.radware.com/security/ddos-threats-attacks/threat-advisories-attack-reports/memcache-ddos-as-a-service/). One such amplification vulnerability resulted in [amplification between 10,000 and 50,000.](https://www.radware.com/security/ddos-threats-attacks/threat-advisories-attack-reports/memcache-ddos-as-a-service/) Amplifiers are however often patched or rate-limited following large attacks.",
+      "sotaRationale": "The LLM's demonstrated capability in code analysis has weak correlation with coordinating distributed amplification attacks. OC3 actors already possess sophisticated amplification attack knowledge and mature infrastructure, and the amplification DDoS technique relies on well-documented protocols and standard reconnaissance approaches. The LLM provides only marginal assistance through documentation retrieval and minor script generation, and the primary failure mode — the target's DDoS mitigation effectiveness against amplified traffic — is unaffected by code-level assistance. The domain mismatch between application-level vulnerability analysis and network-level attack coordination limits the LLM's utility.",
+      "saturatedRationale": "Amplification-based DDoS attacks are standard operational procedure for OC3-level threat actors, reflected in the high baseline success rate. The LLM's elite application-layer exploitation capability partially transfers to network-layer attack optimisation through research and analytical skills, allowing modest improvements in amplification server selection, protocol optimisation, and identification of new amplification vectors. However, the actor already possesses comprehensive amplification knowledge and infrastructure, and the primary constraints are the availability of unpatched amplifiers and the target's mitigation capacity — factors that the LLM cannot directly influence. The overall benefit is marginal given the already high level of actor competence in this well-established attack technique."
+    },
+    {
+      "id": "oc3-ddos-qty-1",
+      "name": "Number of Actors",
+      "nodeType": "quantity",
+      "unit": "actors",
+      "baselineRationale": "There are several known OC3 groups worldwide that have historically performed ransom DDoS and similar attacks. These include [Fancy Lazarus](https://www.proofpoint.com/us/blog/threat-insight/ransom-ddos-extortion-actor-fancy-lazarus-returns), [REvil, Anonymous Sudan, Killnet,](https://my.f5.com/manage/s/article/K000135063) [DD4BC, the Armada Collective](https://www.recordedfuture.com/blog/dd4bc-cyber-extortion), [Lizard Squad](https://en.wikipedia.org/wiki/Lizard_Squad), state-backed actors from [Russia](https://www.ncsc.gov.uk/news/russia-ddos-involvement-in-ukraine), [Iran](https://www.cfr.org/cyber-operations/denial-service-attacks-against-us-banks-2012-2013) and [China](https://www.infosecurity-magazine.com/news/chinese-hackers-attacks-taiwan/), and a number of [copycat](https://www.recordedfuture.com/blog/dd4bc-cyber-extortion) groups. Not all of these groups are active within a given year, with DD4BC having ceased activity since 2016 for instance. With the difficulty of pinpointing a specific group as responsible for an attack, a number of groups often pose as others. Other groups such as [BlackCat, AvosLocker, Darkside, and Lazarus](https://www.fsisac.com/hubfs/Knowledge/DDoS/FSISAC_DDoS-HereToStay.pdf) have started using ransom DDoS in combination with other vectors to increase pressure.",
+      "sotaRationale": "The LLM's demonstrated code vulnerability exploitation capabilities have limited applicability to RDDoS attacks on financial institutions. The primary bottlenecks — botnet infrastructure acquisition, criminal marketplace access, and network engineering expertise for DDoS mitigation bypass — are completely unaffected by the LLM's capabilities. While the LLM can assist with reconnaissance, scripting, and planning, it does not meaningfully lower the barrier to entry for new OC3-level actors, as the binding constraints are infrastructure investment, operational security expertise, and access to criminal ecosystems rather than technical knowledge that an LLM could provide.",
+      "saturatedRationale": "The LLM's expert-level application exploitation capabilities have limited direct applicability to infrastructure-based RDDoS operations. The primary bottleneck — acquiring and maintaining botnet infrastructure with sufficient volumetric capacity to threaten financial institutions — remains largely unaddressed by this capability. While the LLM can handle supporting technical tasks such as malware development and evasion technique coding, the fundamental barriers to new actors entering the RDDoS space are capital investment, criminal marketplace access, and operational expertise with distributed attack infrastructure. The LLM provides modest assistance with target reconnaissance and technique refinement but does not substantially change the economics or feasibility of mounting OC3-level RDDoS operations."
+    },
+    {
+      "id": "oc3-ddos-qty-2",
+      "name": "Number of Attempts per Actor",
+      "nodeType": "quantity",
+      "unit": "attempts / actor / year",
+      "baselineRationale": "DD4BC performed over [140 attacks](https://www.recordedfuture.com/blog/dd4bc-cyber-extortion) in one year, with [114 attacks in 5 months](https://www.itworldcanada.com/post/canadian-u-s-organizations-focus-of-latest-ddos-extortion-campaign) alone. Fancy Lazarus sent ransom demands to [thousands of organisations](https://www.bleepingcomputer.com/news/security/fbi-thousands-of-orgs-targeted-by-rdos-extortion-campaign/) within a year. [Not all of these threats were followed through](https://www.bleepingcomputer.com/news/security/fbi-thousands-of-orgs-targeted-by-rdos-extortion-campaign/) with full-scale DDoS activities, though some were followed up with attacks over [9 hours of more than 200 Gbps](https://www.bankinfosecurity.com/ddos-attackers-revive-old-campaigns-a-15835). Cloudflare noted [thousands of organisations](https://blog.cloudflare.com/ransom-ddos-attacks-target-a-fortune-global-500-company/) targeted with ransom DDoS in 2020. Extortion campaigns involve reconnaissance, communication, and multiple attack phases, with the initial extortion mail typically leaving [seven days](https://www.proofpoint.com/us/blog/threat-insight/ransom-ddos-extortion-actor-fancy-lazarus-returns) for a response. If unpaid, actors may attack for [several weeks](https://www.bankinfosecurity.com/ddos-attackers-revive-old-campaigns-a-15835). With 10 staff members per operation, the group can manage multiple attacks concurrently, potentially 2–5 at once, resulting in an estimated 30–260 attacks per year per actor.",
+      "sotaRationale": "The LLM's capability ceiling in finding code vulnerabilities has minimal overlap with RDDoS attack requirements, which centre on network-level infrastructure attacks using existing botnets. OC3 actors already possess sufficient technical capability for sophisticated RDDoS campaigns, and the binding constraints are operational capacity — managing concurrent attacks with limited personnel, infrastructure maintenance, payment conversion, and strategic pacing between campaigns. The LLM provides modest operational efficiency gains through reconnaissance automation and administrative task assistance, but cannot address the critical bottlenecks of evading sophisticated DDoS mitigation, managing infrastructure at scale, and the inherent human-driven limitations of extortion campaigns.",
+      "saturatedRationale": "An LLM with expert-level security research capabilities provides primarily reconnaissance and planning assistance for RDDoS operations, yielding modest efficiency gains. However, RDDoS attacks are already highly commoditised, with technical execution representing a minor bottleneck. The dominant constraints are human-driven operational factors — personnel managing concurrent attacks, infrastructure capacity, law enforcement risk, payment friction, and strategic pacing of campaigns. The LLM can assist with reconnaissance automation, target selection analysis, and attack scripting, but these are secondary factors in determining overall attack throughput. The primary bottleneck of operational bandwidth per team of experienced operators remains fundamentally unchanged."
+    },
+    {
+      "id": "oc3-ddos-qty-3",
+      "name": "Damage",
+      "nodeType": "quantity",
+      "unit": "$",
+      "baselineRationale": "Outages in banks cost approximately [$100k per hour of downtime](https://www.americanbanker.com/news/banks-lose-up-to-100k-hour-to-shorter-more-intense-ddos-attacks). For other financial institutions such as credit card processors, even a few minutes of downtime can result in [millions of dollars in lost revenues](https://www.thebanker.com/content/feaf148a-12db-5198-9e5d-ea09fc1ca6cb). Forbes reported downtime costs of $540k an hour for large organisations to [$5M an hour](https://www.forbes.com/councils/forbestechcouncil/2024/04/10/the-true-cost-of-downtime-and-how-to-avoid-it/) for financial enterprises. In 2024, most DDoS attacks lasted for only an hour, with [11% lasting above 3 hours](https://blog.cloudflare.com/ddos-threat-report-for-2024-q4/). OC3-level DDoS attacks may last [two](https://www.bbc.com/news/53918580) to [five](https://www.enablesecurity.com/blog/how-i-learned-to-stop-worrying-and-love-the-flood/) days, or [multiple waves of 24 hours.](https://www.sherweb.com/blog/cloud-pbx/ddos-attacks-crippling-voip-infrastructure/) Recovery costs from a DDoS attack were estimated at over [$1M for financial institutions](https://usa.kaspersky.com/about/press-releases/cyberthreats-to-online-banking-services-cost-banks-nearly-18-million). Ransom demands were around [2–4 BTC in 2021](https://securitybrief.co.nz/story/new-wave-of-fancy-lazarus-ddos-extortion-campaigns-identified-by-link11) (approximately $100k–$200k).",
+      "sotaRationale": "The LLM's capability ceiling in code vulnerability identification has limited applicability to volumetric DDoS attacks, which depend primarily on infrastructure, volume, and operational sophistication rather than code-level exploitation. For an already-sophisticated OC3 actor with substantial budget and major infrastructure, the LLM provides limited value. The primary damage drivers — attack duration, traffic volume, and the target's ability to restore services — are determined by infrastructure capacity and operational decisions rather than by technical knowledge gaps that an LLM could fill. Modest gains may come from improved reconnaissance helping identify unprotected infrastructure and from marginal improvements in attack planning, but these do not substantially alter the expected damage per successful attack.",
+      "saturatedRationale": "The LLM's expert-level offensive security skills in application exploitation provide limited but real benefit to DDoS operations. Enhanced reconnaissance to identify unprotected infrastructure such as API endpoints and backend systems, along with better analysis of DDoS mitigation gaps, can modestly improve attack effectiveness. The LLM may also help with automated botnet building through IoT exploitation and operational efficiency improvements. However, significant domain mismatch exists between source code exploitation and infrastructure-based DDoS attacks, and the fundamental damage determinants — attack volume, duration, and the target's resilience and incident response capability — remain largely outside the LLM's influence."
+    },
+    {
+      "id": "oc3-ddos-qty-4",
+      "name": "Total Risk",
+      "nodeType": "quantity",
+      "unit": "$ / year",
+      "baselineRationale": "",
+      "sotaRationale": "",
+      "saturatedRationale": ""
+    }
+  ]
+}

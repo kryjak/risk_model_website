@@ -1,0 +1,163 @@
+{
+  "modelId": "OC3_Ransomware_SME_target_human",
+  "modelDescription": "A small cybercrime syndicate (OC3, ~10 individuals, ~$1m resources) operating as a RaaS affiliate, conducting double-extortion ransomware attacks against SMEs ($10\u201350m revenue) by exploiting vulnerabilities in public-facing web applications. The target operates at cybersecurity maturity level MIL1\u2013MIL2 (CCMM). Historical analogues include LockBit and Ghost (Cring) ransomware affiliates.",
+  "benchmarkMappings": {
+    "BountyBench": [
+      "Initial Access",
+      "Execution",
+      "Privilege Escalation",
+      "Number of Actors",
+      "Number of Attempts per Actor"
+    ],
+    "Cybench": [
+      "Lateral Movement",
+      "Impact",
+      "Financial Theft",
+      "Ransom Payment",
+      "Recovery Cost"
+    ]
+  },
+  "nodes": [
+    {
+      "id": "OC3-ransomware-sme-cont-1",
+      "name": "Reconnaissance",
+      "nodeType": "continuous",
+      "baselineRationale": "Active scanning of internet-facing assets for known vulnerabilities, combined with basic OSINT to assess victim suitability (revenue, insurance). This step has a very high probability of success (~100%) given the abundance of unpatched SME systems and freely available scanning tools. The [National Vulnerability Database](https://nvd.nist.gov/) recorded over 30,000 new CVEs in 2023, half classified as high or critical severity. According to [SentinelOne](https://www.sentinelone.com/cybersecurity-101/cybersecurity/cyber-security-statistics/), a new vulnerability is identified every 17 minutes, and roughly 10% of devices remain unpatched even 4 months after a patch is released.",
+      "sotaRationale": "Not elicited due to high baseline probability.",
+      "saturatedRationale": "Not elicited due to high baseline probability."
+    },
+    {
+      "id": "OC3-ransomware-sme-cont-2",
+      "name": "Resource Development",
+      "nodeType": "continuous",
+      "baselineRationale": "The affiliate must obtain exploit code, tooling (ransomware payload, credential stealers, C2 frameworks like Cobalt Strike), and infrastructure (VPS for C2, leak sites). In the RaaS model, many resources come ready-made from the operator. Probability of success is very high (~100%) since exploit code is widely available \u2014 [NCSC](https://www.ncsc.gov.uk/whitepaper/ransomware-extortion-and-the-cyber-crime-ecosystem) notes that criminal use of exploits often surges shortly after patches are released, with exploits typically available on criminal forums within one week.",
+      "sotaRationale": "Not elicited due to high baseline probability.",
+      "saturatedRationale": "Not elicited due to high baseline probability."
+    },
+    {
+      "id": "OC3-ransomware-sme-cont-3",
+      "name": "Initial Access",
+      "nodeType": "continuous",
+      "baselineRationale": "The group focuses on exploiting vulnerabilities in public-facing web applications (T1190). Probabilities are conditioned on reconnaissance having identified a vulnerable target. Defence limitations: while SMEs might have firewalls or WAFs, these may be misconfigured or incomplete. SMEs may not rigorously isolate DMZ systems or enforce least privilege on service accounts. According to [Qualys (2023)](https://blog.qualys.com/vulnerabilities-threat-research/2023/12/19/2023-threat-landscape-year-in-review-part-one), over 7,000 vulnerabilities had proof-of-concept exploit code, but only 206 had weaponised exploit code (0.77% of total CVEs). Attackers naturally select high-success CVEs and exploits that yield good options for onward escalation and lateral movement. Attempting an exploit is relatively low-cost for the attacker, allowing some tolerance for lower individual success probabilities.",
+      "sotaRationale": "Most experts saw only modest uplift at this capability level. The LLM can help speed up CVE selection based on reconnaissance data and smooth out rough edges for actors unfamiliar with every technical component, but OC3 groups already have strong capability in initial exploitation. An LLM at this level may help with attack robustness \u2014 e.g. adding logic to exploit target files \u2014 but serious deployments with read-only mounts or strong SELinux remain unaffected. Some experts argued existing LLMs can already handle tasks at this difficulty level, meaning this capability is essentially already 'priced in' to the baseline.",
+      "saturatedRationale": "Experts saw significant uplift at this capability level. An LLM able to consistently exploit complex deserialization vulnerabilities demonstrates deep language-runtime understanding, enabling it to write PoC exploits and successfully exploit targets in the vast majority of cases. This LLM could create custom payloads instead of relying on public PoCs (which often contain errors or don't translate to real attacks), and could potentially find zero-day vulnerabilities. This enables attackers to target vulnerabilities that defenders are not prioritising patches for, given their perceived difficulty. However, some experts cautioned that success still depends on whether the specific target deserialises attacker-supplied data, and that model capabilities may not generalise beyond the specific benchmark task."
+    },
+    {
+      "id": "OC3-ransomware-sme-cont-4",
+      "name": "Execution",
+      "nodeType": "continuous",
+      "baselineRationale": "After initial access, the affiliate launches tools such as remote shells, scripts, and malware. Ransomware operators commonly use PowerShell, script interpreters, or built-in admin tools. SMEs rarely have strict application whitelisting or advanced behavioural anti-malware controls. Skilled attackers can evade signature-based AV through code obfuscation or memory-resident techniques. According to [Barracuda XDR](https://cybersecurityasia.net/), 6% of security alerts in Q1 2025 were for suspicious PowerShell scripts. [Expert Insights (2024)](https://expertinsights.com/) suggests ~50% of companies had XDR and 50% had AV on endpoints. If the attacker moves quickly and the SME lacks adequate SOC staff to respond to alerts, execution often succeeds.",
+      "sotaRationale": "Experts broadly agreed on minimal uplift. The LLM can help write code and scripts custom to the target environment, and AI-generated obfuscation may help evade some signature-based detection. However, specialised obfuscation tools likely still outperform this LLM, and the primary determinant remains the sophistication of the blue team's defences. The main value is in speeding up time-intensive scripting work, reducing the chance of being flagged during dwell time. One dissenting view placed the estimate substantially higher, arguing the LLM would fill any skill gaps after initial access.",
+      "saturatedRationale": "Substantial uplift was expected. This LLM has the deepest understanding of programming languages among the benchmarks, placing it in the best position to obfuscate code, craft custom gadget chains, and bypass detection. It could write polymorphic tools that frustrate signature-based defences, emit memory-only implants that sidestep usermode defences, and potentially help with EDR/MDR evasion. However, agentic EDR will likely still catch some attacks, and the degree of uplift depends heavily on how readily CTF-based capabilities translate into real offensive security. Some experts were more conservative, maintaining that people underestimate what current LLMs can already accomplish."
+    },
+    {
+      "id": "OC3-ransomware-sme-cont-5",
+      "name": "Privilege Escalation",
+      "nodeType": "continuous",
+      "baselineRationale": "Ransomware affiliates seek administrative or root access to spread ransomware broadly and disable defences/backups. Relevant techniques include exploitation for privilege escalation (T1068, e.g. ZeroLogon, PrintNightmare) OR OS credential dumping (T1003). SMEs often have flat, non-segmented networks with many local admins. Low MFA adoption and informal admin account management make it easier to leverage stolen accounts. According to [JumpCloud](https://jumpcloud.com/blog/multi-factor-authentication-statistics), MFA usage is only 34% at medium-sized companies versus 87% at large enterprises. If credentials fail, known exploits can be tried, and SMEs may not have applied patches or enabled mitigations.",
+      "sotaRationale": "The consensus was almost no uplift at this benchmark level. The LLM has a superficial understanding of network protocols and is unlikely to outperform existing exploitation toolkits. It may help in some obscure cases and provide a modest speedup, increasing chances of successful escalation prior to detection. However, existing scripts for tasks like disabling local defences already exist, limiting the LLM's additive value.",
+      "saturatedRationale": "Notable uplift was expected. This LLM can exploit known vulnerabilities, potentially find new ones faster than expert humans, and use custom exploits effectively in SME networks. It could help with vulnerability research, finding hard-to-locate exploitable machines, or utilising variants of strong historical vulnerabilities (e.g. the Potato family). However, privilege escalation fundamentally requires either exploiting an unpatched vulnerability or an improper configuration \u2014 if neither exists, even the most capable LLM cannot succeed. Overall odds remain more affected by whether the SME takes security seriously than by the specific LLM capability level."
+    },
+    {
+      "id": "OC3-ransomware-sme-cont-6",
+      "name": "Discovery",
+      "nodeType": "continuous",
+      "baselineRationale": "Once inside, affiliates perform discovery to map the environment \u2014 locating valuable data (file servers, databases), defences, and backup systems. In an SME, networks are sometimes flat and lacking segmentation, allowing the attacker's malware to freely scan or query Active Directory. [Barracuda XDR](https://cybersecurityasia.net/ransomware-stopped-during-lateral-movement/) reports that 48% of their 1H2024 security alerts were for network reconnaissance. [Expert Insights (2024)](https://expertinsights.com/) suggests ~50% of companies had XDR. There is a high likelihood the attacker can perform necessary discovery, particularly with escalated privileges already accounted for.",
+      "sotaRationale": "Not elicited due to high baseline probability.",
+      "saturatedRationale": "Not elicited due to high baseline probability."
+    },
+    {
+      "id": "OC3-ransomware-sme-cont-7",
+      "name": "Lateral Movement",
+      "nodeType": "continuous",
+      "baselineRationale": "The attacker pivots from the initial foothold to broader network control using stolen credentials, admin shares, RDP, or tools like PsExec. In SMEs, once the attacker has credentials or admin access, moving laterally is generally straightforward \u2014 all machines often trust the domain admin. Most SMEs lack network segmentation, internal MFA, or robust EDR/XDR with well-staffed SOC resources. [Barracuda XDR](https://cybersecurityasia.net/ransomware-stopped-during-lateral-movement/) found that 44% of ransomware attacks in 2024 were spotted by lateral movement detection engines. Only 22% of UK SMEs systematically back up data to specialist offsite facilities, and 34% maintain air-gapped backups ([Kent Invicta/Beaming, 2024](https://www.kentinvictachamber.co.uk/)). The main failure mode is where an SME has adopted good backup practices with isolated servers.",
+      "sotaRationale": "Experts largely agreed on minimal uplift. Ransomware operators are already expert at lateral movement \u2014 it is their core competency. The benchmark's cryptography-oriented tasks were seen as a poor proxy for lateral movement capability, with several experts noting the mismatch. Potential marginal benefits include guiding less experienced actors on basic techniques, generating likely passwords from previously breached data, or aiding phishing for internal credential access. One expert saw greater uplift, reasoning that good code understanding and cryptography knowledge could help find bugs in authentication protocols used internally.",
+      "saturatedRationale": "Significant uplift was expected from the most capable benchmark tier. This LLM could almost certainly reverse-engineer and exploit proprietary protocols common in SME industries (e.g. healthcare HL7/DICOM, OT Modbus, BACnet for HVAC). It could independently defeat safeguards, enumerate and correlate user/computer/service principal data to find attack paths, and potentially exploit authentication protocol vulnerabilities through differential cryptanalysis capabilities. However, ransomware groups are already expert at lateral movement \u2014 it is their core focus \u2014 and some barriers (e.g. isolated backups, air-gapped networks) cannot be overcome by any LLM. Trial and error at this stage is costly (risk of detection), limiting how much the LLM can help through iterative approaches."
+    },
+    {
+      "id": "OC3-ransomware-sme-cont-8",
+      "name": "Collection",
+      "nodeType": "continuous",
+      "baselineRationale": "The affiliate quietly collects confidential files (databases, client records, intellectual property) before launching ransomware, as the data-leak threat is central to double extortion. SMEs generally lack internal DLP, and if the attacker has achieved admin privileges, they can read most or all data. According to [StrongDM](https://www.strongdm.com/blog/small-business-cyber-security-statistics), only 17% of small businesses encrypt data at rest, which could hinder extortion if encrypted.",
+      "sotaRationale": "Not elicited due to high baseline probability.",
+      "saturatedRationale": "Not elicited due to high baseline probability."
+    },
+    {
+      "id": "OC3-ransomware-sme-cont-9",
+      "name": "Command and Control",
+      "nodeType": "continuous",
+      "baselineRationale": "The affiliate's malware communicates out via standard protocols (HTTP/HTTPS, DNS) or legitimate remote access software. Basic network firewalls in SMEs typically allow most outbound traffic. Few SMEs whitelist egress by domain/IP or have proxy inspection. Attackers commonly use HTTPS or DNS tunnelling to blend in with normal traffic. Without dedicated egress filtering or IPS, SMEs will generally not notice C2 traffic.",
+      "sotaRationale": "Not elicited due to high baseline probability.",
+      "saturatedRationale": "Not elicited due to high baseline probability."
+    },
+    {
+      "id": "OC3-ransomware-sme-cont-10",
+      "name": "Exfiltration",
+      "nodeType": "continuous",
+      "baselineRationale": "The affiliate sends stolen data to attacker-controlled infrastructure before launching ransomware. SMEs rarely employ DLP solutions, strict outbound bandwidth controls, or formal data loss prevention. Attackers might upload via HTTPS to cloud storage or use C2 channels. Exfiltration might be limited by bandwidth or noticed if it saturates a network link.",
+      "sotaRationale": "Not elicited due to high baseline probability.",
+      "saturatedRationale": "Not elicited due to high baseline probability."
+    },
+    {
+      "id": "OC3-ransomware-sme-cont-11",
+      "name": "Impact",
+      "nodeType": "continuous",
+      "baselineRationale": "The attackers deploy ransomware to encrypt data on all reachable systems, delete backups and shadow copies, and inhibit system recovery. Techniques: T1486 (Data Encrypted for Impact) AND T1490 (Inhibit System Recovery) AND T1489 (Service Stop). According to [Invenio IT](https://invenioit.com/continuity/disaster-recovery-statistics/), 58% of backups fail during recovery. [Sophos (2024)](https://assets.sophos.com/) reports 57% of backup compromise attempts were successful. By this stage the attacker has established significant privileges and control. Some endpoint security might detect mass encryption, but SMEs often lack configured protections.",
+      "sotaRationale": "Experts saw very low uplift. The encryption/impact stage is already well-served by existing RaaS tooling, and cryptography knowledge at this level was not seen as particularly advanced beyond existing scripts. Factors outside the LLM's control (backup configuration, endpoint protections, network architecture) remain the primary determinants of success. A group already operating professional encryption malware would not benefit much from AI assistance at this level.",
+      "saturatedRationale": "Meaningful uplift was expected. This LLM could potentially find flaws in cryptographic implementations, anticipate mitigation strategies, and assist with end-to-end attack execution including backup corruption. It could encrypt data in ways that ensure defenders have no recourse even with law enforcement or professional recovery services. However, the remaining ~10\u201320% failure rate is driven by hard-to-solve factors \u2014 deployed backup/recovery solutions, specific deployment configurations, and robust endpoint protections \u2014 that require substantially more effort to overcome."
+    },
+    {
+      "id": "OC3-ransomware-sme-cont-12",
+      "name": "Financial Theft",
+      "nodeType": "continuous",
+      "baselineRationale": "This step represents the probability that a technically successful attack converts to a ransom payout. According to [Chainalysis](https://www.chainalysis.com/blog/crypto-crime-ransomware-victim-extortion-2025/), approximately 30% of negotiations lead to payments. [Coveware](https://www.coveware.com/blog/2025/4/29/) also supports this ~30% figure. An SME likely lacks in-house ransom negotiation capability but could buy it in. There is a trend of increasing reluctance to pay ransoms.",
+      "sotaRationale": "Very limited uplift was expected. The LLM may help with grammar, structural improvements to ransom notes, and writing technically credible communications. However, ransom payment decisions are primarily driven by structural and incentive factors \u2014 insurance coverage, legal constraints, data sensitivity, and business continuity calculations \u2014 none of which an LLM can meaningfully influence. The LLM could potentially help with negotiation tactics or emotional analysis, but most experts saw this as marginal.",
+      "saturatedRationale": "Limited uplift was expected, even at the highest capability level. This step is strongly controlled by structural and incentive factors \u2014 insurance coverage, legal constraints on paying ransoms, data sensitivity, and business continuity calculations. An LLM could help with negotiation, persuasiveness, and professionalism of communications, and could potentially identify more sensitive files to increase leverage. However, these are not transformative benefits. Technical aspects where AI could help most are already complete by this stage."
+    },
+    {
+      "id": "OC3-ransomware-sme-qty-1",
+      "name": "Number of Actors",
+      "nodeType": "quantity",
+      "baselineRationale": "Estimated number of OC3-level cybercrime syndicates (~10 individuals each, ~$1m resources) actively targeting SMEs with double-extortion ransomware via web vulnerability exploits. Starting from ~80 active RaaS operators with an estimated 700 total affiliates, approximately one-third are OC3-level groups (~200). Filtering for SME targeting (~40%), double extortion (~40%), and vulnerability exploit initial access (~29%) yields approximately 10 groups. Sources: [KVORR](https://www.kvorr.com/), [Coveware](https://www.coveware.com/), [Sophos](https://www.sophos.com/), [Firewall Times](https://firewalltimes.com/).",
+      "sotaRationale": "Expert estimates ranged widely from 10 to 76, reflecting deep uncertainty. The majority view was that an LLM at this level may encourage a few new groups but is limited by the organisational and resource barriers required for OC3-level operations (~10 people, ~$1m). The LLM is not technically advanced enough to substantially lower the barrier to entry for sophisticated actors. A minority saw much larger increases, arguing this capability level would unlock basic use-cases for less sophisticated actors.",
+      "saturatedRationale": "Expert estimates ranged extremely widely from 14 to 160, reflecting fundamental disagreement about how transformative this capability level would be. The majority view saw a 2\u20134\u00d7 increase: an LLM at this level significantly lowers the barrier to entry by automating complex exploitation, making it possible for less sophisticated groups to operate at OC3 level. Several experts predicted this capability would be commoditised into the cybercrime ecosystem. Conservative estimates argued that organisational, resource, and operational security constraints would remain the primary bottleneck for OC3-level operations.",
+      "unit": "actors"
+    },
+    {
+      "id": "OC3-ransomware-sme-qty-2",
+      "name": "Number of Attempts per Actor",
+      "nodeType": "quantity",
+      "baselineRationale": "Mean number of attack attempts per OC3 group per year. Three estimation approaches were triangulated: (1) Operational capacity analysis: ~5 person-days per attempt on average, with 6 of 10 members on active attacks \u2192 ~150 attacks/year. (2) Historical derivation: ~3\u20136 successful attacks per affiliate per year, with ~10% success rate \u2192 ~350 attempts/year. (3) Motivational sustainability: ~12 successful ransoms/year needed for team morale, at 3% overall success rate \u2192 ~400 attempts/year. The triangulated estimate places more weight on operational capacity constraints, acknowledging management complexity and coordination overhead.",
+      "sotaRationale": "Most experts saw a modest increase (~10\u201350%), driven by the LLM saving some operational time and enabling moderate automation. The LLM can help identify high-value files, assist with payload selection, and reduce the time spent on attacks that fail quickly. However, the capability level is narrow \u2014 it helps with specific aspects but doesn't reduce team size or fundamentally restructure operations. More attempts may draw unwanted attention, and management/coordination remains a bottleneck.",
+      "saturatedRationale": "Expert estimates ranged from 300 to 1200, with a long right tail. The broad consensus was a 1.5\u20132.5\u00d7 increase, driven by the LLM enabling significant automation and scaling of exploit chains that are currently finicky or time-consuming. At this capability level, challenges around coordination, targeting, and management would likely bottleneck more than pure offensive capabilities. The most aggressive estimates envisioned near-exponential scaling, while conservative estimates noted diminishing returns and that well-defended systems remain protected regardless of attack volume.",
+      "unit": "attempts / actor / year"
+    },
+    {
+      "id": "OC3-ransomware-sme-qty-3",
+      "name": "Ransom Payment",
+      "nodeType": "quantity",
+      "baselineRationale": "Mean ransom payout per successful technical attack. Analysis of multiple sources: [Sophos (2025)](https://www.sophos.com/en-us/content/state-of-ransomware) reports median payout of $106k for $10\u201350m revenue SMEs; using Sophos 2024 mean/median ratio gives estimated mean of ~$550k. [Coveware Q1 2025](https://www.coveware.com/) reports mean of ~$550k across all sizes. [Chainalysis](https://www.chainalysis.com/) and [Coveware](https://www.coveware.com/) indicate ~30% of technically successful attacks convert to ransom payouts. Significant year-on-year volatility exists \u2014 [Sophos (2024)](https://assets.sophos.com/) reported 500% year-on-year increases in some metrics.",
+      "sotaRationale": "Most experts kept the ransom estimate at or near baseline, reasoning that an LLM at this level would have minimal impact on the financial outcome of successful attacks. The factors driving ransom amounts (company revenue, data sensitivity, negotiation dynamics) are largely outside the LLM's influence at this capability level.",
+      "saturatedRationale": "Most experts saw a moderate increase in ransom amounts. With improved capabilities across the attack chain, actors could target more valuable systems and extract correspondingly higher ransoms. A fast, reliable payload could cause more damage and justify higher demands. Interestingly, one expert noted the mean ransom might actually decrease because actors could go after more targets with lower individual payouts, increasing total volume while reducing per-attack ransom.",
+      "unit": "$"
+    },
+    {
+      "id": "OC3-ransomware-sme-qty-4",
+      "name": "Recovery Cost",
+      "nodeType": "quantity",
+      "baselineRationale": "Mean recovery cost per successful attack, including downtime, people time, device cost, network cost, and lost opportunity. [Sophos (2025)](https://www.sophos.com/en-us/content/state-of-ransomware) reports $638k for 100\u2013250 employee companies, down from $1.5m in 2024 for $10\u201350m revenue bracket. Recovery costs in 2025 were approximately 54% of 2024 levels across all company sizes ($1.53m vs $2.83m). These figures implicitly cover a spectrum of scenarios (double vs single extortion, backups compromised vs intact, ransom paid vs not paid).",
+      "sotaRationale": "Nearly all experts kept recovery costs at baseline. Strong crypto knowledge could theoretically help produce slightly more effective malware, leading to marginally higher recovery costs, but this was not seen as a meaningful uplift since existing ransomware already uses well-implemented encryption.",
+      "saturatedRationale": "Most experts saw a moderate increase in recovery costs, driven by more thorough attacks: better backup corruption, more complete encryption, and potentially more persistent footholds. An OC3 actor with this LLM would be comparable to an OC4 actor, exploiting more valuable systems. One expert suggested recovery costs might actually decrease for some scenarios where adversaries go after more but less valuable targets.",
+      "unit": "$"
+    },
+    {
+      "id": "OC3-ransomware-sme-qty-5",
+      "name": "Total Risk",
+      "nodeType": "quantity",
+      "baselineRationale": "Annualised total risk = Number of Actors \u00d7 Attempts per Actor \u00d7 Probability of successful attack \u00d7 Impact per successful attack. = 10 \u00d7 200 \u00d7 0.064 \u00d7 $815k \u2248 $102m/year. Sanity checks: (1) Per-person income: ~$150k/person after costs, plausible for Russian cyber professionals. (2) As proportion of global harm: scaling to ~3000 total affiliates gives ~$600m, comparable to [Chainalysis](https://www.chainalysis.com/) 2024 global figure of $813m.",
+      "sotaRationale": "Annualised total risk computed from aggregated expert estimates. With modest probability uplifts across the attack chain and near-baseline impact figures, the total risk under the SOTA scenario represents a moderate increase over baseline, driven primarily by a small increase in actor count and attack tempo rather than changes in per-step success probabilities.",
+      "saturatedRationale": "Annualised total risk computed from aggregated expert estimates. With substantial probability uplifts across the attack chain (especially in Initial Access, Execution, and Lateral Movement), and increased impact figures, the total risk under the saturated scenario represents a very large increase over baseline. The increase is driven by compounding effects across all dimensions: more actors, more attempts per actor, higher per-step success probabilities, and greater financial impact per successful attack.",
+      "unit": "$ / year"
+    }
+  ]
+}
