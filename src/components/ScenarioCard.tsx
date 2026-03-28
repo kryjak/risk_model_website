@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { ChevronDown, ChevronUp, FileText, Map } from 'lucide-react';
+import { FileText, Map } from 'lucide-react';
 
 interface ScenarioCardProps {
   title: string;
@@ -9,15 +8,6 @@ interface ScenarioCardProps {
 }
 
 export function ScenarioCard({ title, description, onShowKRIMappings, hasKRIMappings }: ScenarioCardProps) {
-  const [isExpanded, setIsExpanded] = useState(false);
-  
-  // Truncate description for collapsed view
-  const maxLength = 200;
-  const shouldTruncate = description.length > maxLength;
-  const displayText = isExpanded || !shouldTruncate
-    ? description
-    : description.slice(0, maxLength) + '...';
-
   return (
     <div className="card">
       <div className="flex items-start gap-3">
@@ -27,29 +17,10 @@ export function ScenarioCard({ title, description, onShowKRIMappings, hasKRIMapp
             {title}
           </h2>
           <p className="text-sm text-gray-600 leading-relaxed">
-            {displayText}
+            {description}
           </p>
-          <div className="mt-3 flex items-center gap-3 flex-wrap">
-            {shouldTruncate && (
-              <button
-                onClick={() => setIsExpanded(!isExpanded)}
-                className="flex items-center gap-1 text-sm text-safer-blue hover:text-safer-purple transition-colors"
-                aria-expanded={isExpanded}
-              >
-                {isExpanded ? (
-                  <>
-                    <ChevronUp className="w-4 h-4" />
-                    Show less
-                  </>
-                ) : (
-                  <>
-                    <ChevronDown className="w-4 h-4" />
-                    Read more
-                  </>
-                )}
-              </button>
-            )}
-            {hasKRIMappings && onShowKRIMappings && (
+          {hasKRIMappings && onShowKRIMappings && (
+            <div className="mt-3">
               <button
                 onClick={onShowKRIMappings}
                 className="flex items-center gap-1.5 text-sm font-medium text-safer-purple border border-safer-purple/30 rounded-lg px-3 py-1.5 hover:bg-safer-purple/5 transition-colors"
@@ -57,8 +28,8 @@ export function ScenarioCard({ title, description, onShowKRIMappings, hasKRIMapp
                 <Map className="w-4 h-4" />
                 Show KRI Mappings
               </button>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
