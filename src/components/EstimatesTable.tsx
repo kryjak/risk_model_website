@@ -181,11 +181,17 @@ interface TechniqueGroupProps {
 
 function TechniqueGroup({ techniques, parentFormat }: TechniqueGroupProps) {
   const combinationMode = techniques[0]?.combinationMode || 'AND';
-  const connectorColor = combinationMode === 'AND' ? '#2B6CB0' : '#BC4B51';
+  const connectorColor =
+    combinationMode === 'AND' ? '#2B6CB0' :
+    combinationMode === 'XOR' ? '#D97706' :
+    '#BC4B51';
 
-  const tooltipText = combinationMode === 'AND'
-    ? 'AND: all techniques must succeed for the tactic to succeed (probabilities multiply).'
-    : 'OR: success in any one technique is sufficient for the tactic to succeed (combined via inclusion-exclusion).';
+  const tooltipText =
+    combinationMode === 'AND'
+      ? 'AND: all techniques must succeed for the tactic to succeed (probabilities multiply).'
+      : combinationMode === 'XOR'
+        ? 'XOR: the actor commits to a single technique (exclusive choice — only one is attempted).'
+        : 'OR: success in any one technique is sufficient for the tactic to succeed (combined via inclusion-exclusion).';
 
   return (
     <>
