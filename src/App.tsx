@@ -246,7 +246,7 @@ function App() {
 
               {/* Bayesian Network Placeholder */}
               {showContent && (
-                <BayesianNetworkPlaceholder />
+                <BayesianNetworkPlaceholder modelId={selectedModelId} />
               )}
 
               {/* Divider */}
