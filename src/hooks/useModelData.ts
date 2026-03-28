@@ -70,10 +70,23 @@ export function useModelData(model: RiskModelIndexEntry | null): UseModelDataRes
         throw new Error(`Error loading risk model ${model.name}. Please select another risk model.`);
       }
 
-      const [rationales, percentiles] = await Promise.all([
+      const [rationales, percentiles, nameOverrides] = await Promise.all([
         rationalesRes.json() as Promise<ModelRationales>,
         percentilesRes.json() as Promise<ModelPercentiles>,
+        fetch('/data/display_name_overrides.json')
+          .then(r => r.ok ? r.json() as Promise<Record<string, Record<string, string>>> : {})
+          .catch(() => ({} as Record<string, Record<string, string>>)),
       ]);
+
+      // Apply display name overrides if any exist for this model
+      const overrides = nameOverrides[rationales.modelId];
+      if (overrides) {
+        for (const node of rationales.nodes) {
+          if (overrides[node.name]) {
+            node.name = overrides[node.name];
+          }
+        }
+      }
 
       setBenchmarkMappings(rationales.benchmarkMappings || {});
       setModelDescription(rationales.modelDescription || model.description);

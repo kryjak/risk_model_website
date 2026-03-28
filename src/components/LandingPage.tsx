@@ -9,7 +9,8 @@ interface LandingPageProps {
 
 export function LandingPage({ index, onSelectModel }: LandingPageProps) {
   const [showGuide, setShowGuide] = useState(false);
-  const modelsWithData = new Set(['RM1', 'RM2']);
+  // All models in the index have data files — no hardcoded gate needed
+  const modelsWithData = new Set(index.models.map(m => m.id));
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
