@@ -2,7 +2,7 @@ import { useEffect, useRef, useCallback, useState, useMemo } from 'react';
 import { X, Download } from 'lucide-react';
 import Plot from 'react-plotly.js';
 import type { ParameterEstimate } from '../types';
-import { generateKDE, getSummaryStatistics } from '../utils/statistics';
+import { generateKDE, getSummaryStatistics, computeRobustRange } from '../utils/statistics';
 import { formatValue } from '../utils/formatters';
 import { generateCurrencyTicks } from '../utils/tickFormatter';
 
@@ -58,16 +58,20 @@ export function DistributionModal({ estimate, isOpen, onClose }: DistributionMod
   }, [onClose]);
 
   const isCurrencyAxis = estimate?.unit?.includes('$') ?? false;
+  const modalXRange = useMemo(() => {
+    if (!estimate) return undefined;
+    return computeRobustRange([estimate.baselineSamples, estimate.sotaSamples, estimate.saturatedSamples]);
+  }, [estimate]);
   const xTicks = useMemo(() => {
     if (!estimate || !isCurrencyAxis) return null;
-    return generateCurrencyTicks([estimate.baselineSamples, estimate.sotaSamples, estimate.saturatedSamples]);
-  }, [estimate, isCurrencyAxis]);
+    return generateCurrencyTicks([estimate.baselineSamples, estimate.sotaSamples, estimate.saturatedSamples], 6, modalXRange);
+  }, [estimate, isCurrencyAxis, modalXRange]);
 
   if (!isOpen || !estimate) return null;
 
-  const baselineKDE = generateKDE(estimate.baselineSamples);
-  const sotaKDE = generateKDE(estimate.sotaSamples);
-  const saturatedKDE = generateKDE(estimate.saturatedSamples);
+  const baselineKDE = generateKDE(estimate.baselineSamples, 200, modalXRange);
+  const sotaKDE = generateKDE(estimate.sotaSamples, 200, modalXRange);
+  const saturatedKDE = generateKDE(estimate.saturatedSamples, 200, modalXRange);
   const baselineStats = getSummaryStatistics(estimate.baselineSamples);
   const sotaStats = getSummaryStatistics(estimate.sotaSamples);
   const saturatedStats = getSummaryStatistics(estimate.saturatedSamples);

@@ -5,15 +5,17 @@
  */
 export function generateCurrencyTicks(
   samples: number[][],
-  numTicks = 6
+  numTicks = 6,
+  xRange?: [number, number],
 ): { tickvals: number[]; ticktext: string[] } {
   const allValues = samples.flat();
   if (allValues.length === 0) return { tickvals: [], ticktext: [] };
 
-  const min = Math.min(...allValues);
-  const max = Math.max(...allValues);
+  const min = xRange ? xRange[0] : Math.min(...allValues);
+  const max = xRange ? xRange[1] : Math.max(...allValues);
 
   const range = max - min;
+  if (range <= 0) return { tickvals: [min], ticktext: [formatTickLabel(min)] };
   const rawStep = range / (numTicks - 1);
 
   const magnitude = Math.pow(10, Math.floor(Math.log10(rawStep)));

@@ -1,7 +1,7 @@
 import { useRef, useCallback, useMemo } from 'react';
 import { Download } from 'lucide-react';
 import Plot from 'react-plotly.js';
-import { generateKDE, getSummaryStatistics } from '../utils/statistics';
+import { generateKDE, getSummaryStatistics, computeRobustRange } from '../utils/statistics';
 import { formatCurrency, formatChange } from '../utils/formatters';
 import { generateCurrencyTicks } from '../utils/tickFormatter';
 
@@ -20,9 +20,10 @@ export function OverallRiskChart({
 }: OverallRiskChartProps) {
   const graphDivRef = useRef<HTMLElement | null>(null);
 
-  const baselineKDE = generateKDE(baselineSamples);
-  const sotaKDE = generateKDE(sotaSamples);
-  const saturatedKDE = generateKDE(saturatedSamples);
+  const xRange = computeRobustRange([baselineSamples, sotaSamples, saturatedSamples]);
+  const baselineKDE = generateKDE(baselineSamples, 200, xRange);
+  const sotaKDE = generateKDE(sotaSamples, 200, xRange);
+  const saturatedKDE = generateKDE(saturatedSamples, 200, xRange);
   const baselineStats = getSummaryStatistics(baselineSamples);
   const sotaStats = getSummaryStatistics(sotaSamples);
   const saturatedStats = getSummaryStatistics(saturatedSamples);
@@ -50,8 +51,8 @@ export function OverallRiskChart({
   }, []);
 
   const xTicks = useMemo(
-    () => generateCurrencyTicks([baselineSamples, sotaSamples, saturatedSamples]),
-    [baselineSamples, sotaSamples, saturatedSamples]
+    () => generateCurrencyTicks([baselineSamples, sotaSamples, saturatedSamples], 6, xRange),
+    [baselineSamples, sotaSamples, saturatedSamples, xRange]
   );
 
   const hasValidData = baselineKDE.x.length > 0;

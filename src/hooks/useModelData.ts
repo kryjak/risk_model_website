@@ -74,7 +74,7 @@ export function useModelData(model: RiskModelIndexEntry | null): UseModelDataRes
         rationalesRes.json() as Promise<ModelRationales>,
         percentilesRes.json() as Promise<ModelPercentiles>,
         fetch('/data/display_name_overrides.json')
-          .then(r => r.ok ? r.json() as Promise<Record<string, Record<string, string>>> : {})
+          .then(r => r.ok ? r.json() as Promise<Record<string, Record<string, string>>> : ({} as Record<string, Record<string, string>>))
           .catch(() => ({} as Record<string, Record<string, string>>)),
       ]);
 

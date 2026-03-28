@@ -132,11 +132,34 @@ export function generateHistogramBins(
 }
 
 /**
- * Generate KDE (Kernel Density Estimate) for smooth distribution curves
+ * Compute a robust x-range for plotting from multiple sample arrays,
+ * clipping to given percentiles so outliers don't stretch the axis.
+ */
+export function computeRobustRange(
+  sampleArrays: number[][],
+  lowerPct: number = 0,
+  upperPct: number = 98,
+): [number, number] {
+  const all = sampleArrays.flat().filter(v => isFinite(v));
+  if (all.length === 0) return [0, 1];
+
+  const sorted = [...all].sort((a, b) => a - b);
+  const lo = sorted[Math.floor((lowerPct / 100) * (sorted.length - 1))];
+  const hi = sorted[Math.floor((upperPct / 100) * (sorted.length - 1))];
+  const range = hi - lo;
+  const padding = range * 0.05;
+  return [lo - padding, hi + padding];
+}
+
+/**
+ * Generate KDE (Kernel Density Estimate) for smooth distribution curves.
+ * Pass an explicit xRange (from computeRobustRange) so multiple traces
+ * share the same axis and outliers are clipped.
  */
 export function generateKDE(
   samples: number[],
-  numPoints: number = 200
+  numPoints: number = 200,
+  xRange?: [number, number],
 ): { x: number[]; y: number[] } {
   if (samples.length === 0) return { x: [], y: [] };
   
@@ -144,10 +167,14 @@ export function generateKDE(
   const max = Math.max(...samples);
   const range = max - min;
   
-  // Extend range slightly for visual padding
-  const padding = range * 0.05;
-  const xMin = min - padding;
-  const xMax = max + padding;
+  let xMin: number, xMax: number;
+  if (xRange) {
+    [xMin, xMax] = xRange;
+  } else {
+    const padding = range * 0.05;
+    xMin = min - padding;
+    xMax = max + padding;
+  }
   
   // Silverman's rule of thumb for bandwidth
   const stdDev = getStdDev(samples);
@@ -165,7 +192,7 @@ export function generateKDE(
     const xi = xMin + (i / (numPoints - 1)) * (xMax - xMin);
     x.push(xi);
     
-    // Gaussian kernel
+    // Gaussian kernel — all samples contribute to density estimation
     let density = 0;
     for (const sample of samples) {
       const u = (xi - sample) / bandwidth;

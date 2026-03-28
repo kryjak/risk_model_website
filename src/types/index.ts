@@ -18,7 +18,7 @@ export interface RiskModelsIndex {
 
 // Rationales file
 export type NodeType = 'probability' | 'continuous' | 'quantity';
-export type CombinationMode = 'AND' | 'OR';
+export type CombinationMode = 'AND' | 'OR' | 'XOR';
 
 export interface RationaleNode {
   id: string;
