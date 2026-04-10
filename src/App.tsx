@@ -246,8 +246,8 @@ function App() {
                 <ScenarioCard
                   title={selectedModel.name}
                   description={modelDescription || selectedModel.description}
-                  hasKRIMappings={Object.keys(benchmarkMappings).length > 0}
-                  onShowKRIMappings={() => setIsKRIModalOpen(true)}
+                  hasScenarioInputs={scenarioInputs.length > 0}
+                  onShowScenarioInputs={() => setIsInputsModalOpen(true)}
                 />
               ) : null}
 
@@ -265,7 +265,16 @@ function App() {
 
               {/* Bayesian Network Placeholder */}
               {showContent && (
-                <BayesianNetworkPlaceholder modelId={selectedModelId} />
+                <BayesianNetworkPlaceholder
+                  modelId={selectedModelId}
+                  hasKRIMappings={Object.keys(benchmarkMappings).length > 0}
+                  onShowKRIMappings={() => setIsKRIModalOpen(true)}
+                />
+              )}
+
+              {/* Attack Steps (Tactic & Technique Selection) */}
+              {showContent && attackSteps.length > 0 && (
+                <AttackStepsSection steps={attackSteps} />
               )}
 
               {/* Divider */}
