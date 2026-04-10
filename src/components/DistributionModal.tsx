@@ -67,14 +67,32 @@ export function DistributionModal({ estimate, isOpen, onClose }: DistributionMod
     return generateCurrencyTicks([estimate.baselineSamples, estimate.sotaSamples, estimate.saturatedSamples], 6, modalXRange);
   }, [estimate, isCurrencyAxis, modalXRange]);
 
+  const kdes = useMemo(() => {
+    if (!estimate) return null;
+    return {
+      baseline: generateKDE(estimate.baselineSamples, 200, modalXRange),
+      sota: generateKDE(estimate.sotaSamples, 200, modalXRange),
+      saturated: generateKDE(estimate.saturatedSamples, 200, modalXRange),
+    };
+  }, [estimate, modalXRange]);
+
+  const stats = useMemo(() => {
+    if (!estimate) return null;
+    return {
+      baseline: getSummaryStatistics(estimate.baselineSamples),
+      sota: getSummaryStatistics(estimate.sotaSamples),
+      saturated: getSummaryStatistics(estimate.saturatedSamples),
+    };
+  }, [estimate]);
+
   if (!isOpen || !estimate) return null;
 
-  const baselineKDE = generateKDE(estimate.baselineSamples, 200, modalXRange);
-  const sotaKDE = generateKDE(estimate.sotaSamples, 200, modalXRange);
-  const saturatedKDE = generateKDE(estimate.saturatedSamples, 200, modalXRange);
-  const baselineStats = getSummaryStatistics(estimate.baselineSamples);
-  const sotaStats = getSummaryStatistics(estimate.sotaSamples);
-  const saturatedStats = getSummaryStatistics(estimate.saturatedSamples);
+  const baselineKDE = kdes!.baseline;
+  const sotaKDE = kdes!.sota;
+  const saturatedKDE = kdes!.saturated;
+  const baselineStats = stats!.baseline;
+  const sotaStats = stats!.sota;
+  const saturatedStats = stats!.saturated;
 
   const hasValidData = baselineKDE.x.length > 0;
 
