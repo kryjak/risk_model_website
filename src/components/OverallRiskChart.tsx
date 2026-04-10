@@ -183,20 +183,20 @@ export function OverallRiskChart({
       )}
 
       {/* Summary Statistics */}
-      <div className="mt-6 grid grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="mt-4 grid grid-cols-2 lg:grid-cols-3 gap-4">
         <StatCard
-          label="Expected Value (Baseline)"
+          label="Mean (Baseline)"
           value={formatCurrency(baselineStats.mean)}
           color="safer-blue"
         />
         <StatCard
-          label="Expected Value (SOTA)"
+          label="Mean (SOTA)"
           value={formatCurrency(sotaStats.mean)}
           color="safer-purple"
           change={sotaMeanChange}
         />
         <StatCard
-          label="Expected Value (Saturated)"
+          label="Mean (Saturated)"
           value={formatCurrency(saturatedStats.mean)}
           color="safer-teal"
           change={satMeanChange}
