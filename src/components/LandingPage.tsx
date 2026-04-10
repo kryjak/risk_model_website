@@ -174,6 +174,16 @@ export function LandingPage({ index, onSelectModel }: LandingPageProps) {
           );
         })}
       </div>
+
+      <div className="text-center text-sm text-gray-400">
+        Corresponding author:{' '}
+        <a
+          href="mailto:jakub@safer-ai.org"
+          className="text-safer-blue hover:text-safer-blue/80 underline underline-offset-2"
+        >
+          jakub@safer-ai.org
+        </a>
+      </div>
     </div>
   );
 }
