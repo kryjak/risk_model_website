@@ -190,6 +190,12 @@ export function useModelData(model: RiskModelIndexEntry | null): UseModelDataRes
   };
 }
 
+function isNotUplifted(node: RationaleNode): boolean {
+  const sota = node.sotaRationale?.toLowerCase() || '';
+  const sat = node.saturatedRationale?.toLowerCase() || '';
+  return sota.includes('not elicited') || sat.includes('not elicited');
+}
+
 function computeParameterEstimates(
   rationales: ModelRationales,
   percentiles: ModelPercentiles,
@@ -230,16 +236,18 @@ function computeParameterEstimates(
           sota: { p5: 0, p50: 0, p95: 0 },
           saturated: { p5: 0, p50: 0, p95: 0 },
         };
+        const techNotUplifted = isNotUplifted(techNode);
+        const bSamples = hasSamples ? (baselineSamples.samples[techNode.id] || []) : [];
         return {
           nodeId: techNode.id,
           name: techNode.name,
           combinationMode: techNode.combinationMode || 'AND',
           baseline: techPctls.baseline,
-          sota: techPctls.sota,
-          saturated: techPctls.saturated,
-          baselineSamples: hasSamples ? (baselineSamples.samples[techNode.id] || []) : [],
-          sotaSamples: hasSamples ? (sotaSamples.samples[techNode.id] || []) : [],
-          saturatedSamples: hasSamples ? (saturatedSamples.samples[techNode.id] || []) : [],
+          sota: techNotUplifted ? techPctls.baseline : techPctls.sota,
+          saturated: techNotUplifted ? techPctls.baseline : techPctls.saturated,
+          baselineSamples: bSamples,
+          sotaSamples: techNotUplifted ? bSamples : (hasSamples ? (sotaSamples.samples[techNode.id] || []) : []),
+          saturatedSamples: techNotUplifted ? bSamples : (hasSamples ? (saturatedSamples.samples[techNode.id] || []) : []),
           baselineRationale: techNode.baselineRationale || '',
           sotaRationale: techNode.sotaRationale || '',
           saturatedRationale: techNode.saturatedRationale || '',
@@ -248,17 +256,19 @@ function computeParameterEstimates(
       });
     }
 
+    const nodeNotUplifted = isNotUplifted(node);
+    const bSamples = hasSamples ? (baselineSamples.samples[node.id] || []) : [];
     estimates.push({
       nodeId: node.id,
       name: node.name,
       nodeType: node.nodeType,
       unit: node.unit,
       baseline: pctls.baseline,
-      sota: pctls.sota,
-      saturated: pctls.saturated,
-      baselineSamples: hasSamples ? (baselineSamples.samples[node.id] || []) : [],
-      sotaSamples: hasSamples ? (sotaSamples.samples[node.id] || []) : [],
-      saturatedSamples: hasSamples ? (saturatedSamples.samples[node.id] || []) : [],
+      sota: nodeNotUplifted ? pctls.baseline : pctls.sota,
+      saturated: nodeNotUplifted ? pctls.baseline : pctls.saturated,
+      baselineSamples: bSamples,
+      sotaSamples: nodeNotUplifted ? bSamples : (hasSamples ? (sotaSamples.samples[node.id] || []) : []),
+      saturatedSamples: nodeNotUplifted ? bSamples : (hasSamples ? (saturatedSamples.samples[node.id] || []) : []),
       baselineRationale: node.baselineRationale || '',
       sotaRationale: node.sotaRationale || '',
       saturatedRationale: node.saturatedRationale || '',
