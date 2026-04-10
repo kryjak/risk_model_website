@@ -69,6 +69,29 @@ When you add data files for new models, **add their IDs to this set** so the "Lo
     "CyBench": ["Reconnaissance", "Initial Access", "Execution"],
     "BountyBench": ["Initial Access", "Privilege Escalation"]
   },
+  "scenarioInputs": [
+    { "heading": "Type of Actor", "content": "* We consider an actor aligned with..." },
+    { "heading": "Type of Target", "content": "* We consider the target to be..." },
+    { "heading": "Type of Vector", "content": "* The main vector of this scenario is..." },
+    { "heading": "Defense Level", "content": "* Medium-sized organizations..." },
+    { "heading": "Intent", "content": "* The intent of the attack is..." }
+  ],
+  "attackSteps": [
+    {
+      "step": "Reconnaissance",
+      "included": true,
+      "description": "The actor will typically look for public OSINT...",
+      "failureMode": "Failure at this stage means the actor is not able to collect...",
+      "breakdown": "tactic",
+      "breakdownRationale": "High probability of success — not worth breaking down...",
+      "techniques": ["T1589 - Gather Victim Identity Information"]
+    },
+    {
+      "step": "Privilege Escalation",
+      "included": false,
+      "description": "Some actors may attempt to phish higher level employees..."
+    }
+  ],
   "nodes": [ ... ]
 }
 ```
@@ -77,8 +100,37 @@ When you add data files for new models, **add their IDs to this set** so the "Lo
 |-------|---------|
 | `modelId` | Must match the `id` in the index. |
 | `modelDescription` | Full scenario description (shown in the scenario card, overrides the index description). |
-| `benchmarkMappings` | (Optional) KRI-to-parameter mappings. If present, a "Show KRI Mappings" button appears in the scenario card. Keys are benchmark names, values are arrays of **node names** (not IDs). |
+| `benchmarkMappings` | (Optional) KRI-to-parameter mappings. If present, a "Show KRI Mappings" button appears on the Bayesian Network Structure panel. Keys are benchmark names, values are arrays of **node names** (not IDs). |
+| `scenarioInputs` | (Optional) Array of scenario input sections. If present, a "Learn more about this scenario" button appears on the scenario card that opens a modal. See **Scenario Inputs** below. |
+| `attackSteps` | (Optional) Array of attack step objects. If present, a collapsible "Tactic and Technique Selection" panel appears between the Bayesian Network and the estimates tables. See **Attack Steps** below. |
 | `nodes` | Array of node definitions (see below). |
+
+### Scenario Inputs
+
+These describe the background assumptions of the scenario — actor type, target, vector, defence level, and intent. They are displayed in a scrollable modal when the user clicks "Learn more about this scenario" on the scenario card.
+
+Each entry has two fields:
+
+| Field | Type | Purpose |
+|-------|------|---------|
+| `heading` | string | Section heading (e.g. "Type of Actor"). |
+| `content` | string | Markdown-formatted body text. Supports bullet points, nested lists, links, bold, and tables. |
+
+Typical sections (in order): Type of Actor, Type of Target, Type of Vector, Defense Level, Intent. Do **not** include the "Scenario summary vignette" subsection — it is already captured by `modelDescription`.
+
+### Attack Steps
+
+These document which MITRE ATT&CK tactics are included in the scenario and whether each is estimated at the tactic or technique level. Displayed as a collapsible table with expandable rows.
+
+| Field | Type | Required | Purpose |
+|-------|------|----------|---------|
+| `step` | string | Yes | MITRE tactic name (e.g. "Reconnaissance"). |
+| `included` | boolean | Yes | Whether this tactic is part of the attack chain. |
+| `description` | string | Yes | What happens at this step / why it is excluded. |
+| `failureMode` | string | No | What can cause failure at this step. Omit or use `""` for excluded steps. |
+| `breakdown` | `"tactic"` or `"technique"` | No | Whether the step is estimated at tactic or technique level. Only for included steps. |
+| `breakdownRationale` | string | No | Why the step is kept at tactic level or broken into techniques. Only for included steps. |
+| `techniques` | string[] | No | Relevant MITRE technique IDs/names. May be present even for tactic-level steps (as reference). |
 
 ### Node Types
 
@@ -269,6 +321,8 @@ All three files per model should reference the same set of node IDs. The percent
    - List all nodes with their IDs, names, types, and per-scenario rationale text
    - Include `benchmarkMappings` if you want the KRI modal
    - Include a `modelDescription`
+   - (Optional) Include `scenarioInputs` — array of `{ heading, content }` sections extracted from the scenario vignette's INPUTS section
+   - (Optional) Include `attackSteps` — array of attack step objects extracted from the vignette's "Steps in attack" tables
 
 3. **Create the percentiles file** (`public/data/percentiles/{name}_percentiles.json`):
    - Pre-compute p5/p50/p95 for every non-probability node across all three scenarios
@@ -308,10 +362,12 @@ public/
 src/
 ├── components/
 │   ├── LandingPage.tsx                ← Edit modelsWithData set here
-│   ├── ScenarioCard.tsx               ← Shows KRI Mappings button if data present
+│   ├── ScenarioCard.tsx               ← Shows "Learn more about this scenario" button if scenarioInputs present
+│   ├── ScenarioInputsModal.tsx        ← Modal rendering scenarioInputs markdown sections
+│   ├── AttackStepsSection.tsx         ← Collapsible tactic/technique selection table
+│   ├── BayesianNetworkPlaceholder.tsx ← Network image + KRI Mappings button
 │   ├── FeedbackButton.tsx             ← Floating feedback link (all pages)
-│   ├── ByParameterView.tsx            ← Tree-view parameter selector + cross-model table
-│   └── BayesianNetworkPlaceholder.tsx ← Replace with real visualisation
+│   └── ByParameterView.tsx            ← Tree-view parameter selector + cross-model table
 ├── hooks/
 │   └── useModelData.ts                ← Data loading and processing logic
 ├── utils/
@@ -333,7 +389,9 @@ src/
 | Table shows no rows | No `continuous` or `quantity` nodes in rationales file, or node IDs missing from percentiles |
 | Distribution chart button disabled | Sample files not provided or not referenced in index |
 | Distribution chart is blank | Samples array empty or contains non-numeric values |
-| No "Show KRI Mappings" button in scenario card | No `benchmarkMappings` field in the rationales JSON |
+| No "Show KRI Mappings" button on Bayesian Network panel | No `benchmarkMappings` field in the rationales JSON |
+| No "Learn more about this scenario" button | No `scenarioInputs` field (or empty array) in the rationales JSON |
+| No "Tactic and Technique Selection" section | No `attackSteps` field (or empty array) in the rationales JSON |
 | Techniques not nesting under tactics | Missing `parentTactic` field on technique nodes |
 | AND/OR/XOR connector not showing | Missing `combinationMode` field on technique nodes |
 | Total Risk chart missing | No node with `name: "Total Risk"` and `nodeType: "quantity"` |
