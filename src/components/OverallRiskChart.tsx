@@ -182,6 +182,11 @@ export function OverallRiskChart({
         </div>
       )}
 
+      {/* SOTA note */}
+      <p className="mt-4 text-sm text-orange-800 text-center">
+        SOTA represents state-of-the-art AI capabilities as of December 2025.
+      </p>
+
       {/* Summary Statistics */}
       <div className="mt-4 grid grid-cols-2 lg:grid-cols-3 gap-4">
         <StatCard
