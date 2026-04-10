@@ -18,10 +18,47 @@ export function LandingPage({ index, onSelectModel }: LandingPageProps) {
         <h2 className="text-3xl font-serif font-light text-safer-charcoal mb-3">
           Risk Model Explorer
         </h2>
-        <p className="text-gray-500 max-w-2xl mx-auto">
-          Explore quantitative risk models for AI-enabled cyber threats. Each model
-          captures a specific attack scenario with Bayesian network analysis across
-          baseline, SOTA, and saturated AI capability levels.
+      </div>
+      <div className="max-w-3xl mx-auto mb-10">
+        <p className="text-gray-500 mb-4">
+          Explore quantitative risk models for AI-enabled cyber threats, developed
+          as part of our research:
+        </p>
+        <ul className="text-gray-500 space-y-2 list-disc list-inside mb-4">
+          <li>
+            <a
+              href="https://arxiv.org/abs/2512.08723"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-safer-blue hover:text-safer-blue/80 underline underline-offset-2"
+            >
+              The Role of Risk Modeling in Advanced AI Risk Management
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://arxiv.org/abs/2512.08844"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-safer-blue hover:text-safer-blue/80 underline underline-offset-2"
+            >
+              A Methodology for Quantitative AI Risk Modeling
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://arxiv.org/abs/2512.08864"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-safer-blue hover:text-safer-blue/80 underline underline-offset-2"
+            >
+              Cybersecurity risks due to AI misuseToward Quantitative Modeling of Cybersecurity Risks Due to AI Misuse
+            </a>
+          </li>
+        </ul>
+        <p className="text-gray-500">
+          Each model captures a specific attack scenario with Bayesian network
+          analysis across baseline (human-only), SOTA, and saturated AI capability levels.
           {' '}
           <a
             href="https://forms.gle/rGr99QezryNVrnyH7"
@@ -86,7 +123,7 @@ export function LandingPage({ index, onSelectModel }: LandingPageProps) {
         )}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
         {index.models.map((model) => {
           const hasData = modelsWithData.has(model.id);
           return (
