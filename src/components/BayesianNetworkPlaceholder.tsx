@@ -1,11 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
-import { ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
+import { ZoomIn, ZoomOut, RotateCcw, Map } from 'lucide-react';
 
 interface BayesianNetworkPlaceholderProps {
   modelId: string;
+  hasKRIMappings?: boolean;
+  onShowKRIMappings?: () => void;
 }
 
-export function BayesianNetworkPlaceholder({ modelId }: BayesianNetworkPlaceholderProps) {
+export function BayesianNetworkPlaceholder({ modelId, hasKRIMappings, onShowKRIMappings }: BayesianNetworkPlaceholderProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [zoom, setZoom] = useState(1);
 
@@ -46,9 +48,20 @@ export function BayesianNetworkPlaceholder({ modelId }: BayesianNetworkPlacehold
   return (
     <>
       <div className="card">
-        <h3 className="text-xl font-serif font-medium text-safer-charcoal mb-4">
-          Bayesian Network Structure
-        </h3>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-xl font-serif font-medium text-safer-charcoal">
+            Bayesian Network Structure
+          </h3>
+          {hasKRIMappings && onShowKRIMappings && (
+            <button
+              onClick={onShowKRIMappings}
+              className="flex items-center gap-1.5 text-sm font-medium text-safer-purple border border-safer-purple/30 rounded-lg px-3 py-1.5 hover:bg-safer-purple/5 transition-colors"
+            >
+              <Map className="w-4 h-4" />
+              Show KRI Mappings
+            </button>
+          )}
+        </div>
         <div
           data-network-container
           className="flex items-center justify-center rounded-lg border border-gray-300 bg-white"
