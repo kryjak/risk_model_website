@@ -220,6 +220,25 @@ function App() {
                 ) : null}
               </div>
 
+              {/* LLM Disclaimer — only for non-human-elicited models */}
+              {showContent && selectedModel && !selectedModel.name.toLowerCase().includes('human') && (
+                <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 flex items-start gap-2">
+                  <span className="mt-0.5 flex-shrink-0 text-amber-500">⚠</span>
+                  <p>
+                    The LLM estimator used to produce these values is still under active development and has known limitations — in particular, LLMs tend to be overly conservative relative to human experts. These estimates should not be used to inform decision-making. We are actively working on improving the methodology; see our{' '}
+                    <a
+                      href="https://www.safer-ai.org/technical-report-llm-simulated-expert-judgement-for-quantitative-ai-risk-estimation"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline underline-offset-2 hover:text-amber-900"
+                    >
+                      technical report on LLM-simulated expert judgement
+                    </a>
+                    {' '}for details.
+                  </p>
+                </div>
+              )}
+
               {/* Scenario Description */}
               {isLoading ? (
                 <ScenarioCardSkeleton />
