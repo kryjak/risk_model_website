@@ -107,6 +107,16 @@ export function OverallRiskChart({
               fillcolor: 'rgba(45, 106, 79, 0.25)',
               line: { color: '#2D6A4F', width: 2.5 },
             },
+            {
+              x: [null],
+              y: [null],
+              type: 'scatter',
+              mode: 'lines',
+              name: 'Mean',
+              showlegend: true,
+              line: { color: '#000000', width: 1.5, dash: 'dash' },
+              hoverinfo: 'skip',
+            },
           ]}
           layout={{
             autosize: true,
@@ -130,11 +140,11 @@ export function OverallRiskChart({
               zerolinecolor: '#9CA3AF',
             },
             legend: {
-              orientation: 'h',
-              yanchor: 'bottom',
-              y: 1.02,
+              orientation: 'v',
+              yanchor: 'top',
+              y: 0.98,
               xanchor: 'right',
-              x: 1,
+              x: 0.98,
             },
             hovermode: 'x unified',
             shapes: [
