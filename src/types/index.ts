@@ -3,6 +3,7 @@ export interface RiskModelIndexEntry {
   id: string;
   name: string;
   description: string;
+  shortDescription?: string;
   rationalesFile: string;
   percentilesFile: string;
   baselineSamplesFile?: string;

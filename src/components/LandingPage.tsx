@@ -110,8 +110,8 @@ export function LandingPage({ index, onSelectModel }: LandingPageProps) {
               <h3 className="text-lg font-serif font-medium text-safer-charcoal mb-2 leading-snug">
                 {model.name}
               </h3>
-              <p className="text-sm text-gray-500 flex-1 line-clamp-3">
-                {model.description}
+              <p className="text-sm text-gray-500 flex-1">
+                {model.shortDescription ?? model.description}
               </p>
               <div className="mt-4 pt-3 border-t border-gray-100">
                 {hasData ? (
