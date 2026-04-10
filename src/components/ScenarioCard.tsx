@@ -1,13 +1,13 @@
-import { FileText, Map } from 'lucide-react';
+import { FileText, BookOpen } from 'lucide-react';
 
 interface ScenarioCardProps {
   title: string;
   description: string;
-  onShowKRIMappings?: () => void;
-  hasKRIMappings?: boolean;
+  hasScenarioInputs?: boolean;
+  onShowScenarioInputs?: () => void;
 }
 
-export function ScenarioCard({ title, description, onShowKRIMappings, hasKRIMappings }: ScenarioCardProps) {
+export function ScenarioCard({ title, description, hasScenarioInputs, onShowScenarioInputs }: ScenarioCardProps) {
   return (
     <div className="card">
       <div className="flex items-start gap-3">
@@ -19,14 +19,14 @@ export function ScenarioCard({ title, description, onShowKRIMappings, hasKRIMapp
           <p className="text-sm text-gray-600 leading-relaxed">
             {description}
           </p>
-          {hasKRIMappings && onShowKRIMappings && (
+          {hasScenarioInputs && onShowScenarioInputs && (
             <div className="mt-3">
               <button
-                onClick={onShowKRIMappings}
-                className="flex items-center gap-1.5 text-sm font-medium text-safer-purple border border-safer-purple/30 rounded-lg px-3 py-1.5 hover:bg-safer-purple/5 transition-colors"
+                onClick={onShowScenarioInputs}
+                className="flex items-center gap-1.5 text-sm font-medium text-safer-blue border border-safer-blue/30 rounded-lg px-3 py-1.5 hover:bg-safer-blue/5 transition-colors"
               >
-                <Map className="w-4 h-4" />
-                Show KRI Mappings
+                <BookOpen className="w-4 h-4" />
+                Learn more about this scenario
               </button>
             </div>
           )}

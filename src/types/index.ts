@@ -33,10 +33,27 @@ export interface RationaleNode {
   saturatedRationale: string;
 }
 
+export interface ScenarioInputSection {
+  heading: string;
+  content: string;
+}
+
+export interface AttackStep {
+  step: string;
+  included: boolean;
+  description: string;
+  failureMode?: string;
+  breakdown?: 'tactic' | 'technique';
+  breakdownRationale?: string;
+  techniques?: string[];
+}
+
 export interface ModelRationales {
   modelId: string;
   modelDescription: string;
   benchmarkMappings?: Record<string, string[]>;
+  scenarioInputs?: ScenarioInputSection[];
+  attackSteps?: AttackStep[];
   nodes: RationaleNode[];
 }
 

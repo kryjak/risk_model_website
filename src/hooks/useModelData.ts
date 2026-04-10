@@ -5,6 +5,8 @@ import type {
   ParameterEstimate,
   TechniqueChild,
   BenchmarkMappings,
+  ScenarioInputSection,
+  AttackStep,
   ModelRationales,
   ModelPercentiles,
   ModelSamples,
@@ -25,6 +27,8 @@ interface UseModelDataResult extends LoadingState {
   data: SplitModelData;
   parameterEstimates: ParameterEstimate[];
   benchmarkMappings: BenchmarkMappings;
+  scenarioInputs: ScenarioInputSection[];
+  attackSteps: AttackStep[];
   totalRiskSamples: { baseline: number[]; sota: number[]; saturated: number[] };
   modelDescription: string;
   samplesAvailable: boolean;
@@ -39,6 +43,8 @@ export function useModelData(model: RiskModelIndexEntry | null): UseModelDataRes
   });
   const [parameterEstimates, setParameterEstimates] = useState<ParameterEstimate[]>([]);
   const [benchmarkMappings, setBenchmarkMappings] = useState<BenchmarkMappings>({});
+  const [scenarioInputs, setScenarioInputs] = useState<ScenarioInputSection[]>([]);
+  const [attackSteps, setAttackSteps] = useState<AttackStep[]>([]);
   const [totalRiskSamples, setTotalRiskSamples] = useState<{ baseline: number[]; sota: number[]; saturated: number[] }>({ baseline: [], sota: [], saturated: [] });
   const [modelDescription, setModelDescription] = useState('');
   const [samplesAvailable, setSamplesAvailable] = useState(false);
@@ -50,6 +56,8 @@ export function useModelData(model: RiskModelIndexEntry | null): UseModelDataRes
       setData({ rationales: null, percentiles: null, samples: { baseline: null, sota: null, saturated: null } });
       setParameterEstimates([]);
       setBenchmarkMappings({});
+      setScenarioInputs([]);
+      setAttackSteps([]);
       setTotalRiskSamples({ baseline: [], sota: [], saturated: [] });
       setModelDescription('');
       setSamplesAvailable(false);
@@ -89,6 +97,8 @@ export function useModelData(model: RiskModelIndexEntry | null): UseModelDataRes
       }
 
       setBenchmarkMappings(rationales.benchmarkMappings || {});
+      setScenarioInputs(rationales.scenarioInputs || []);
+      setAttackSteps(rationales.attackSteps || []);
       setModelDescription(rationales.modelDescription || model.description);
 
       // Phase 2: fetch samples (optional, ~1MB)
@@ -151,6 +161,8 @@ export function useModelData(model: RiskModelIndexEntry | null): UseModelDataRes
       setData({ rationales: null, percentiles: null, samples: { baseline: null, sota: null, saturated: null } });
       setParameterEstimates([]);
       setBenchmarkMappings({});
+      setScenarioInputs([]);
+      setAttackSteps([]);
       setTotalRiskSamples({ baseline: [], sota: [], saturated: [] });
       setModelDescription('');
       setSamplesAvailable(false);
@@ -167,6 +179,8 @@ export function useModelData(model: RiskModelIndexEntry | null): UseModelDataRes
     data,
     parameterEstimates,
     benchmarkMappings,
+    scenarioInputs,
+    attackSteps,
     totalRiskSamples,
     modelDescription,
     samplesAvailable,

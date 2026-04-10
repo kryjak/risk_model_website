@@ -8,6 +8,8 @@ import { DistributionModal } from './components/DistributionModal';
 import { OverallRiskChart, OverallRiskChartSkeleton } from './components/OverallRiskChart';
 import { BayesianNetworkPlaceholder } from './components/BayesianNetworkPlaceholder';
 import { KRIMappingsModal } from './components/KRIMappingsModal';
+import { ScenarioInputsModal } from './components/ScenarioInputsModal';
+import { AttackStepsSection } from './components/AttackStepsSection';
 import { LandingPage, LandingPageSkeleton } from './components/LandingPage';
 import { ByParameterView } from './components/ByParameterView';
 import { ErrorMessage } from './components/ErrorMessage';
@@ -30,6 +32,8 @@ function App() {
     data: modelData,
     parameterEstimates,
     benchmarkMappings,
+    scenarioInputs,
+    attackSteps,
     totalRiskSamples,
     modelDescription,
     isLoading: modelLoading,
@@ -46,6 +50,7 @@ function App() {
   const [selectedEstimate, setSelectedEstimate] = useState<ParameterEstimate | null>(null);
   const [isDistModalOpen, setIsDistModalOpen] = useState(false);
   const [isKRIModalOpen, setIsKRIModalOpen] = useState(false);
+  const [isInputsModalOpen, setIsInputsModalOpen] = useState(false);
 
   // Update cache when model data loads
   useEffect(() => {
@@ -345,6 +350,13 @@ function App() {
         mappings={benchmarkMappings}
         isOpen={isKRIModalOpen}
         onClose={() => setIsKRIModalOpen(false)}
+      />
+
+      {/* Scenario Inputs Modal */}
+      <ScenarioInputsModal
+        sections={scenarioInputs}
+        isOpen={isInputsModalOpen}
+        onClose={() => setIsInputsModalOpen(false)}
       />
     </div>
   );
