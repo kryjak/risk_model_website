@@ -92,9 +92,9 @@ export function generateHistogramBins(
   numBins: number = 50
 ): HistogramBin[] {
   if (samples.length === 0) return [];
-  
-  const min = Math.min(...samples);
-  const max = Math.max(...samples);
+
+  let min = samples[0], max = samples[0];
+  for (const v of samples) { if (v < min) min = v; if (v > max) max = v; }
   const binWidth = (max - min) / numBins;
   
   // Avoid division by zero for constant data
@@ -163,8 +163,8 @@ export function generateKDE(
 ): { x: number[]; y: number[] } {
   if (samples.length === 0) return { x: [], y: [] };
   
-  const min = Math.min(...samples);
-  const max = Math.max(...samples);
+  let min = samples[0], max = samples[0];
+  for (const v of samples) { if (v < min) min = v; if (v > max) max = v; }
   const range = max - min;
   
   let xMin: number, xMax: number;

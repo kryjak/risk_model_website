@@ -20,13 +20,20 @@ export function OverallRiskChart({
 }: OverallRiskChartProps) {
   const graphDivRef = useRef<HTMLElement | null>(null);
 
-  const xRange = computeRobustRange([baselineSamples, sotaSamples, saturatedSamples]);
-  const baselineKDE = generateKDE(baselineSamples, 200, xRange);
-  const sotaKDE = generateKDE(sotaSamples, 200, xRange);
-  const saturatedKDE = generateKDE(saturatedSamples, 200, xRange);
-  const baselineStats = getSummaryStatistics(baselineSamples);
-  const sotaStats = getSummaryStatistics(sotaSamples);
-  const saturatedStats = getSummaryStatistics(saturatedSamples);
+  const xRange = useMemo(
+    () => computeRobustRange([baselineSamples, sotaSamples, saturatedSamples]),
+    [baselineSamples, sotaSamples, saturatedSamples],
+  );
+  const { baselineKDE, sotaKDE, saturatedKDE } = useMemo(() => ({
+    baselineKDE: generateKDE(baselineSamples, 200, xRange),
+    sotaKDE: generateKDE(sotaSamples, 200, xRange),
+    saturatedKDE: generateKDE(saturatedSamples, 200, xRange),
+  }), [baselineSamples, sotaSamples, saturatedSamples, xRange]);
+  const { baselineStats, sotaStats, saturatedStats } = useMemo(() => ({
+    baselineStats: getSummaryStatistics(baselineSamples),
+    sotaStats: getSummaryStatistics(sotaSamples),
+    saturatedStats: getSummaryStatistics(saturatedSamples),
+  }), [baselineSamples, sotaSamples, saturatedSamples]);
 
   const sotaMeanChange = formatChange(baselineStats.mean, sotaStats.mean);
   const sotaP95Change = formatChange(baselineStats.p95, sotaStats.p95);
