@@ -30,6 +30,156 @@
       "Damage"
     ]
   },
+  "scenarioInputs": [
+    {
+      "heading": "Type of Actor",
+      "content": "* The actor is the same as in its paired model: defined as one that could execute a standard operation by leading cyber-capable institutions, matching [RAND's](https://www.rand.org/content/dam/rand/pubs/research_reports/RRA2800/RRA2849-1/RAND_RRA2849-1.pdf) OC-4 tier: Operations roughly less capable than or comparable to 100 individuals who have experience in a variety of relevant professions (cybersecurity, human intelligence gathering, physical operations, etc.) spending a year with a total budget of up to $10 million on the specific operation, with vast infrastructure and access to state resources such as legal cover, interception of communication infrastructure, and more. This includes the operations of many of the world's leading state-sponsored groups and many foreign intelligence agencies across the world. The top cyber-capable nations globally can execute such operations more than 100 times per year.\n* A typical example of an OC4 actor is [APT28 / Fancy Bear](https://en.wikipedia.org/wiki/Fancy_Bear). This is a well‑funded Russian GRU (foreign military intelligence agency of the Armed Forces) team with a track record of zero-day exploitation. Other examples include [Lazarus](https://en.wikipedia.org/wiki/Lazarus_Group) in North Korea, [Volt Typhoon](https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-038a) in China and [APT33/Elfin/Peach Sandstorm](https://attack.mitre.org/groups/G0064/) in Iran."
+    },
+    {
+      "heading": "Type of Target",
+      "content": "* This scenario focuses on critical infrastructure and control-system-heavy targets ‑ a category consisting of US CISA and UK NPSA sectors of Energy, Water & Waste-water Systems, Civil Nuclear, Chemicals, Manufacturing & Industrial Control.\n* In the [version of this risk model with a smaller target](https://docs.google.com/document/d/1YWNJQ9rtmWWFlZtrgAbvkFu2jjXh7-oo_uDPJQpfC5M/edit?tab=t.0), the target is a regional US, mid‑size, electric distribution utility, such as Alliant Energy – Iowa subsidiary (IPL). For this version, with a larger target, a typical example would be a major, multi-state investor-owned electric utility in the US, such as Duke Energy’s distribution business in North and South Carolina.\n* This has 7–9 million metered customers rather than 500k, >230,000 km of lines rather than 25,000 km, and annual revenue of $20-25 billion rather than $1–2 bn. It runs its own generation, transmission and distribution, so an outage can propagate beyond a single region and has significant market-balancing obligations. This scale provides a roughly 10-fold uplift in exposed load and economic stakes compared with the target in the small infrastructure scenario."
+    },
+    {
+      "heading": "Type of Vector",
+      "content": "A covert Russian GRU crew operating at the level of OC-4 operations (similar to [APT28](https://en.wikipedia.org/wiki/Fancy_Bear)) deploys a remote-access VPN zero-day as its entry point. The target is a multi-state, investor-owned electric utility with 7-9 million meters and a large OT (Operational Technology) footprint, such as Duke Energy.\n\n**Initial foothold**\n\nThe utility outsources feeder-automation maintenance to an engineering firm that manages hundreds of substations through a Fortinet FortiGate VPN cluster. The attacker weaponizes a still-private VPN flaw, replaying a playbook that has proven successful in the past. Because the vendor’s VPN spans six operating companies and goes deep into the corporate IT zone, a single exploit can give access to multiple Active Directory domains.\n\n**Privilege escalation**\n\nLeveraging the inherited trust between domains and the sprawl of service accounts, the team can obtain enterprise admin rights. They tunnel through the Energy-Management-System DMZ into distribution-management servers. They reuse “living-off-the-land” tools, plus a refined Industroyer2-style malware module tuned for the utility’s Schweitzer & ABB relays.\n\n**Large-scale information harvesting**\n\nOver several weeks, they use scripts to harvest >1,000 substation one-lines, feeder load tables, and settings, quietly replicating them to an offshore C2 using DNS-over-HTTPS. Many rural substations still run Windows 7 HMIs and cannot be patched without planned outages.\n\n**Coordinated breaker-open event**\n\nOn a cue, implants send simultaneous “open breaker” commands to ~30 of the high-load distribution substations across three grid regions. This leads to 3-5 GW of demand vanishing and ~1 million customers losing power. Protective-relay disablement prevents automatic reclosing, so restoration requires field crews to reflash relay firmware and re-energise feeders. This stretches outages into the next day.\n\n**Containment hurdles at large scale**\n\nThe utility’s compliance with tier-1 NERC-CIP (the standards designed to secure the assets required for operating North America’s Bulk Electric System) and 24×7 SOC mean the intrusion is eventually spotted, but cross-state network segmentation slows defense. Incident commanders must coordinate hundreds of truck crews, and authorities stabilize grids by borrowing power from neighbouring grids.\n\n**Representative attack vectors**\n\n* [Fortinet FortiGate (2025) VPN zero-day](https://www.rapid7.com/blog/post/2025/01/16/etr-fortinet-firewalls-hit-with-new-zero-day-attack-older-data-leak/) for initial access\n* [Dragonfly 2.0](https://www.security.com/threat-intelligence/dragonfly-energy-sector-cyber-attacks) (2017) for IT-to-OT pivot\n* [Industroyer2 relay-control module](https://cloud.google.com/blog/topics/threat-intelligence/industroyer-v2-old-malware-new-tricks) (Ukraine 2022) for sabotage payload\n* [Colonial Pipeline vendor-VPN compromise (2021)](https://www.techtarget.com/whatis/feature/Colonial-Pipeline-hack-explained-Everything-you-need-to-know) for remote-access precedent"
+    },
+    {
+      "heading": "Defense Level",
+      "content": "The overall defense posture is heavy-weight, but heterogeneous, roughly equal to upper-SL3 / lower-SL4 on [RAND's](https://www.rand.org/content/dam/rand/pubs/research_reports/RRA2800/RRA2849-1/RAND_RRA2849-1.pdf) scale.\n\nLarge electric utilities that have multi-state footprints sit in the top tier of compliance (“NERC-CIP High Impact”). Their cyber programmes are well-funded and audited, but still have uneven coverage due to sprawling legacy OT and many M&A activities.\n\n**Governance and budget**\n\nThey have a board-level risk committee; a large ($70-100 m/yr) budget; the CISO is at the level of the COO. Regulatory scrutiny is strict – annual audits and exposure to potential FERC fines ensure strict policy adherence. However, central governance does not necessarily equate execution in the field, so there might be “policy-to-practice drift” in pockets.\n\n**Prevention and architecture**\n\nThe utility is on the way to a zero-trust environment, with MFA on all accesses, micro-segmentation between corporate IT, EMS, and substation LANs and privileged-access vaults. However, it has legacy PLCs & Windows 7 HMIs in >30 % of substations; vendor VPN still terminates inside IT zones and patch windows are quarterly at best for OT. There are six AD forests with overlapping VPNs, so there is a large backlog across tens of thousands of devices.\n\n**Detection and response**\n\nThere are 24×7 dual SOCs (enterprise + OT) with Dragos/Nozomi sensors for monitoring and weekly purple-team drills. They also perform GridEx exercises every two years and have mutual-aid pacts with peer utilities. However, the inventory coverage of assets is only at ~85%, which leads to blind spots on rural feeder automation. There are delays in incident responses since there are six autonomous operating companies and there is heavy reliance on contractors for physical resets.\n\n**Supply chain and vendor risk**\n\nThe utility follows assessments mandated by the CIP-013 rule and they collect “SBOMs”. For vendors, the source code is escrowed and contractor laptops have EDR. However, there are >4,000 active vendors, many of which came through acquisitions and many suppliers lack MFA. The trust between AD forests gives attackers the ability to move laterally.\n\n**Resilience and recovery**\n\nThe utility owns different kinds of power plants and among them, they have “black-start units”, small generators that can start up without any outside electricity. They also have procedures for “islanding”, i.e. splitting the grid temporarily into self-sufficient pockets. They have write-protected settings and historical logs in the Energy Management System (EMS) and these are copied to a backup repository. However, re-energizing the field is still a manual process that requires on-site crews, which extends restoration.\n\nThis blend of advanced controls, continuous monitoring, and formal governance qualifies for the upper end of SL3. It falls short of full SL4 “strategically integrated, adaptive cyber defenders” because legacy OT, vendor sprawl, and federated governance still create many avenues for exploitation."
+    },
+    {
+      "heading": "Intent",
+      "content": "A covert GRU team wants a credible, quickly-activatable option to knock out a large slice of the US grid during a future geopolitical flare-up. Their intent is to do enough damage to inflict billions in direct economic losses and deal a blow to public confidence, but not so large damage that it would trigger unequivocal retaliation.\n\nUsing their overall hybrid-warfare playbook, they want to pre-position quietly and maintain silent access. Then they can trigger selectively, timed with an appropriate diplomatic crisis. They want to exploit the difficulties in restoration and cause a long duration outage. Large utilities like these need hundreds of trucking crews to manually reflash firmware. They also want to obscure attribution, so they use commodity tradecraft and vendor credentials that could look like an insider error."
+    }
+  ],
+  "attackSteps": [
+    {
+      "step": "Reconnaissance",
+      "included": true,
+      "description": "The attacker maps the six operating companies, vendor VPN hubs, one-line diagrams for >1,000 substations and prioritizes those that shed ≥ 100 MW.",
+      "failureMode": "The attacker picks the wrong vendor link or misses hidden trust paths, so later moves get noisy and the SOC notices sooner.",
+      "breakdown": "tactic",
+      "breakdownRationale": "Even at a giant IOU, scraping contractor links, AD trusts and substation diagrams has ≳ 90% success once the initial access is gained. Sub-variants add only little (Rules 3 & 4)."
+    },
+    {
+      "step": "Resource Development",
+      "included": true,
+      "description": "The attacker acquires the zero-day, build malware for several relay brands and rents C2 infrastructure with traffic-shaping for three grid regions.",
+      "failureMode": "The attacker can’t buy working FortiGate exploit or test payloads on the specific relay firmware → the campaign stalls or falls back on noisier exploits.",
+      "breakdown": "tactic",
+      "breakdownRationale": "Buying the FortiGate exploit, staging VPS/C2 infra, and compiling multi-vendor IEC-104 modules very likely succeed once funded; sub-options share very similar odds (Rules 2 & 4)."
+    },
+    {
+      "step": "Initial Access",
+      "included": true,
+      "description": "The attacker uses the auth-bypass flaw on a *vendor-managed* FortiGate cluster that terminates inside the corporate IT network for all six service territories.",
+      "failureMode": "The vendor patches the VPN or a proxy blocks the exploit → no foothold.",
+      "breakdown": "technique",
+      "breakdownRationale": "Each different entry path drives different success and detectability; SMEs can estimate each (Rules 2 & 3).",
+      "techniques": [
+        "T1190 – Exploit Public-Facing App (FortiGate 0-day)",
+        "T1133 – External Remote Services (stolen vendor VPN creds)",
+        "T1566.001 – Spear-phishing Attachment (utility staff)"
+      ]
+    },
+    {
+      "step": "Execution",
+      "included": true,
+      "description": "The attacker drops a web-shell on a contractor jump-host, runs PowerShell to steal AD tokens, and plants Industroyer2-style code inside the OT DMZ.",
+      "failureMode": "The EDR policy blocks the first web-shell; a SOC quarantine triggers an investigation → the pivot is delayed and any stealth erodes.",
+      "breakdown": "tactic",
+      "breakdownRationale": "Once a shell lands, running PowerShell/DLLs is ≥95% likely to succeed; so splitting adds no value (Rule 4)."
+    },
+    {
+      "step": "Persistence",
+      "included": true,
+      "description": "The attacker hides service files on engineering PCs in each state; schedules tasks so the backdoor survives Windows updates and vendor patch cycles.",
+      "failureMode": "Monthly gold-image refresh wipes implants every 30 days → must reinfect hosts, which increases the risk of detection.",
+      "breakdown": "tactic",
+      "breakdownRationale": "One service/scheduled-task for persistence is typically enough; SMEs can collapse variants into one probability (Rules 3 & 4)."
+    },
+    {
+      "step": "Privilege Escalation",
+      "included": true,
+      "description": "The attacker uses the trust between forests to mint Enterprise Admin tickets, and pivot into Energy-Management-System domain accounts.",
+      "failureMode": "Hardened domain controllers block DC Sync; cannot obtain OT admin; stuck in the IT zone.",
+      "breakdown": "technique",
+      "breakdownRationale": "The elevation route chosen (kernel exploit vs token theft) materially affects the odds (Rule 2).",
+      "techniques": [
+        "T1068 – Exploitation for PrivEsc – local kernel/driver 0-day",
+        "T1134 – Access-Token Manipulation – golden-ticket / pass-the-hash",
+        "T1055 – Process Injection – run implant as admin"
+      ]
+    },
+    {
+      "step": "Defense Evasion",
+      "included": false,
+      "description": "Defense Evasion is not modelled as a separate step; it underlies many of the other steps in this scenario."
+    },
+    {
+      "step": "Credential Access",
+      "included": true,
+      "description": "The attacker dumps LSASS and pilfers contractor passwords, which gives them clean RDP logins into distribution-management servers.",
+      "failureMode": "Failure to dump the relay-engineer passwords means lateral movement becomes noisy and the SOC is alarmed.",
+      "breakdown": "tactic",
+      "breakdownRationale": "Any dump that yields OT engineer creds effectively unlocks the estate; extra branches are redundant (Rule 3)."
+    },
+    {
+      "step": "Discovery",
+      "included": true,
+      "description": "The attacker scans EMS databases, pulls relay settings for 30 substations that would drop 3–5 GW if opened simultaneously.",
+      "failureMode": "Missing feeder-automation clusters or selecting wrong relays leads to a smaller blackout < 200 MW and less impact.",
+      "breakdown": "tactic",
+      "breakdownRationale": "Mapping ≥1,000 substations vs PLC lists differs in workload only, not likelihood (Rules 1 & 4)."
+    },
+    {
+      "step": "Lateral Movement",
+      "included": true,
+      "description": "The attacker pivots through a historian replication path and a shared OT jump-server to cross into substation networks.",
+      "failureMode": "Internal firewalls/OT gateways block the RDP proxy; the attacker is confined to the corporate VLAN.",
+      "breakdown": "technique",
+      "breakdownRationale": "A large IOU has three defensible choke-points: IT→ EMS DMZ, EMS→ OT jump-server, OT VLAN hopping. Each path’s success varies (Rule 2) and SMEs can estimate each (Rule 3).",
+      "techniques": [
+        "T1021.001 – Remote Services: RDP into EMS servers",
+        "T1021.002 – SMB/WMI into Engineering PCs",
+        "T1105 – Ingress Tool Transfer via OT jump-server"
+      ]
+    },
+    {
+      "step": "Collection",
+      "included": true,
+      "description": "The attacker gathers IEC-104 addresses, under-frequency load-shedding (UFLS) set-points, and breaker interlocks; then exfiltrate them for offline malware tuning.",
+      "failureMode": "If SCADA tag mapping is missing, sabotage commands may become mis-addressed.",
+      "breakdown": "tactic",
+      "breakdownRationale": "A single “scrape-everything” script against EMS databases still suffices; variants are immaterial (Rule 1)."
+    },
+    {
+      "step": "Command and Control",
+      "included": true,
+      "description": "The attacker uses DNS-over-HTTPS with jittered beacons to talk to three VPS nodes on different networks; this keeps a covert link alive until impact.",
+      "failureMode": "Outbound filters block DNS-over-HTTPS tunnel; the implants lose contact → the attack window gets close.",
+      "breakdown": "technique",
+      "breakdownRationale": "24×7 SOCs at a big IOU aggressively filter data transfer; while HTTPS blends in, DNS-over-HTTPS scores medium, and MQTT/ICCP tunnels are riskier. Differing odds & detectability therefore justify a split (Rules 2 & 3).",
+      "techniques": [
+        "T1071.001 – Web Protocols (HTTPS/443)",
+        "T1071.004 – DNS-over-HTTPS",
+        "T1048 – OT Protocol Tunnel (ICCP/MQTT)"
+      ]
+    },
+    {
+      "step": "Exfiltration",
+      "included": false,
+      "description": "Exfiltration is not modelled as a separate step; the intent of the attack is disruption, not data theft."
+    },
+    {
+      "step": "Impact",
+      "included": true,
+      "description": "The attacker sends precise breaker-open and relay-disable commands to 30 substations in three balancing authorities, blacking out a million customers.",
+      "failureMode": "A malformed IEC-104 frame makes relays ignore the command, causing only a momentary flicker.",
+      "breakdown": "tactic",
+      "breakdownRationale": "The actual sabotage (breaker-open / relay-disable) is a binary outcome; the sub-techniques share near-identical probabilities (Rules 2 & 3)."
+    }
+  ],
   "nodes": [
     {
       "id": "OC4-infra-large-cont-1",

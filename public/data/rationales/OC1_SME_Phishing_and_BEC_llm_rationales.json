@@ -18,6 +18,147 @@
       "Direct Cost of Invoice Payment"
     ]
   },
+  "scenarioInputs": [
+    {
+      "heading": "Type of Actor",
+      "content": "* We consider an actor aligned with the OC1 level of operations, as defined by RAND:\n* Operations roughly less capable than or comparable to a single individual with some limited professional expertise in information security, spending several days with a total budget of up to $1,000 on the specific operation, and no pre-existing infrastructure or access to the organization. This includes the operations of many hobbyist hackers, as well as more experienced hackers who implement completely untargeted \"spray and pray\" attacks.\n* Some prominent OC1 actors include Onel de Guzman, a 24-year-old computer science student, responsible for the [ILOVEYOU](https://en.wikipedia.org/wiki/ILOVEYOU) worm, or [Michael Calce](https://en.wikipedia.org/wiki/Michael_Calce), who at 15 launched DDoS attacks that took down Yahoo, Amazon, and CNN for over a week. These are atypical actors at the tail of the distribution, while most OC1 actors are less well known, and could include any computer science graduate or high schooler with access to forums and an interest in cybersecurity.\n* Some more recent examples include:\n  * The [several teenagers](https://www.theguardian.com/technology/2020/jul/31/twitter-hack-arrests-florida-uk-teenagers) who used phishing to hack the profiles of a number of Twitter celebrities in 2020 to promote cryptocurrency scams (whose techniques were noted as \"extremely sloppy\").\n  * An Australian [13 year old who hacked Apple](https://www.abc.net.au/news/2019-05-27/adelaide-teenager-hacked-into-apple-twice-in-two-years/11152492)'s systems twice in 2015 and 2017 in the hopes of gaining an employment offer at the company\n  * A UK based [22 year old who launched a DDoS attack](https://www.theregister.com/2021/06/30/bradley_niblock_election_ddos/) against the website of a Labour Party candidate, taking it down days before the 2019 general election\n* These examples serve to illustrate the wide range and potential for impact of even the most amateur hackers"
+    },
+    {
+      "heading": "Type of Target",
+      "content": "* We consider the target to be a financially attractive or data-rich organisation (Financial Services, Healthcare & Public Health, Commercial Facilities, Information Technology, Cloud Services).\n* OC1 actors typically do not have the resources to go after heightened security organisations, such as large banks. For this specific scenario, we will therefore consider the target to be in the range of an SME / Regional Bank / Fintech firm."
+    },
+    {
+      "heading": "Type of Vector",
+      "content": "* The main vector of this scenario is phishing and invoice fraud\n* An actor will typically first perform reconnaissance by searching for contacts of employees on social media and other open source intelligence platforms\n* The actor will then fake an identity in a communication to gain access to the target's organisation via a malicious link or attachment, generally sending out a high volume of phishing emails\n* Once inside the target's systems, the actor monitors the phished employee's inbox, waits for an upcoming transaction, and then requests that the banking details for the transaction be changed to a fraudulent account."
+    },
+    {
+      "heading": "Defense Level",
+      "content": "* Medium-sized organizations such as SMEs or Fintech firms would be expected to have several defenses against phishing attacks. These would typically include:\n  * Basic spam filters\n  * Partial DMARC/DKIM/SPF enforcement ([20% adoption across domains in 2024](https://www.valimail.com/blog/dmarc-growth-data/), with many adopters setting the lowest level of protection)\n  * MFA on some services (email, VPN, banking - [global adoption of MFA in SMBs is 35%](https://cyberreadinessinstitute.org/wp-content/uploads/CRI-Global-MFA-Survey-Slides-2024.pdf))\n  * Basic phishing awareness training ([59% of cybersecurity leaders deliver weekly or monthly security awareness training](https://www.egress.com/blog/phishing/phishing-statistics-round-up?utm_source=chatgpt.com), less than [25% of small businesses conduct regular cyber training](https://qualysec.com/small-business-cyber-attack-statistics/#:~:text=19.%2092,passwords%20to%20gain%20unauthorized%20access))\n  * The safety culture at these organizations is not always strictly enforced, and employees may not strictly adhere to training and security procedures ([91% of cybersecurity leaders express doubt in the effectiveness of their security awareness training](https://www.egress.com/blog/phishing/phishing-statistics-round-up?utm_source=chatgpt.com), [30% of IT professionals say most of their employees complete the training](https://www.helpnetsecurity.com/2021/07/23/risk-phishing-attacks/))"
+    },
+    {
+      "heading": "Intent",
+      "content": "* The intent of the attack is direct monetization. Within this goal there are three main options:\n  * Simplified Business Email Compromise (BEC) type attack whereby the actor simply modifies invoice information\n  * Data exfiltration/extortion whereby the actor downloads the customers data and resells it or threaten to resell it if they are not provided with a small payment\n  * Credentials sale, whereby the actor directly sells on the compromised credentials, typically to a higher tier actor\n* This scenario will focus on the first monetization method: the actor modifies an invoice, wire transfer details, or sends a fake payment request. These are not targeted or highly social engineered, and simply attempt to pass in the flow of regular business transactions.\n* The second monetization method verges on OC2 operational scale, as it typically requires persistent access for longer than a few days, and may require some form of negotiation, which OC1 actors do not typically engage in. Credential sale does not capture the end-to-end attack, as these credentials are typically used for further operations, and on its own is not such a major financial impact."
+    }
+  ],
+  "attackSteps": [
+    {
+      "step": "Reconnaissance",
+      "included": true,
+      "description": "The actor will typically look for public Open Source Intelligence (OSINT), scraping sites such as Linkedin for relevant role titles, and may look through breached data dumps. The actor may fail at this stage for a given company and still succeed for another, with little cost. Therefore we define this stage as \"the actor can find a large list of employee contacts for any organisation that they can reasonably attack\".",
+      "failureMode": "Failure at this stage means that the actor is not able to collect the contact details for sufficient contacts to continue the attack, which could be caused by most organisations having minimal public employee information or non standard/non guessable email formats.",
+      "breakdown": "tactic",
+      "breakdownRationale": "High probability of success - not worth breaking down for further granularity, all failure modes of different techniques are correlated, an LLM would not uplift different techniques differentially",
+      "techniques": [
+        "T1589 - Gather Victim Identity Information",
+        "T1590 - Gather Victim Network Info",
+        "T1591 - Gather Victim Org Information"
+      ]
+    },
+    {
+      "step": "Resource Development",
+      "included": true,
+      "description": "The actor registers a look alike domain (eg. paypal.com vs pay-pal.com) and sets up a basic phishing website, often using a pre-made phishing kit. The aim of this stage is purely to have all the infrastructure required to perform the attack.",
+      "failureMode": "Domain registrars block the purchase, the phishing kit is a known variant that is detectable by modern security tools, the phishing kit is non-functional, or the actor lacks the technical skill to deploy it on their server/VPS.",
+      "breakdown": "tactic",
+      "breakdownRationale": "There are not many different methods to be accounted for at this stage. The actor may choose to develop the infrastructure themselves, rather than purchasing a phishing kit, though this would simply reduce their likelihood of success. We can estimate the overall success of acquiring some usable infrastructure at the tactic level.",
+      "techniques": [
+        "T1583.001 - Acquire Infrastructure: Domains"
+      ]
+    },
+    {
+      "step": "Initial Access",
+      "included": true,
+      "description": "The actor crafts a phishing email, and then sends lures at scale to the targets gathered during reconnaissance. The aim of this stage is purely to get emails through email security into the target's inbox.",
+      "failureMode": "Failure at this stage means that the email does not land in the majority of inboxes. This could be caused by spam or other filters triggering on the email body itself, the domain being blocked by the target's DMARC policy, or the link being flagged as suspicious by the email gateway's URL scanner.",
+      "breakdown": "tactic",
+      "breakdownRationale": "The actor may choose variants of this method such as SMS phishing, phishing via attachment or via link, but the likelihoods of success are not substantially different, the failure modes are heavily correlated, and the different modes do not benefit from LLMs differently",
+      "techniques": [
+        "T1566.001 - Phishing: Spearphishing Attachment",
+        "T1566.002 - Phishing: Spearphishing Link",
+        "T1566.004 - Phishing: Spearphishing Voice"
+      ]
+    },
+    {
+      "step": "Execution",
+      "included": true,
+      "description": "One of the targets reads the message and is convinced to click on the link, and enter their credentials in the fake website, which are transmitted to the actor. The objective of this stage is purely for the actor to gain access to a set of credentials for the target organisation.",
+      "failureMode": "Failure at this stage means that no target clicks the link and enters their credentials. This could be caused by the email body or address being obviously fake, or the website being too visually different from the target's system website. Phishing training may reduce the likelihood of any target clicking a link or entering credentials.",
+      "breakdown": "tactic",
+      "breakdownRationale": "Similarly as above, the actor may choose slight variants of initial access methods, but the failure modes of each are heavily correlated, and there is little differential LLM uplift",
+      "techniques": [
+        "T1204.001 - User Execution: Malicious Link"
+      ]
+    },
+    {
+      "step": "Persistence",
+      "included": true,
+      "description": "The actor, using the stolen credentials, successfully logs in and creates a persistence mechanism (e.g., forwarding rule) without being immediately detected and locked out. If the target has multi-factor authentication, the actor may try simple techniques such as fatigue attacks (spamming the authentication request until approved by the target). The actor must be able to survive beyond the first login, and log back in to the account over the next few hours/days to monitor the inbox and identify a suitable payment to act on.",
+      "failureMode": "Failure at this stage could be caused by the actor not being able to satisfy MFA, or automated systems detecting anomalous login (impossible travel, new login location etc.) terminating the session or triggering a password reset. Success at this stage means that the actor's foothold remains valid beyond the initial session. This entails that they have created mailbox forward rules to survive resets, added accounts, backup access methods, or granted permissions to allow for persistent access.",
+      "breakdown": "tactic",
+      "breakdownRationale": "At this level, persistence does not have many different sub-techniques that are relevant.",
+      "techniques": [
+        "T1098.002 - Account Manipulation: Additional Email Delegate Permissions"
+      ]
+    },
+    {
+      "step": "Privilege Escalation",
+      "included": false,
+      "description": "Some actors may attempt to phish higher level employees once they have an initial access, but this is not required, and the default scenario is that the actor simply uses their initial access point."
+    },
+    {
+      "step": "Defense Evasion",
+      "included": false,
+      "description": "Any failure at this stage would be accounted for in steps such as initial access. There are no specific defence evasion techniques that are not accounted for."
+    },
+    {
+      "step": "Credential Access",
+      "included": false,
+      "description": "Credential access is already accounted for in other steps."
+    },
+    {
+      "step": "Discovery",
+      "included": true,
+      "description": "The actor, while maintaining access, finds a viable, active transaction to intercept within the user's mailbox.",
+      "failureMode": "All high-value payment communications occur on a separate, secure platform (e.g., a dedicated procurement portal) that the compromised email account has no access to. The actor is detected and their access is revoked before any suitable invoice or payment conversation takes place.",
+      "breakdown": "tactic",
+      "breakdownRationale": "While the actor might use specific techniques, their action is functionally reading emails and looking for keywords. The failure mode is not finding information in time, not the failure of a specific technical command.",
+      "techniques": [
+        "T1083 - File and Directory Discovery"
+      ]
+    },
+    {
+      "step": "Lateral Movement",
+      "included": false,
+      "description": "The actor can perform all actions required from the target mailbox."
+    },
+    {
+      "step": "Collection",
+      "included": false,
+      "description": "There is no collection required."
+    },
+    {
+      "step": "Command-and-Control",
+      "included": false,
+      "description": "The only command and control required is monitoring incoming emails."
+    },
+    {
+      "step": "Exfiltration",
+      "included": false,
+      "description": "No data is exfiltrated other than forwarded emails."
+    },
+    {
+      "step": "Impact",
+      "included": true,
+      "description": "The actor, having identified a target payment, modifies the banking details to redirect the payment to a fraudulent account. The payment request is approved and processed.",
+      "failureMode": "A mandatory out-of-band verification policy (e.g., a phone call to a known contact) is triggered by the request to change bank details, which exposes the fraud. The employee responsible for payment notices the discrepancy or the suspicious nature of the request and escalates it.",
+      "breakdown": "technique",
+      "breakdownRationale": "The actor must both send a request for information to be changed without being flagged (which is predominantly social engineering), and the payment must pass without raising automatic checks that would prevent success (mainly related to defences in place).",
+      "techniques": [
+        "T1565.001 - Data Manipulation: Stored Data Manipulation",
+        "T1657 - Financial Theft"
+      ]
+    }
+  ],
   "nodes": [
     {
       "id": "OC1-phishing-cont-1",

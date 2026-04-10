@@ -27,6 +27,148 @@
       "Exfiltration"
     ]
   },
+  "scenarioInputs": [
+    {
+      "heading": "Type of Actor",
+      "content": "The operation is attributed to a **top-priority cyber unit of a leading nation-state**, matching [RAND's](https://www.rand.org/content/dam/rand/pubs/research_reports/RRA2800/RRA2849-1/RAND_RRA2849-1.pdf) *OC-5* tier: *OC5 (top-priority offensive cyber operations run by the most cyber-capable nation-states), defined as \"operations roughly less capable than or comparable to 1,000 individuals who have experience and expertise years ahead of the (public) state of the art in a variety of relevant professions (cybersecurity, human intelligence gathering, physical operations, etc.) spending years with a total budget of up to $1 billion on the specific operation, with state-level infrastructure and access developed over decades and access to state resources such as legal cover, interception of communication infrastructure, and more. This includes the handful of operations most prioritized by the world's most capable nation-states.\"*\n\n#### **Typical organisations at this level**\n\n| Country | Principal agencies | Illustrative past operations |\n| ----- | ----- | ----- |\n| **Russia** | SVR (foreign intelligence) & GRU (military intelligence) | *NotPetya* disruptive worm (2017); [*SolarWinds Orion*](https://attack.mitre.org/groups/G0016/) supply-chain breach (2019–20) |\n| **China** | MSS (Ministry of State Security -  civilian intelligence and security) & PLA (army) adjunct units | *\"Cloud Hopper\"* MSP intrusions; [Office of Personnel Management](https://www.forbes.com/sites/emilsayegh/2023/02/21/spotlight-on-apt10/) theft of 21 million records (2014) |\n| **United States** | NSA & CIA cyber teams | Global \"implant\" network and hundreds of offensive missions reported annually |\n\nAll three maintain **large, well-funded workforces**, systematic zero-day acquisition programmes, and decades-old access to global telecom and cloud infrastructure, giving them the resources needed for an OC-5 campaign. Specific examples of APTs in Russia and China include APT29 (\"Cozy Bear\") in Russia and APT10 (\"Stone Panda\") in China."
+    },
+    {
+      "heading": "Type of Target",
+      "content": "The scenario focuses on **espionage and state-interest targets** - a category consisting of U.S. CISA and UK NPSA sectors Government & Public Administration, Defence and the Defence Industrial Base, Communications, and Space.\n\n**Typical organisations in scope**\n\n* **Defence primes** that design and build advanced missiles, aircraft, or space systems.\n* **National communications backbones** that carry strategic traffic.\n* **Core government facilities and research centres** that house sensitive data and command networks.\n\n**Concrete example**\n\nA large Tier-1 aerospace and weapons contractor, with about **US $25 billion in annual revenue** and **80 000 employees**, with R&D sites around the globe. Its file shares and code repositories contain material of high intelligence value, such as next-generation missile and aircraft designs, test results, and programme schedules.\n\n**Threat context**\n\nChinese and Russian intelligence services have already [shown](https://www.pwc.com/gx/en/about/stories-from-across-the-world/unmasking-a-global-cyber-espionage-campaign.html) they can maintain long-term access to firms like these and to their subcontractors, making them proven, high-payoff targets."
+    },
+    {
+      "heading": "Type of Vector",
+      "content": "The campaign centres on **polymorphic malware** - malicious code that rewrites parts of itself every time it is stored, sent, or run. Each new copy keeps the same function but changes its file hash, static signature, and even basic instruction pattern, making signature-based defenses almost useless. Large language models (LLMs) can further lower the barrier to generating these rapid mutations, giving top-tier actors an even larger advantage.\n\n**Precedent:** The *Cloud Atlas* group replaced an earlier PowerShell back-door with polymorphic HTML-Application and VBScript payloads in attacks on government ministries and diplomatic missions across [Central Asia and Eastern Europe](https://www.bleepingcomputer.com/news/security/cloud-atlas-hackers-add-polymorphic-malware-to-their-toolkit/).\n\n**How it plays out in this scenario**\n\n1. **Weaponization** – The attackers build a custom loader that hides inside a trojanised dynamic-link library (DLL) embedded in an otherwise routine firmware-update bundle\n2. **Initial delivery** – The update is pushed through a smaller, less mature printed-circuit-board (PCB) supplier that uses a managed-service-provider (MSP) cloud platform—an approach mirrored in the 2014-18 **\"Cloud Hopper\"** intrusions\n3. **Establishing a foothold** – Once an R&D workstation runs the update, the loader decrypts the polymorphic back-door and executes it purely in memory.\n4. **Privilege escalation & lateral movement** – A fresh zero-day exploit elevates the attackers to domain-administrator rights, after which they pivot into the segregated product-design enclave that stores sensitive source code and CAD files.\n5. **Command-and-control & exfiltration** – Design data is exfiltrated over **DNS-over-HTTPS** (DoH), which hides the traffic inside normal web requests.\n6. **Detection gap** – Even with a 24 × 7 Security Operations Centre, the first alert is likely to come from unusual outbound DoH traffic—by which point the critical intellectual-property has already left the network."
+    },
+    {
+      "heading": "Defense Level",
+      "content": "Core strengths:\n\n* Governance and budget – A board-level risk committee oversees a sizeable cyber-security budget, funding regular third-party audits and compulsory incident reporting.\n* Network architecture – A zero-trust model micro-segments the estate, enforces multi-factor authentication, and stores privileged credentials in secure vaults.\n* Endpoint and enclave security – Corporate laptops run endpoint-detection and response (EDR); high-value design data sits inside encrypted, ring-fenced environments.\n* Operational monitoring – A global, 24 × 7 security-operations centre (SOC) watches for threats. Quarterly external red-team exercises keep the average time to detect an intruder to roughly 2–4 days and the time to remediate to about two weeks.\n\nEnduring weaknesses:\n\n* Supply-chain exposure – Thousands of suppliers and managed-service providers reach the network over VPN links; many smaller vendors still trail in cyber maturity.\n* Legacy systems in R&D – Older programmable-logic controllers and Windows XP/7 machines in test labs follow 90-day patch cycles, creating long dwell times once an attacker is inside.\n* Operational-technology gateways – One-way gateways and DMZs separate office IT from production OT, but urgent vendor support can reopen VPN tunnels, giving a determined OC-5 actor fresh entry points even after the primary breach has been contained.\n\nThis is roughly equivalent to a [RAND SL3 level](https://www.rand.org/content/dam/rand/pubs/research_reports/RRA2800/RRA2849-1/RAND_RRA2849-1.pdf)."
+    },
+    {
+      "heading": "Intent",
+      "content": "The operation's main goal is to steal high-value intellectual property and program intelligence. For a defense-aerospace target, that means design files, source code, and project timelines for missile and aircraft systems. Past cases illustrate the scale:\n\n* **APT10 \"Cloud Hopper\"** campaigns siphoned sensitive data from multiple managed-service providers, giving attackers access to many client networks.\n* An Australian subcontractor lost **about 30 GB** of F-35 and P-8 design documents in a single breach.\n\nAlongside these flagship assets, the attackers collect credentials, network maps, and supplier VPN paths. Those details are fed into broader signals-intelligence databases."
+    }
+  ],
+  "attackSteps": [
+    {
+      "step": "Reconnaissance",
+      "included": true,
+      "description": "Operators map out supplier VPN gateways, zero-trust enclave addresses, and key personnel by combining open-source research, passive-DNS lookups, and limited human intelligence.",
+      "failureMode": "If target mapping is wrong, crafted lures & exploits won't fit and the campaign stalls at the first step.",
+      "breakdown": "tactic",
+      "breakdownRationale": "High baseline (>90 %); LLM uplift broad; intel highly opaque (Rule 3 + 4)"
+    },
+    {
+      "step": "Resource Development",
+      "included": true,
+      "description": "The team builds a self-modifying loader, registers command-and-control (C2) domains, and acquires fresh VPN exploits or tampered firmware images before launching the operation.",
+      "failureMode": "Without a polymorphic loader or suitable exploits, they can't deliver resilient malware later on.",
+      "breakdown": "tactic",
+      "breakdownRationale": "Building a polymorphic loader is essential and the loader succeeds ≈ 90 %+ for OC-5; extra branches add little (Rule 2+4)"
+    },
+    {
+      "step": "Initial Access",
+      "included": true,
+      "description": "Entry is gained through one of three avenues: a tailored phishing email, a Pulse Secure VPN zero-day, or a managed-service provider pushing compromised firmware.",
+      "failureMode": "No foothold ⇒ no intrusion.",
+      "breakdown": "technique",
+      "breakdownRationale": "Very different odds & LLM influence (phish vs. VPN exploit) and SMEs can estimate both (Rule 1 + 3).",
+      "techniques": [
+        "T1566.001 Spear-phishing Attachment",
+        "T1133 External Remote Services",
+        "T1195 Supply-Chain Compromise"
+      ]
+    },
+    {
+      "step": "Execution",
+      "included": true,
+      "description": "On the first compromised machine, a malicious DLL decrypts and runs an in-memory back-door that avoids writing to disk.",
+      "failureMode": "Payload that won't execute aborts the chain immediately.",
+      "breakdown": "tactic",
+      "breakdownRationale": "Once code lands, success ≈ 95 % (Rule 4)."
+    },
+    {
+      "step": "Persistence",
+      "included": true,
+      "description": "A polymorphic implant installs itself as a hidden service or scheduled task, changing its file hash at every reboot to evade signature scans.",
+      "failureMode": "Without a durable foothold, SOC cleanup ejects attackers before they reach objectives.",
+      "breakdown": "tactic",
+      "breakdownRationale": "Polymorphic loader ensures high success regardless of exact method; SMEs would give one number (Rule 3 + 4)."
+    },
+    {
+      "step": "Privilege Escalation",
+      "included": true,
+      "description": "The attackers escalate to domain-administrator rights using a kernel exploit, stolen tokens, or process injection.",
+      "failureMode": "Stuck at user level, attackers can't cross segments to the PLM enclave.",
+      "breakdown": "technique",
+      "breakdownRationale": "Alternative routes (exploit vs. tokens vs. injection) where probabilities may diverge by >10 pp (Rule 2).",
+      "techniques": [
+        "T1068 Exploitation for Priv-Esc",
+        "T1134 Access-Token Manipulation",
+        "T1055 Process Injection"
+      ]
+    },
+    {
+      "step": "Defense Evasion",
+      "included": false,
+      "description": "Evasion is better seen as underlying the other steps and captured in their probabilities of success."
+    },
+    {
+      "step": "Credential Access",
+      "included": false,
+      "description": "Very likely used as part of the attack, but not strictly necessary, since lateral movement can be achieved in other ways."
+    },
+    {
+      "step": "Discovery",
+      "included": true,
+      "description": "Automated scripts map domain trusts, product-lifecycle-management (PLM) vaults, test-rig networks, and backup shares.",
+      "failureMode": "Blind movement risks honeypots or dead ends; goals remain unfound.",
+      "breakdown": "tactic",
+      "breakdownRationale": "Variants largely interchangeable; LLM uplift small (Rule 1 + 4)."
+    },
+    {
+      "step": "Lateral Movement",
+      "included": true,
+      "description": "With PsExec, WMI, SMB, and forged Kerberos tickets, the team moves into micro-segmented PLM and test environments.",
+      "failureMode": "Failure leaves attackers stranded in IT; crown-jewel data remains unreachable.",
+      "breakdown": "tactic",
+      "breakdownRationale": "High success once credentials exist; keeping detail adds little (Rule 4)."
+    },
+    {
+      "step": "Collection",
+      "included": true,
+      "description": "Sensitive data—CAD drawings, guidance algorithms, bills of materials, and VPN configurations—is gathered, compressed, and staged for exfiltration.",
+      "failureMode": "Without staged data, there's nothing to steal.",
+      "breakdown": "tactic",
+      "breakdownRationale": "One composite scrape script covers CAD/BOMs; no distinct LLM edge variants (Rule 1)."
+    },
+    {
+      "step": "Command-and-Control",
+      "included": true,
+      "description": "Beacon traffic is sent via DNS-over-HTTPS or cloud-fronted TLS to offshore relays; domains and encryption keys rotate regularly.",
+      "failureMode": "No C2 ⇒ operators can't task implants or pull data.",
+      "breakdown": "technique",
+      "breakdownRationale": "DoH vs. cloud-fronted HTTPS have materially different detection odds (Rule 2).",
+      "techniques": [
+        "T1071.004 DNS-over-HTTPS",
+        "T1071.001 Web Protocols (HTTPS)",
+        "T1090.003 Multi-hop Proxy (CDN/Cloud-relay)"
+      ]
+    },
+    {
+      "step": "Exfiltration",
+      "included": true,
+      "description": "Stolen intellectual property is transferred gradually through the covert C2 channel or stored in encrypted cloud buckets for later retrieval.",
+      "failureMode": "Data left on-site means strategic objective fails.",
+      "breakdown": "tactic",
+      "breakdownRationale": "Drip vs. bulk exfil rarely changes success odds for OC5 (Rule 4)."
+    },
+    {
+      "step": "Impact",
+      "included": false,
+      "description": "This attack ends with data extraction, so there is no impact in the MITRE sense."
+    }
+  ],
   "nodes": [
     {
       "id": "OC5-espionage-cont-1",

@@ -2,9 +2,166 @@
   "modelId": "OC2_Data_Rich_Data_Breach_and_Extortion_llm",
   "modelDescription": "An OC2-level actor (a capable individual hacker spending several weeks with up to $10,000 budget) targets financially attractive and data-rich organisations such as healthcare providers, regional banks, law firms, or educational institutions with SL1–SL2 level defences. The actor gains access via purchased credentials, escalates privileges, moves laterally to locate valuable data, exfiltrates it, and threatens to release or sell it unless a ransom is paid.",
   "benchmarkMappings": {
-    "BountyBench": ["Reconnaissance", "Resource Development", "Initial Access", "Privilege Escalation", "Lateral Movement", "Exfiltration", "Number of Actors", "Number of Attempts per Actor"],
-    "Cybench": ["T1213 - Data from Information Repositories", "T1074 - Data Staged", "Impact", "Damage"]
+    "BountyBench": [
+      "Reconnaissance",
+      "Resource Development",
+      "Initial Access",
+      "Privilege Escalation",
+      "Lateral Movement",
+      "Exfiltration",
+      "Number of Actors",
+      "Number of Attempts per Actor"
+    ],
+    "Cybench": [
+      "T1213 - Data from Information Repositories",
+      "T1074 - Data Staged",
+      "Impact",
+      "Damage"
+    ]
   },
+  "scenarioInputs": [
+    {
+      "heading": "Type of Actor",
+      "content": "* We consider actors who usually perform operations on the **RAND OC2** scale.\n* Defined in [RAND](https://www.rand.org/content/dam/rand/pubs/research_reports/RRA2800/RRA2849-1/RAND_RRA2849-1.pdf) as: Operations roughly less capable than or comparable to a single individual who is broadly capable in information security spending several weeks with a total budget of up to $10,000 on the specific operation, with pre existing personal cyber infrastructure but no preexisting access to the organization. This includes the operations of many individual professional hackers, as well as capable hacker groups when executing untargeted or lower-priority attacks.\n* Some examples of OC2 level actors (provided as general examples, not specific to the vector of interest) include the creators of the [Mirai](https://en.wikipedia.org/wiki/Mirai_(malware)) botnet, three 18-20 year olds who developed a software to DDoS minecraft servers, after which it was released publicly, resulting in variants and attacks taking down Twitter, Github, Reddit and many other sites. Other examples include [Phineas Fisher](https://en.wikipedia.org/wiki/Phineas_Fisher), a lone actor who hacked surveillance companies and political parties, or [GnosticPlayers](https://en.wikipedia.org/wiki/GnosticPlayers) with two members who stole over $9.5M in cryptocurrency. Many OC2 actors are not as prominent, and may not be known publicly, causing smaller attempts which are not reported or disclosed."
+    },
+    {
+      "heading": "Type of Target",
+      "content": "* Target: Financially attractive & data-rich organisations (Financial Services, Healthcare & Public Health, Commercial Facilities, Information Technology, Cloud Services).\n* OC2 level actors may go after targets of this category with an SL1 or SL2 defence level as defined by RAND, of the scale of [healthcare providers](https://www.chiefhealthcareexecutive.com/view/defending-your-data-from-the-dark-overlord), [regional banks](https://riskmsg.com/thought-leadership/emerging-cyber-threats#:~:text=,targeting%20individuals%20or%20other%20institutions), [law firms,](https://www.threatintelligence.com/blog/law-firm-data-breach#:~:text=adopt%20to%20defend%20against%20digital,threats) or [educational sector](https://charterts.com/insights/top-cyberattacks-on-schools-in-2024-and-how-to-prevent-them/#:~:text=Cyberattacks%20on%20schools%20surged%20to,this%20year%2C%20compared%20to%202023) organisations, as well as smaller tech companies and smaller government agencies in cases of hacktivism."
+    },
+    {
+      "heading": "Type of Vector",
+      "content": "* The assumed vector is data breach and extortion. For this scenario, we assume that the actors gain access to an organisation's data, either through purchased credentials, phishing or through public facing exploits. In the simplest of cases, the target has no internal protections and the data is immediately available, though a more general case involves the actor escalating their privileges, and performing some level of lateral movement before finding valuable data. They then exfiltrate this data, and threaten to release it if not provided with a payment, generally in crypto-currency."
+    },
+    {
+      "heading": "Defense Level",
+      "content": "* Typical mid sized data rich targets, as described previously, have a number of defences in place against data breach attacks.\n* Education has a [64% adoption of Multi Factor Authentication](https://scoop.market.us/multi-factor-authentication-statistics/#:~:text=,Emphasizing%20the) (MFA), while healthcare and financial services have 56% and 60% respectively.\n* A majority (91%) of [organisations have some level of data backup](https://riskandresiliencehub.com/23-business-continuity-statistics-you-need-to-know/#:~:text=23%20Business%20Continuity%20Statistics%20You,data%20backup%2C%20according%20to%20Statista), rendering it difficult for ransomware to effectively threaten targets.\n* Endpoint Detection and Response (EDR) tools serve to identify and contain malicious activity. EDR has a large adoption rate, with [56% in 2021](https://business.comcast.com/community/browse-all/details/how-endpoint-detection-and-response-edr-can-help-reduce-serious-incidents#:~:text=Interest%20in%20EDR%20is%20strong,Nemertes%20found%20that), and another planned 24% in 2022, however implementation is often incomplete or ill managed, with [30% of Managed Service Providers](https://llcbuddy.com/data/endpoint-detection-response-edr-statistics/#:~:text=%2A%2055,2) having no EDR coverage in evenings and weekends.\n* Human factors often contribute to data breaches. It is becoming more common practice to enforce cybersecurity and phishing training, though efficacy is a concern, with only [18% of healthcare organizations](https://www.hipaajournal.com/himss-survey-healthcare-cybersecurity-2024/#:~:text=,) rating their cybersecurity training as very effective, and only [58% of law firms offering regular training](https://processbolt.com/insights/blog/why-law-firm-data-breaches-are-skyrocketing-in-2024/#:~:text=Another%20critical%20vulnerability%20is%20the,breaches%20and%20other%20security%20incidents).\n* Privileged access is a common challenge in many organizations, with a survey finding that [98% of companies](https://llcbuddy.com/data/privileged-access-management-software-statistics/#:~:text=%2A%20On%20average%2C%20roughly%2019,business%20systems%20in%20their%20organization) had provided privileged access to non administrators, with 54% providing privileged access to non employees of their organization, up to 94% in healthcare specifically.\n* Data Loss Prevention (DLP) Software monitors sensitive data exfiltration. Uptake of DLP has historically been quite low, with one study finding [58% of organizations not using any form of DLP](https://www.computerweekly.com/news/2240176414/Why-has-DLP-never-taken-off#:~:text=A%20poll%20of%20more%20than,do%20not%20use%20DLP%20systems).\n* [Less than a third](https://www.scworld.com/brief/network-microsegmentation-beneficial-but-adoption-remains-low) of organizations have segmented networks, with public sector organizations having the lowest uptake.\n* Globally, [63% of organisations](https://www.gartner.com/en/newsroom/press-releases/2024-04-22-gartner-survey-reveals-63-percent-of-organizations-worldwide-have-implemented-a-zero-trust-strategy) have started implementing at least partial zero trust architectures, although a majority of organizations plan to implement it on less than half of their environment."
+    },
+    {
+      "heading": "Intent",
+      "content": "* The intent of the actor in this scenario is monetization via data exfiltration. They will not attempt to deploy ransomware or encrypt the target's data. They will simply exfiltrate data, notify the target that they have suffered a data breach, and threaten to release or sell the data if a payment is not made.\n* If the target does not cooperate, the actor will follow up on their threats, and auction off or release the data for free (often done to reinforce credibility of future attacks)."
+    }
+  ],
+  "attackSteps": [
+    {
+      "step": "Reconnaissance",
+      "included": true,
+      "description": "The actor searches for target organisations. This is done both by searching through open source information to identify targets with weak defences and valuable data, and by searching through credential listings.",
+      "failureMode": "There are few failure modes of reconnaissance itself as it can generally be repeated indefinitely until successful with little cost to the actor. Failure could be caused by all targets having adequate defences.",
+      "breakdown": "tactic",
+      "breakdownRationale": "This step can be estimated at tactic level without requiring the extra granularity of particular techniques. The different techniques are not uplifted in different ways by an LLM, therefore differentiation is not required for uplift either.",
+      "techniques": [
+        "T1591 - Gather Victim Org Information"
+      ]
+    },
+    {
+      "step": "Resource Development",
+      "included": true,
+      "description": "The actor gathers credentials via breach dumps, info stealer logs or credential sale. [Nearly 80% of breaches involve the use of stolen credentials.](https://spycloud.com/resource/spycloud-annual-identity-exposure-report-2025/#:~:text=In%202024%2C%20digital%20identities%20became,the%20use%20of%20stolen%20credentials) The actor may also modify some existing scripts for privilege escalation, or open source hacking tools. Success at this stage means the actor has at least one set of credentials that should function if tested against a target portal.",
+      "failureMode": "Failure at this stage could be caused by target credential hygiene (the target has updated the credentials since they were stolen), or by missing information from the purchased credentials.",
+      "breakdown": "tactic",
+      "breakdownRationale": "This step can be estimated at tactic level without requiring the extra granularity of particular techniques. The different techniques are not uplifted in different ways by an LLM, therefore differentiation is not required for uplift either.",
+      "techniques": [
+        "T1650 - Acquire Access"
+      ]
+    },
+    {
+      "step": "Initial Access",
+      "included": true,
+      "description": "The actor enters their set of valid credentials on the target portal. Success at this stage means the actor has gained access to the target's systems, with some form of shell, desktop or cloud console that can issue commands.",
+      "failureMode": "Failure at this stage could be due to MFA preventing access, conditional access (device trust, geo-velocity), impossible travel alerts, or separation of external vs internal role credentials.",
+      "breakdown": "tactic",
+      "breakdownRationale": "This step can be estimated at tactic level without requiring the extra granularity of particular techniques. The different techniques are not uplifted in different ways by an LLM, therefore differentiation is not required for uplift either.",
+      "techniques": [
+        "T1078 - Valid Accounts"
+      ]
+    },
+    {
+      "step": "Execution",
+      "included": false,
+      "description": "The actor does not necessarily execute malicious code. If they do, it is for privilege escalation/lateral movement, which are already covered in their respective categories."
+    },
+    {
+      "step": "Persistence",
+      "included": false,
+      "description": "The variability in attack length duration illustrates that persistence techniques can render attacks more impactful, but are not always necessary. For attacks lasting several months, a level of persistence is likely necessary, whereas for attacks lasting between 1-2 weeks, in particular against SL1-SL2 level defences, remaining on a single session can prove effective."
+    },
+    {
+      "step": "Privilege Escalation",
+      "included": true,
+      "description": "From their initial foothold as a local user, the attacker must escalate their privileges if the initial access credentials they purchased did not have sufficient privileges. Success at this stage means that the actor has gained access to an identity that can read and export a protected data repository.",
+      "failureMode": "Failure at this stage could be caused by escalation protections such as secondary MFA or role change detection.",
+      "breakdown": "tactic",
+      "breakdownRationale": "This step can be estimated at tactic level without requiring the extra granularity of particular techniques. The different techniques are not uplifted in different ways by an LLM, therefore differentiation is not required for uplift either.",
+      "techniques": [
+        "T1068 - Exploitation for Privilege Escalation"
+      ]
+    },
+    {
+      "step": "Defense Evasion",
+      "included": false,
+      "description": "Failures at defence evasion are already considered in the exfiltration and discovery stages, with techniques such as file access pattern concealment, database query evasion, traffic pattern concealment, or DLP bypass techniques."
+    },
+    {
+      "step": "Credential Access",
+      "included": false,
+      "description": "The actor only uses their initial credentials. Any subsequent credential access is already covered in privilege escalation."
+    },
+    {
+      "step": "Lateral Movement",
+      "included": true,
+      "description": "Having escalated their privileges, the actor must move laterally to access a location or machine with valuable data. In some cases the data may be immediately accessible, though it is assumed that in the general case, some level of movement is required. Success at this stage means that the actor has located a protected data repository.",
+      "failureMode": "Failure at this stage could be caused by zero trust architectures, network segmentation or firewalls.",
+      "breakdown": "tactic",
+      "breakdownRationale": "This step can be estimated at tactic level without requiring the extra granularity of particular techniques. The different techniques are not uplifted in different ways by an LLM, therefore differentiation is not required for uplift either.",
+      "techniques": [
+        "T1021 - Remote Services"
+      ]
+    },
+    {
+      "step": "Discovery",
+      "included": false,
+      "description": "Failures of discovery are covered in the collection step."
+    },
+    {
+      "step": "Collection",
+      "included": true,
+      "description": "The actor has gained access to valuable data, and must now enumerate it and dump it into a staging archive. Success at this stage means that one or more archives containing valuable records are consolidated and ready to be exported.",
+      "failureMode": "Failure at this stage could be caused by the interaction raising high fidelity alarms, large dumps requiring extra approvals, or mass access triggering throttling or investigation.",
+      "breakdown": "technique",
+      "breakdownRationale": "This step contains different techniques with differential LLM uplift, and therefore requires breaking out into two necessary sub-steps.",
+      "techniques": [
+        "T1213 - Data from Information Repositories",
+        "T1074 - Data Staged"
+      ]
+    },
+    {
+      "step": "Command-and-Control",
+      "included": false,
+      "description": "No command and control is required. The actor is actively present in the target's network at all times during the attack."
+    },
+    {
+      "step": "Exfiltration",
+      "included": true,
+      "description": "The actor must move consolidated data archives across network boundaries using methods like cloud storage uploads (OneDrive, Dropbox), encrypted file transfers, or email attachments, while avoiding detection by data loss prevention systems, egress filtering, and bandwidth monitoring. Exfiltration is the operation that moves data from \"identified and staged within target network\" to \"possessed by attacker outside target control\". Success at this stage means the actor now has a complete copy of the stolen data on an asset outside of the target's control.",
+      "failureMode": "Failure at this stage could be caused by data loss prevention, egress policies or rate limiting.",
+      "breakdown": "tactic",
+      "breakdownRationale": "This step can be estimated at tactic level without requiring the extra granularity of particular techniques. The different techniques are not uplifted in different ways by an LLM, therefore differentiation is not required for uplift either.",
+      "techniques": [
+        "T1567 - Exfiltration Over Web Services"
+      ]
+    },
+    {
+      "step": "Impact",
+      "included": true,
+      "description": "Having exfiltrated the data, the actor makes contact with the target, showing proof of the data breach, and threatening to leak the data if a payment is not made. The actor might also attempt to auction the data off if the payment is not made. Success at this stage means that the actor succeeds at monetizing their attack, either by direct payment from the target, payment from third parties whose data was held by the target, or sale of the data to other actors.",
+      "failureMode": "Failure at this stage means that the target refuses to pay and the actor cannot successfully monetize, or law enforcement can freeze the wallet or seize the leak site in time.",
+      "breakdown": "tactic",
+      "breakdownRationale": "This step can be estimated at tactic level without requiring the extra granularity of particular techniques. The different techniques are not uplifted in different ways by an LLM, therefore differentiation is not required for uplift either.",
+      "techniques": [
+        "T1657 - Financial Theft"
+      ]
+    }
+  ],
   "nodes": [
     {
       "id": "OC2-databreach-cont-1",

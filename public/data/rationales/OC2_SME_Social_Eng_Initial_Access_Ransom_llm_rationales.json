@@ -2,9 +2,176 @@
   "modelId": "OC2_SME_Social_Eng_Initial_Access_Ransom_llm",
   "modelDescription": "An OC2-level actor (small 1-3 person professional cybercrime group) conducts phishing campaigns deploying infostealer malware to harvest credentials from SME targets (50-250 employees, $2m-$50m revenue). The actor operates as an initial access broker (IAB), selling stolen credentials into the Ransomware-as-a-Service ecosystem. Campaigns involve moderately customised spearphishing emails targeting specific sectors or organisations, sending hundreds to thousands of emails over approximately two weeks. The stolen credentials and session tokens are monetised through underground markets such as the Russian Market.",
   "benchmarkMappings": {
-    "BountyBench": ["Initial Access: Spearphishing Link", "Credential Access", "Number of Attacks per Actor"],
-    "Cybench": ["Execution", "Command-and-Control", "Number of Actors", "Damage per Successful Attack"]
+    "BountyBench": [
+      "Initial Access: Spearphishing Link",
+      "Credential Access",
+      "Number of Attacks per Actor"
+    ],
+    "Cybench": [
+      "Execution",
+      "Command-and-Control",
+      "Number of Actors",
+      "Damage per Successful Attack"
+    ]
   },
+  "scenarioInputs": [
+    {
+      "heading": "Type of Actor",
+      "content": "- Individual professional or very small hacker group that targets particular sectors opportunistically.\n  - A threat actor that is broadly capable of OC2 level operations as defined by [RAND](https://www.rand.org/pubs/research_reports/RRA2849-1.html)\n  - The individual is broadly capable / professional in information security, and has resources on the order of $10,000's.\n  - The threat actor is assumed to have pre-existing personal cyber infrastructure.\n  - Includes individual professional hackers, as well as capable hacker groups."
+    },
+    {
+      "heading": "Type of Target",
+      "content": "- Small to Medium Enterprise (SME).\n  - Ideal targets are sufficiently financially attractive, that others in the RaaS eco-system would be interested in purchasing any stolen credentials. Hence they should have turnover/resources sufficient to lead to a good ransom payout.\n  - Whilst the end ransom demand for a relatively smaller company may be less than for a larger one, compromise of a smaller and relatively less well defended company may be easier.\n  - Approximate company sizes of interest in our scenario (Source 'SME' [wikipedia](https://en.wikipedia.org/wiki/Small_and_medium_enterprises), taking SME size figures for EU)\n    - 50-250 employees\n    - Revenues $2m-$50m"
+    },
+    {
+      "heading": "Type of Vector",
+      "content": "- Threat actors typically acquire an infostealer, set up command-and-control (C2) infrastructure and necessary web-servers. They then launch phishing attacks using emails that include malicious links to trick victims into downloading and executing the infostealer payload. Once running on a victim's system, the infostealer quietly collects sensitive data such as credentials and system information. The stolen data and credentials are exfiltrated over the internet, and then sold into the RaaS eco-system by the threat actor."
+    },
+    {
+      "heading": "Defense Level",
+      "content": "- Defences expected to be present in an SME. Assume cybersecurity maturity level MIL1 (see [Cybersecurity Capability Model Maturity](https://www.energy.gov/ceser/cybersecurity-capability-maturity-model-c2m2), CCMM) across all maturity with MIL2 in some domains. It is assumed that the target generally implements the cybersecurity fundamentals well, and will generally also do a good job of mitigating threats from the most common attack vectors."
+    },
+    {
+      "heading": "Intent",
+      "content": "- The intent of the threat actor is financial monetization.\n- The threat actor sells the gathered 'initial access' information into the Ransomware as a Service (RaaS) ecosystem, on markets such as the 'Russian Market' or the now defunct Genesis market.\n- Valuable credentials may make on the order of low $1,000's, whilst a much larger trove of gathered less valuable credentials and data can also be sold for lower sums."
+    }
+  ],
+  "attackSteps": [
+    {
+      "step": "Reconnaissance",
+      "included": true,
+      "description": "**Essential:** For a spearphishing campaign some reconnaissance will be necessary to research targets and to craft convincing lures.",
+      "failureMode": "Email recipients highly unlikely to click on links.",
+      "breakdown": "tactic",
+      "breakdownRationale": "LLM relevant, must-have, high SME estimatability, avoid redundancy. Whilst a threat actor might potentially partake of a number of reconnaissance activities, info gained from any one of them might prove sufficient for the crafting of sector specific customised emails. So we stay at the tactic level.",
+      "techniques": [
+        "T1590 - Gather Victim Org Info",
+        "T1593 - Search Open Websites/Domains",
+        "T1594 - Search Victim-Owned Websites"
+      ]
+    },
+    {
+      "step": "Resource Development",
+      "included": true,
+      "description": "**Essential.** The attackers must prepare certain resources in advance to conduct the phishing and infostealer operation. Without preparation – such as obtaining malware tools, infrastructure, and target lists – the campaign could not launch. This includes everything from registering phishing domains and setting up servers, to acquiring or developing the infostealer malware itself.",
+      "failureMode": "If this resource development groundwork isn't done, the phish would never reach victims or would be ineffective.",
+      "breakdown": "technique",
+      "breakdownRationale": "Potential LLM relevancy for 'Obtain Capabilities' (i.e. use of LLM to create or customise infostealer software). Leveraging services of others in the eco-system seems most likely for this OC2 level actor.",
+      "techniques": [
+        "T1583 - Acquire Infrastructure",
+        "T1588 - Obtain Capabilities"
+      ]
+    },
+    {
+      "step": "Initial Access",
+      "included": true,
+      "description": "**Essential**: This is the entry point – without it, the attack cannot begin. The phishing email or malicious link must successfully trick a victim into executing the infostealer, otherwise no foothold is gained and nothing can be stolen or sold.",
+      "failureMode": "If no foothold is gained nothing can be stolen or sold.",
+      "breakdown": "technique",
+      "breakdownRationale": "LLM relevant, must-have, high SME estimatability, avoid redundancy.",
+      "techniques": [
+        "T1566.002 - Spearphishing Link"
+      ]
+    },
+    {
+      "step": "Execution",
+      "included": true,
+      "description": "**Essential**: The infostealer malware must execute on the victim's machine to do its job.",
+      "failureMode": "If the payload never runs (e.g. the user doesn't open the file or an exploit fails), no credentials or data will be collected.",
+      "breakdown": "tactic",
+      "breakdownRationale": "Must-have, high SME estimatability, avoid redundancy. In 'Initial Access' we selected Spearphishing Link, and hence T1204.001 is the natural follow on. Don't break out to techniques, since unclear that LLM capabilities can be meaningfully measured differently.",
+      "techniques": [
+        "T1204.001 - User Execution: Malicious Link",
+        "T1059 - Command and Scripting Interpreter"
+      ]
+    },
+    {
+      "step": "Persistence",
+      "included": false,
+      "description": "**Nice-to-have**. Not always used – infostealers may operate as 'smash-and-grab' malware, running once to steal data. However, some attackers implant persistence to maintain long-term access. The campaign can succeed without persistence if data theft is instantaneous, but having persistence can increase the value of the access."
+    },
+    {
+      "step": "Privilege Escalation",
+      "included": false,
+      "description": "**Nice-to-have.** Generally not required for success – most infostealers can run in a regular user context and still steal browser passwords, cookies, and other user-level data. The attack doesn't strictly need elevated privileges to steal credentials, so it can succeed without escalation."
+    },
+    {
+      "step": "Defense Evasion",
+      "included": false,
+      "description": "**Essential** but excluded from separate estimation because it is already accounted for implicitly in other steps (particularly Execution). Phishing emails need to bypass spam filters, and the malware needs to avoid antivirus detection long enough to run and exfiltrate data. Techniques include [T1027 - Obfuscated Files or Information](https://attack.mitre.org/techniques/T1027/) and [T1672 - Email Spoofing](https://attack.mitre.org/techniques/T1672/)."
+    },
+    {
+      "step": "Credential Access",
+      "included": true,
+      "description": "**Essential.** Harvesting credentials is the core goal of the infostealer attack. Without gathering credentials (and other sensitive info), there would be nothing valuable to sell as initial access. The attacker uses the malware to pilfer passwords, session tokens, and any authentication material from the victim's system.",
+      "failureMode": "If this fails (e.g. if credential storage is empty or encrypted and inaccessible), the mission's primary purpose is defeated.",
+      "breakdown": "tactic",
+      "breakdownRationale": "Don't break out to techniques, since unclear that LLM capabilities can be meaningfully measured differently.",
+      "techniques": [
+        "T1555 - Credentials from Password Stores",
+        "T1539 - Steal Web Session Cookie"
+      ]
+    },
+    {
+      "step": "Discovery",
+      "included": true,
+      "description": "**Essential.** Needed for purposes like browser information discovery, file/directory discovery, maybe software discovery. Infostealers will often export a full fingerprint of the browser, including any accounts, browsing history, bookmarks, etc. and for file discovery, infostealers will look on disk for files related to auth or other sensitive data like crypto wallets, VPN/FTP/SSH credentials, etc.",
+      "failureMode": "N/A",
+      "breakdown": "tactic",
+      "breakdownRationale": "Don't break out to techniques, since unclear that LLM capabilities can be meaningfully measured differently.",
+      "techniques": [
+        "T1217 - Browser Information Discovery",
+        "T1083 - File and Directory Discovery"
+      ]
+    },
+    {
+      "step": "Lateral Movement",
+      "included": false,
+      "description": "**Not Relevant (at initial access stage)**. In a sale-of-access scenario, the infostealer operator does not usually attempt lateral movement within the victim's network."
+    },
+    {
+      "step": "Collection",
+      "included": true,
+      "description": "**Essential.** Collection is the act of gathering the data that will be exfiltrated – in this case, all the valuable information the infostealer can find on the victim's machine.",
+      "failureMode": "Failure here means nothing to exfiltrate.",
+      "breakdown": "tactic",
+      "breakdownRationale": "Don't break out to techniques, since there seems to be little if any LLM relevance.",
+      "techniques": [
+        "T1005 - Data from Local System",
+        "T1560 - Archive Collected Data"
+      ]
+    },
+    {
+      "step": "Command-and-Control",
+      "included": true,
+      "description": "**Essential.** The attacker needs to have a communication channel with the victim in order to exfiltrate the data (though for our scenario the attacker does not necessarily need to send control commands).",
+      "failureMode": "Communication with victim is essential to receive stolen data.",
+      "breakdown": "tactic",
+      "breakdownRationale": "Though there are multiple possible and relevant techniques, it is unclear that these would be differentiated from one another when thinking about application of an LLM so we stay at the tactic level.",
+      "techniques": [
+        "T1071 - Application Layer Protocol",
+        "T1102 - Web Service",
+        "T1095 - Non-Application Layer Protocol"
+      ]
+    },
+    {
+      "step": "Exfiltration",
+      "included": true,
+      "description": "**Essential.** Exfiltration is the endgame of the infostealer's mission: sending the collected data out to the attacker.",
+      "failureMode": "If data cannot be exfiltrated (due to network blocks or other failures), the attack yields nothing of value.",
+      "breakdown": "tactic",
+      "breakdownRationale": "Though there are multiple possible and relevant techniques, it is unclear that these would be differentiated from one another when thinking about application of an LLM so we stay at the tactic level.",
+      "techniques": [
+        "T1041 - Exfiltration Over C2 Channel",
+        "T1020 - Automated Exfiltration"
+      ]
+    },
+    {
+      "step": "Impact",
+      "included": false,
+      "description": "**Not Relevant.** Impact tactics (such as data destruction, encryption, or service disruption) are not part of a phishing/infostealer initial access scheme."
+    }
+  ],
   "nodes": [
     {
       "id": "OC2-iab-cont-1",
