@@ -18,11 +18,18 @@ export function Header({ showBack, onBack }: HeaderProps) {
             <ArrowLeft className="w-5 h-5" />
           </button>
         )}
-        <img
-          src="/images/SaferAI_Logo_White_RGB.svg"
-          alt="SaferAI"
-          className="h-10 w-auto"
-        />
+        <a
+          href="https://www.safer-ai.org/"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="SaferAI website"
+        >
+          <img
+            src="/images/SaferAI_Logo_White_RGB.svg"
+            alt="SaferAI"
+            className="h-10 w-auto"
+          />
+        </a>
         <div className="border-l border-white/20 pl-4">
           <h1 className="text-xl font-sans font-medium tracking-tight">
             Risk Dashboard
