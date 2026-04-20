@@ -171,8 +171,24 @@ function App() {
   const showContent = !isLoading && !modelError && modelData.rationales;
   const isLandingPage = !selectedModelId;
 
+  const backgroundImageUrl = isLandingPage
+    ? '/images/brand/hero.svg'
+    : '/images/brand/supporting_01.png';
+
   return (
-    <div className="min-h-screen bg-safer-grey">
+    <div className="min-h-screen bg-safer-grey relative">
+      <img
+        aria-hidden="true"
+        src={backgroundImageUrl}
+        alt=""
+        className="fixed left-0 right-0 top-0 pointer-events-none z-0"
+        style={
+          isLandingPage
+            ? { width: '100%', height: '100%', objectFit: 'contain', opacity: 0.4 }
+            : { width: '100%', height: 'auto', opacity: 0.2 }
+        }
+      />
+      <div className="relative z-10">
       <Header
         showBack={!isLandingPage}
         onBack={handleBackToHome}
@@ -358,6 +374,7 @@ function App() {
         isOpen={isInputsModalOpen}
         onClose={() => setIsInputsModalOpen(false)}
       />
+      </div>
     </div>
   );
 }
