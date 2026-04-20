@@ -9,7 +9,46 @@ export interface RiskModelIndexEntry {
   baselineSamplesFile?: string;
   sotaSamplesFile?: string;
   saturatedSamplesFile?: string;
+  networkFile?: string;
 }
+
+// Bayesian-network visual export (from the GUI repo)
+export interface NetworkNode {
+  id: string;
+  name: string;
+  nodeType: NodeType;
+  x: number;
+  y: number;
+  height?: number;
+  unit?: string;
+}
+
+export interface NetworkEdge {
+  source: string;
+  target: string;
+}
+
+export interface NetworkFile {
+  modelId: string;
+  name: string;
+  nodes: NetworkNode[];
+  edges: NetworkEdge[];
+}
+
+export type DisplayNameOverrides = Record<string, Record<string, string>>;
+
+// Benchmark / Expert state lists (shown inside probability nodes in the BN render)
+export interface BenchmarkState {
+  name: string;
+  probability: number;
+}
+
+export type ModelVariant = 'llm' | 'human';
+
+export type BenchmarkStatesFile = Record<
+  ModelVariant,
+  Record<string, BenchmarkState[]>
+>;
 
 export interface RiskModelsIndex {
   models: RiskModelIndexEntry[];

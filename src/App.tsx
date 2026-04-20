@@ -6,7 +6,7 @@ import { ScenarioCard, ScenarioCardSkeleton } from './components/ScenarioCard';
 import { EstimatesTable, EstimatesTableSkeleton } from './components/EstimatesTable';
 import { DistributionModal } from './components/DistributionModal';
 import { OverallRiskChart, OverallRiskChartSkeleton } from './components/OverallRiskChart';
-import { BayesianNetworkPlaceholder } from './components/BayesianNetworkPlaceholder';
+import { BayesianNetworkGraph } from './components/BayesianNetworkGraph';
 import { KRIMappingsModal } from './components/KRIMappingsModal';
 import { ScenarioInputsModal } from './components/ScenarioInputsModal';
 import { AttackStepsSection } from './components/AttackStepsSection';
@@ -286,8 +286,8 @@ function App() {
 
               {/* Bayesian Network Placeholder */}
               {showContent && (
-                <BayesianNetworkPlaceholder
-                  modelId={selectedModelId}
+                <BayesianNetworkGraph
+                  model={selectedModel}
                   hasKRIMappings={Object.keys(benchmarkMappings).length > 0}
                   onShowKRIMappings={() => setIsKRIModalOpen(true)}
                 />
