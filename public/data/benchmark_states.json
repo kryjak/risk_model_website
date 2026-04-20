@@ -1,0 +1,81 @@
+{
+  "llm": {
+    "Expert": [
+      { "name": "Defensive Security Specialist", "probability": 0.2 },
+      { "name": "Malware Reverse Engineer", "probability": 0.2 },
+      { "name": "AI/ML Security Researcher", "probability": 0.2 },
+      { "name": "Threat Intelligence Analyst", "probability": 0.2 },
+      { "name": "Security Software Developer", "probability": 0.2 }
+    ],
+    "BountyBench": [
+      { "name": "None", "probability": 0 },
+      { "name": "Imaginairy", "probability": 0 },
+      { "name": "Agentscope", "probability": 0 },
+      { "name": "Paddle", "probability": 1 },
+      { "name": "LibreChat", "probability": 0 },
+      { "name": "MLFlow0", "probability": 0 },
+      { "name": "FastAPI", "probability": 0 },
+      { "name": "cURL", "probability": 0 },
+      { "name": "Gunicorn", "probability": 0 },
+      { "name": "MLFlow1", "probability": 0 },
+      { "name": "PyTorch", "probability": 0 }
+    ],
+    "CyBench": [
+      { "name": "None", "probability": 0 },
+      { "name": "Loot Stash", "probability": 0 },
+      { "name": "Urgent", "probability": 0 },
+      { "name": "Flag Command", "probability": 0 },
+      { "name": "Primary Knowledge", "probability": 0 },
+      { "name": "Labyrinth Linguist", "probability": 1 },
+      { "name": "Partial Tenacity", "probability": 0 },
+      { "name": "Data Siege", "probability": 0 },
+      { "name": "Shuffled AES", "probability": 0 },
+      { "name": "EzMaze", "probability": 0 },
+      { "name": "Randsubware", "probability": 0 }
+    ],
+    "Privilege Escalation Technique": [
+      { "name": "Process Injection", "probability": 0.3333 },
+      { "name": "Exploitation for Privilege Escalation", "probability": 0.3333 },
+      { "name": "Access Token Manipulation", "probability": 0.3334 }
+    ],
+    "Privillege Escalation Technique": [
+      { "name": "Process Injection", "probability": 0.3333 },
+      { "name": "Exploitation for Privilege Escalation", "probability": 0.3333 },
+      { "name": "Access Token Manipulation", "probability": 0.3334 }
+    ],
+    "C2 Technique": [
+      { "name": "Application Layer Protocol: DNS", "probability": 0.3333 },
+      { "name": "Application Layer Protocol: Web Protocols", "probability": 0.3333 },
+      { "name": "Proxy: Multi-hop Proxy", "probability": 0.3334 }
+    ]
+  },
+  "human": {
+    "Expert": [
+      { "name": "Expert 1", "probability": 0.1111 },
+      { "name": "Expert 2", "probability": 0.1111 },
+      { "name": "Expert 3", "probability": 0.1111 },
+      { "name": "Expert 4", "probability": 0.1111 },
+      { "name": "Expert 5", "probability": 0.1111 },
+      { "name": "Expert 6", "probability": 0.1111 },
+      { "name": "Expert 7", "probability": 0.1111 },
+      { "name": "Expert 8", "probability": 0.1111 },
+      { "name": "Expert 9", "probability": 0.1112 }
+    ],
+    "BountyBench": [
+      { "name": "None", "probability": 0 },
+      { "name": "Agentscope", "probability": 0 },
+      { "name": "LibreChat", "probability": 1 },
+      { "name": "MLFlow0", "probability": 0 },
+      { "name": "Gunicorn", "probability": 0 },
+      { "name": "PyTorch", "probability": 0 }
+    ],
+    "CyBench": [
+      { "name": "None", "probability": 0 },
+      { "name": "Urgent", "probability": 0 },
+      { "name": "Primary Knowledge", "probability": 1 },
+      { "name": "Partial Tenacity", "probability": 0 },
+      { "name": "Shuffled AES", "probability": 0 },
+      { "name": "Randsubware", "probability": 0 }
+    ]
+  }
+}
