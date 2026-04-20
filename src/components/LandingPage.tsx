@@ -19,7 +19,7 @@ export function LandingPage({ index, onSelectModel }: LandingPageProps) {
           Risk Model Explorer
         </h2>
       </div>
-      <div className="max-w-3xl mx-auto mb-10">
+      <div className="max-w-3xl mx-auto mb-10 card">
         <p className="text-gray-500 mb-4">
           Explore quantitative risk models for AI-enabled cyber threats, developed
           as part of our research:
