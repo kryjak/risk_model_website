@@ -173,7 +173,7 @@ function App() {
 
   const backgroundImageUrl = isLandingPage
     ? '/images/brand/hero.svg'
-    : '/images/brand/supporting_01.png';
+    : '/images/brand/supporting_01.webp';
 
   return (
     <div className="min-h-screen bg-safer-grey relative">

@@ -933,10 +933,13 @@ def subsample_and_export(
     else:
         indices = np.arange(num_samples)
 
+    # Round each exported sample to 5 significant figures. Plenty for KDE /
+    # percentile display and shrinks the JSON payload by ~55%. Full-precision
+    # mean/variance from the 100k run are still reported in `statistics`.
     export_samples: Dict[str, list] = {}
     for nid in export_ids:
         vals = samples[nid]
-        export_samples[nid] = [vals[i] for i in indices]
+        export_samples[nid] = [float(f"{vals[i]:.5g}") for i in indices]
 
     # Statistics from FULL sample arrays (pre-subsample) for continuous nodes
     statistics: Dict[str, dict] = {}
