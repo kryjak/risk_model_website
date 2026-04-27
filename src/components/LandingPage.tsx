@@ -52,7 +52,7 @@ export function LandingPage({ index, onSelectModel }: LandingPageProps) {
               rel="noopener noreferrer"
               className="text-safer-blue hover:text-safer-blue/80 underline underline-offset-2"
             >
-              Cybersecurity risks due to AI misuseToward Quantitative Modeling of Cybersecurity Risks Due to AI Misuse
+              Toward Quantitative Modeling of Cybersecurity Risks Due to AI Misuse
             </a>
           </li>
         </ul>
