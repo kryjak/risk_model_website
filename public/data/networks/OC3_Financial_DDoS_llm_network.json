@@ -1,0 +1,345 @@
+{
+  "modelId": "RM6",
+  "name": "OC3 Denial of Service - LLM Uplift with Uncertainty",
+  "nodes": [
+    {
+      "id": "node-1754059166117-171",
+      "name": "CyBench",
+      "nodeType": "probability",
+      "x": 789.33,
+      "y": 1214.94,
+      "height": 677.1364881161117
+    },
+    {
+      "id": "node-1754059166521-175",
+      "name": "BountyBench",
+      "nodeType": "probability",
+      "x": 1478.58,
+      "y": 1208.36,
+      "height": 666.5659726363098
+    },
+    {
+      "id": "node-1758548241976-4-189",
+      "name": "Expert",
+      "nodeType": "probability",
+      "x": 1103.01,
+      "y": 1146.99,
+      "height": 506.89162501577835
+    },
+    {
+      "id": "node-1758548793791-1-216",
+      "name": "Resource Development: Build Compromise Botnet - Uncertainty",
+      "nodeType": "continuous",
+      "x": 548.2,
+      "y": 899.69
+    },
+    {
+      "id": "node-1758553529063-4-293",
+      "name": "Impact: Direct Network Flood",
+      "nodeType": "continuous",
+      "x": 1486.46,
+      "y": 891.32
+    },
+    {
+      "id": "node-1758555035714-7-445",
+      "name": "Defense Evasion: Non-Standard Port - Uncertainty",
+      "nodeType": "continuous",
+      "x": 982.25,
+      "y": 885.14
+    },
+    {
+      "id": "node-1758556505333-9-131",
+      "name": "Number of Actors",
+      "nodeType": "continuous",
+      "x": 2248.63,
+      "y": 667.24
+    },
+    {
+      "id": "node-1758557100534-14-225",
+      "name": "Number of Attempts per Actor",
+      "nodeType": "continuous",
+      "x": 2041.59,
+      "y": 673.35
+    },
+    {
+      "id": "node-1759745501647-2-505",
+      "name": "Resource Development",
+      "nodeType": "quantity",
+      "x": 680.11,
+      "y": 630.78
+    },
+    {
+      "id": "node-1759756445335-1-262",
+      "name": "Total Risk",
+      "nodeType": "quantity",
+      "x": 2449.07,
+      "y": 386.76,
+      "unit": "$ / year"
+    },
+    {
+      "id": "node-1759829608730-3-255",
+      "name": "Defence Evasion",
+      "nodeType": "quantity",
+      "x": 1032.94,
+      "y": 656.75
+    },
+    {
+      "id": "node-1759829621815-4-778",
+      "name": "Reconnaissance",
+      "nodeType": "quantity",
+      "x": 197.9,
+      "y": 641.05
+    },
+    {
+      "id": "node-1759829651290-5-300",
+      "name": "Impact",
+      "nodeType": "quantity",
+      "x": 1606.68,
+      "y": 655.84
+    },
+    {
+      "id": "node-1759832825592-2-864",
+      "name": "Successful Attack Rate",
+      "nodeType": "quantity",
+      "x": 1104.02,
+      "y": 400.17
+    },
+    {
+      "id": "node-1759855419610-1-403",
+      "name": "Reconnaissance: Gather Victim Network Information - Uncertainty",
+      "nodeType": "continuous",
+      "x": 86.99,
+      "y": 884.13
+    },
+    {
+      "id": "node-1759855842179-2-599",
+      "name": "Reconnaissance: Active Scanning- Uncertainty",
+      "nodeType": "continuous",
+      "x": 275.15,
+      "y": 888.18
+    },
+    {
+      "id": "node-1759856241315-4-569",
+      "name": "Impact: Reflection/Amplification Attack",
+      "nodeType": "continuous",
+      "x": 1693.04,
+      "y": 889.11
+    },
+    {
+      "id": "node-1759856478056-5-658",
+      "name": "Resource Development: Acquire Botnet - Uncertainty",
+      "nodeType": "continuous",
+      "x": 764.85,
+      "y": 903.41
+    },
+    {
+      "id": "node-1759856532749-6-623",
+      "name": "Defense Evasion: Masquerading - Uncertainty",
+      "nodeType": "continuous",
+      "x": 1197.25,
+      "y": 886.95
+    },
+    {
+      "id": "node-1759932270563-1-454",
+      "name": "Command and Control",
+      "nodeType": "continuous",
+      "x": 1335.18,
+      "y": 649.97
+    },
+    {
+      "id": "node-1759932478071-2-882",
+      "name": "Damage per Attack",
+      "nodeType": "continuous",
+      "x": 2453.73,
+      "y": 667.24
+    },
+    {
+      "id": "node-1761652127953-7-773",
+      "name": "Number of Successful Attacks",
+      "nodeType": "quantity",
+      "x": 2236.94,
+      "y": 420.03
+    },
+    {
+      "id": "node-1761652131401-8-195",
+      "name": "Rate of Successful Attempts",
+      "nodeType": "quantity",
+      "x": 2014.1,
+      "y": 416.09
+    }
+  ],
+  "edges": [
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1758548793791-1-216"
+    },
+    {
+      "source": "node-1754059166521-175",
+      "target": "node-1758548793791-1-216"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1758553529063-4-293"
+    },
+    {
+      "source": "node-1754059166521-175",
+      "target": "node-1758553529063-4-293"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1758555035714-7-445"
+    },
+    {
+      "source": "node-1754059166117-171",
+      "target": "node-1758555035714-7-445"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1758556505333-9-131"
+    },
+    {
+      "source": "node-1754059166521-175",
+      "target": "node-1758556505333-9-131"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1758557100534-14-225"
+    },
+    {
+      "source": "node-1754059166521-175",
+      "target": "node-1758557100534-14-225"
+    },
+    {
+      "source": "node-1758548793791-1-216",
+      "target": "node-1759745501647-2-505"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1759855419610-1-403"
+    },
+    {
+      "source": "node-1754059166521-175",
+      "target": "node-1759855419610-1-403"
+    },
+    {
+      "source": "node-1759855419610-1-403",
+      "target": "node-1759829621815-4-778"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1759855842179-2-599"
+    },
+    {
+      "source": "node-1754059166521-175",
+      "target": "node-1759855842179-2-599"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1759856241315-4-569"
+    },
+    {
+      "source": "node-1754059166521-175",
+      "target": "node-1759856241315-4-569"
+    },
+    {
+      "source": "node-1759856241315-4-569",
+      "target": "node-1759829651290-5-300"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1759856478056-5-658"
+    },
+    {
+      "source": "node-1754059166117-171",
+      "target": "node-1759856478056-5-658"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1759856532749-6-623"
+    },
+    {
+      "source": "node-1754059166117-171",
+      "target": "node-1759856532749-6-623"
+    },
+    {
+      "source": "node-1759855842179-2-599",
+      "target": "node-1759829621815-4-778"
+    },
+    {
+      "source": "node-1759856478056-5-658",
+      "target": "node-1759745501647-2-505"
+    },
+    {
+      "source": "node-1758555035714-7-445",
+      "target": "node-1759829608730-3-255"
+    },
+    {
+      "source": "node-1759856532749-6-623",
+      "target": "node-1759829608730-3-255"
+    },
+    {
+      "source": "node-1758553529063-4-293",
+      "target": "node-1759829651290-5-300"
+    },
+    {
+      "source": "node-1759745501647-2-505",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1759829608730-3-255",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1759932270563-1-454",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1759829651290-5-300",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1759932478071-2-882"
+    },
+    {
+      "source": "node-1754059166521-175",
+      "target": "node-1759932478071-2-882"
+    },
+    {
+      "source": "node-1759932478071-2-882",
+      "target": "node-1759756445335-1-262"
+    },
+    {
+      "source": "node-1759829621815-4-778",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1759832825592-2-864",
+      "target": "node-1761652131401-8-195"
+    },
+    {
+      "source": "node-1761652131401-8-195",
+      "target": "node-1761652127953-7-773"
+    },
+    {
+      "source": "node-1761652127953-7-773",
+      "target": "node-1759756445335-1-262"
+    },
+    {
+      "source": "node-1758557100534-14-225",
+      "target": "node-1761652131401-8-195"
+    },
+    {
+      "source": "node-1758556505333-9-131",
+      "target": "node-1761652127953-7-773"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1759932270563-1-454"
+    },
+    {
+      "source": "node-1754059166521-175",
+      "target": "node-1759932270563-1-454"
+    }
+  ]
+}

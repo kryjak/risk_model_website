@@ -1,0 +1,262 @@
+{
+  "modelId": "RM3",
+  "name": "OC2 Initial Access Broker - LLM Uplift with Uncertainty",
+  "nodes": [
+    {
+      "id": "node-1754059166117-171",
+      "name": "CyBench",
+      "nodeType": "probability",
+      "x": 1734.36,
+      "y": 1038.37,
+      "height": 677.1364881161117
+    },
+    {
+      "id": "node-1754059166521-175",
+      "name": "BountyBench",
+      "nodeType": "probability",
+      "x": 615.43,
+      "y": 1110.42,
+      "height": 666.5659726363098
+    },
+    {
+      "id": "node-1758548241976-4-189",
+      "name": "Expert",
+      "nodeType": "probability",
+      "x": 1103.01,
+      "y": 1146.99,
+      "height": 506.89162501577835
+    },
+    {
+      "id": "node-1758548793791-1-216",
+      "name": "Initial Access",
+      "nodeType": "continuous",
+      "x": 340.53,
+      "y": 644.61
+    },
+    {
+      "id": "node-1758553529063-4-293",
+      "name": "Credential Access",
+      "nodeType": "continuous",
+      "x": 746.52,
+      "y": 655.11
+    },
+    {
+      "id": "node-1758557100534-14-225",
+      "name": "Number of Attempts per Actor",
+      "nodeType": "continuous",
+      "x": 1937.26,
+      "y": 674.18
+    },
+    {
+      "id": "node-1759417451956-6-654",
+      "name": "Damage per Attack",
+      "nodeType": "continuous",
+      "x": 2451.13,
+      "y": 665.9
+    },
+    {
+      "id": "node-1759756445335-1-262",
+      "name": "Total Risk",
+      "nodeType": "quantity",
+      "x": 2449.07,
+      "y": 354.08,
+      "unit": "$ / year"
+    },
+    {
+      "id": "node-1759829928392-1-763",
+      "name": "Resource Development",
+      "nodeType": "quantity",
+      "x": 142.08,
+      "y": 623.53
+    },
+    {
+      "id": "node-1759832825592-2-864",
+      "name": "Successful Attack Rate",
+      "nodeType": "quantity",
+      "x": 1073.61,
+      "y": 326.96,
+      "height": 270.10911316287
+    },
+    {
+      "id": "node-1759924847352-1-494",
+      "name": "Command and Control",
+      "nodeType": "continuous",
+      "x": 1397.19,
+      "y": 673.29
+    },
+    {
+      "id": "node-1759925190219-2-521",
+      "name": "Execution",
+      "nodeType": "continuous",
+      "x": 543.79,
+      "y": 659.39
+    },
+    {
+      "id": "node-1759925409615-3-256",
+      "name": "Discovery",
+      "nodeType": "continuous",
+      "x": 957.98,
+      "y": 653.83
+    },
+    {
+      "id": "node-1759925773360-4-200",
+      "name": "Collection",
+      "nodeType": "continuous",
+      "x": 1177.59,
+      "y": 664.95
+    },
+    {
+      "id": "node-1759926220625-5-958",
+      "name": "Exfiltration",
+      "nodeType": "continuous",
+      "x": 1611.24,
+      "y": 673.29
+    },
+    {
+      "id": "node-1759926500157-6-295",
+      "name": "Number of Actors",
+      "nodeType": "continuous",
+      "x": 2181.32,
+      "y": 683.11
+    },
+    {
+      "id": "node-1759926682640-7-933",
+      "name": "Reconnaissance",
+      "nodeType": "quantity",
+      "x": 132.38,
+      "y": 409.21
+    },
+    {
+      "id": "node-1761648799658-3-380",
+      "name": "Rate of Successful Attempts",
+      "nodeType": "quantity",
+      "x": 1935.13,
+      "y": 349.1
+    },
+    {
+      "id": "node-1761648805196-4-812",
+      "name": "Number of Successful Attacks",
+      "nodeType": "quantity",
+      "x": 2187.63,
+      "y": 350.8
+    }
+  ],
+  "edges": [
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1758548793791-1-216"
+    },
+    {
+      "source": "node-1754059166521-175",
+      "target": "node-1758548793791-1-216"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1758553529063-4-293"
+    },
+    {
+      "source": "node-1754059166521-175",
+      "target": "node-1758553529063-4-293"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1758557100534-14-225"
+    },
+    {
+      "source": "node-1754059166521-175",
+      "target": "node-1758557100534-14-225"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1759417451956-6-654"
+    },
+    {
+      "source": "node-1754059166117-171",
+      "target": "node-1759417451956-6-654"
+    },
+    {
+      "source": "node-1759417451956-6-654",
+      "target": "node-1759756445335-1-262"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1759924847352-1-494"
+    },
+    {
+      "source": "node-1754059166117-171",
+      "target": "node-1759924847352-1-494"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1759925190219-2-521"
+    },
+    {
+      "source": "node-1754059166117-171",
+      "target": "node-1759925190219-2-521"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1759926500157-6-295"
+    },
+    {
+      "source": "node-1754059166117-171",
+      "target": "node-1759926500157-6-295"
+    },
+    {
+      "source": "node-1759926682640-7-933",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1759829928392-1-763",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1758548793791-1-216",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1759925190219-2-521",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1758553529063-4-293",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1759925409615-3-256",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1759925773360-4-200",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1759924847352-1-494",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1759926220625-5-958",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1759832825592-2-864",
+      "target": "node-1761648799658-3-380"
+    },
+    {
+      "source": "node-1761648799658-3-380",
+      "target": "node-1761648805196-4-812"
+    },
+    {
+      "source": "node-1758557100534-14-225",
+      "target": "node-1761648799658-3-380"
+    },
+    {
+      "source": "node-1759926500157-6-295",
+      "target": "node-1761648805196-4-812"
+    },
+    {
+      "source": "node-1761648805196-4-812",
+      "target": "node-1759756445335-1-262"
+    }
+  ]
+}

@@ -1,0 +1,541 @@
+{
+  "modelId": "RM8",
+  "name": "OC4 Infrastructure Large Target - LLM Uplifted with Uncertainty",
+  "nodes": [
+    {
+      "id": "node-1754059166117-171",
+      "name": "CyBench",
+      "nodeType": "probability",
+      "x": 1746.48,
+      "y": 1365.6,
+      "height": 677.1364881161117
+    },
+    {
+      "id": "node-1754059166521-175",
+      "name": "BountyBench",
+      "nodeType": "probability",
+      "x": 590.15,
+      "y": 1360.83,
+      "height": 666.5659726363098
+    },
+    {
+      "id": "node-1758548241976-4-189",
+      "name": "Expert",
+      "nodeType": "probability",
+      "x": 1255.55,
+      "y": 1366.9,
+      "height": 506.89162501577835
+    },
+    {
+      "id": "node-1758548793791-1-216",
+      "name": "Initial Access: Spear-phishing Attachment",
+      "nodeType": "continuous",
+      "x": 242.34,
+      "y": 891.88
+    },
+    {
+      "id": "node-1758552529633-2-398",
+      "name": "Initial Access: External Remote Services",
+      "nodeType": "continuous",
+      "x": 433.21,
+      "y": 895.97
+    },
+    {
+      "id": "node-1758553529063-4-293",
+      "name": "Privilege Escalation: Process Injection",
+      "nodeType": "continuous",
+      "x": 635.6,
+      "y": 908.82
+    },
+    {
+      "id": "node-1758555035714-7-445",
+      "name": "C2: OT Protocol Tunnel",
+      "nodeType": "continuous",
+      "x": 1779.73,
+      "y": 997.74
+    },
+    {
+      "id": "node-1758556505333-9-131",
+      "name": "Number of Attempts per Actor",
+      "nodeType": "continuous",
+      "x": 2375.32,
+      "y": 581.83
+    },
+    {
+      "id": "node-1758557100534-14-225",
+      "name": "Number of Actors",
+      "nodeType": "continuous",
+      "x": 2586.18,
+      "y": 573.96
+    },
+    {
+      "id": "node-1759417451956-6-654",
+      "name": "Damage per Attack",
+      "nodeType": "continuous",
+      "x": 2803.24,
+      "y": 579.67
+    },
+    {
+      "id": "node-1759745742100-8-746",
+      "name": "Rate of Successful Attempts",
+      "nodeType": "quantity",
+      "x": 2367.58,
+      "y": 302.43,
+      "unit": "attacks / actor / year"
+    },
+    {
+      "id": "node-1759745830464-11-758",
+      "name": "Number of Successful Attacks",
+      "nodeType": "quantity",
+      "x": 2581.1,
+      "y": 308.89,
+      "unit": "attacks / year"
+    },
+    {
+      "id": "node-1759756445335-1-262",
+      "name": "Total Risk",
+      "nodeType": "quantity",
+      "x": 2787.19,
+      "y": 319.55,
+      "unit": "$ / year"
+    },
+    {
+      "id": "node-1759832825592-2-864",
+      "name": "Successful Attack Rate",
+      "nodeType": "quantity",
+      "x": 2061.34,
+      "y": 291.34,
+      "height": 351.70282558264
+    },
+    {
+      "id": "node-1759855842179-2-599",
+      "name": "Initial Access: Exploit Public-Facing App",
+      "nodeType": "continuous",
+      "x": 57.9,
+      "y": 891.49
+    },
+    {
+      "id": "node-1759856066218-3-643",
+      "name": "Privilege Escalation: Exploitation for PrivEsc",
+      "nodeType": "continuous",
+      "x": 845.17,
+      "y": 911.17
+    },
+    {
+      "id": "node-1759856241315-4-569",
+      "name": "Credential Access",
+      "nodeType": "continuous",
+      "x": 1037.03,
+      "y": 692.38
+    },
+    {
+      "id": "node-1759856478056-5-658",
+      "name": "Privilege Escalation: Token Manipulation",
+      "nodeType": "continuous",
+      "x": 1032.51,
+      "y": 912.16
+    },
+    {
+      "id": "node-1759856532749-6-623",
+      "name": "C2: Web Protocols (HTTPS)",
+      "nodeType": "continuous",
+      "x": 1959.35,
+      "y": 999.41
+    },
+    {
+      "id": "node-1759957331246-1-597",
+      "name": "Reconnaissance",
+      "nodeType": "continuous",
+      "x": 50.3,
+      "y": 311.18
+    },
+    {
+      "id": "node-1759957528676-2-458",
+      "name": "Privilege Escalation",
+      "nodeType": "quantity",
+      "x": 849.57,
+      "y": 506.74,
+      "height": 351.9059259343667
+    },
+    {
+      "id": "node-1759957529823-3-968",
+      "name": "Initial Access",
+      "nodeType": "quantity",
+      "x": 245.86,
+      "y": 534.38,
+      "height": 349.57711158646896
+    },
+    {
+      "id": "node-1759957770315-4-152",
+      "name": "Resource Development",
+      "nodeType": "continuous",
+      "x": 50.3,
+      "y": 537.81
+    },
+    {
+      "id": "node-1759958017450-5-68",
+      "name": "Execution",
+      "nodeType": "continuous",
+      "x": 435.48,
+      "y": 671.3
+    },
+    {
+      "id": "node-1759958065971-6-184",
+      "name": "Persistence",
+      "nodeType": "continuous",
+      "x": 641.25,
+      "y": 656.85
+    },
+    {
+      "id": "node-1759962664265-8-334",
+      "name": "Discovery",
+      "nodeType": "continuous",
+      "x": 1219.44,
+      "y": 699.36
+    },
+    {
+      "id": "node-1759995203058-10-598",
+      "name": "Collection",
+      "nodeType": "continuous",
+      "x": 1595.69,
+      "y": 703.61
+    },
+    {
+      "id": "node-1759995250896-11-905",
+      "name": "Impact",
+      "nodeType": "continuous",
+      "x": 2134.3,
+      "y": 712.69
+    },
+    {
+      "id": "node-1759995397758-12-379",
+      "name": "C2: DNS-over-HTTPS",
+      "nodeType": "continuous",
+      "x": 2143.53,
+      "y": 1012.33
+    },
+    {
+      "id": "node-1759995808900-16-45",
+      "name": "Command and Control",
+      "nodeType": "quantity",
+      "x": 1868.22,
+      "y": 516.13,
+      "height": 358.3333480541677
+    },
+    {
+      "id": "node-1759998071141-1-281",
+      "name": "Privilege Escalation Technique",
+      "nodeType": "probability",
+      "x": 847.11,
+      "y": 1173.23,
+      "height": 304.38604024175334
+    },
+    {
+      "id": "node-1760040161412-1-82",
+      "name": "Lateral Movement: Ingress Tool Transfer",
+      "nodeType": "continuous",
+      "x": 1410.83,
+      "y": 990.94
+    },
+    {
+      "id": "node-1760040254469-2-975",
+      "name": "Lateral Movement: RDP into EMS servers",
+      "nodeType": "continuous",
+      "x": 1233.84,
+      "y": 990.94
+    },
+    {
+      "id": "node-1760040305985-3-524",
+      "name": "Lateral Movement: SMB_WMI into Engineering PCs",
+      "nodeType": "continuous",
+      "x": 1571.99,
+      "y": 953.52
+    },
+    {
+      "id": "node-1760040372609-4-559",
+      "name": "Lateral Movement",
+      "nodeType": "quantity",
+      "x": 1403.63,
+      "y": 523.28,
+      "height": 380.4506385115591
+    }
+  ],
+  "edges": [
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1758548793791-1-216"
+    },
+    {
+      "source": "node-1754059166521-175",
+      "target": "node-1758548793791-1-216"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1758552529633-2-398"
+    },
+    {
+      "source": "node-1754059166521-175",
+      "target": "node-1758552529633-2-398"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1758553529063-4-293"
+    },
+    {
+      "source": "node-1754059166521-175",
+      "target": "node-1758553529063-4-293"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1758555035714-7-445"
+    },
+    {
+      "source": "node-1754059166117-171",
+      "target": "node-1758555035714-7-445"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1758556505333-9-131"
+    },
+    {
+      "source": "node-1754059166521-175",
+      "target": "node-1758556505333-9-131"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1758557100534-14-225"
+    },
+    {
+      "source": "node-1754059166521-175",
+      "target": "node-1758557100534-14-225"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1759417451956-6-654"
+    },
+    {
+      "source": "node-1754059166117-171",
+      "target": "node-1759417451956-6-654"
+    },
+    {
+      "source": "node-1758556505333-9-131",
+      "target": "node-1759745742100-8-746"
+    },
+    {
+      "source": "node-1758557100534-14-225",
+      "target": "node-1759745830464-11-758"
+    },
+    {
+      "source": "node-1759417451956-6-654",
+      "target": "node-1759756445335-1-262"
+    },
+    {
+      "source": "node-1759745742100-8-746",
+      "target": "node-1759745830464-11-758"
+    },
+    {
+      "source": "node-1759745830464-11-758",
+      "target": "node-1759756445335-1-262"
+    },
+    {
+      "source": "node-1759832825592-2-864",
+      "target": "node-1759745742100-8-746"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1759855842179-2-599"
+    },
+    {
+      "source": "node-1754059166521-175",
+      "target": "node-1759855842179-2-599"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1759856066218-3-643"
+    },
+    {
+      "source": "node-1754059166521-175",
+      "target": "node-1759856066218-3-643"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1759856241315-4-569"
+    },
+    {
+      "source": "node-1754059166521-175",
+      "target": "node-1759856241315-4-569"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1759856478056-5-658"
+    },
+    {
+      "source": "node-1754059166117-171",
+      "target": "node-1759856478056-5-658"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1759856532749-6-623"
+    },
+    {
+      "source": "node-1754059166117-171",
+      "target": "node-1759856532749-6-623"
+    },
+    {
+      "source": "node-1759855842179-2-599",
+      "target": "node-1759957529823-3-968"
+    },
+    {
+      "source": "node-1758548793791-1-216",
+      "target": "node-1759957529823-3-968"
+    },
+    {
+      "source": "node-1758552529633-2-398",
+      "target": "node-1759957529823-3-968"
+    },
+    {
+      "source": "node-1758553529063-4-293",
+      "target": "node-1759957528676-2-458"
+    },
+    {
+      "source": "node-1759856066218-3-643",
+      "target": "node-1759957528676-2-458"
+    },
+    {
+      "source": "node-1759856478056-5-658",
+      "target": "node-1759957528676-2-458"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1759995397758-12-379"
+    },
+    {
+      "source": "node-1754059166117-171",
+      "target": "node-1759995397758-12-379"
+    },
+    {
+      "source": "node-1759957331246-1-597",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1759957770315-4-152",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1759957529823-3-968",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1759958017450-5-68",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1759958065971-6-184",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1759957528676-2-458",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1759856241315-4-569",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1759962664265-8-334",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1759995203058-10-598",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1759995250896-11-905",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1759995808900-16-45",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1759998071141-1-281",
+      "target": "node-1759957528676-2-458"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1759958017450-5-68"
+    },
+    {
+      "source": "node-1754059166521-175",
+      "target": "node-1759958017450-5-68"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1760040161412-1-82"
+    },
+    {
+      "source": "node-1754059166521-175",
+      "target": "node-1760040161412-1-82"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1760040254469-2-975"
+    },
+    {
+      "source": "node-1754059166521-175",
+      "target": "node-1760040254469-2-975"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1760040305985-3-524"
+    },
+    {
+      "source": "node-1754059166521-175",
+      "target": "node-1760040305985-3-524"
+    },
+    {
+      "source": "node-1760040254469-2-975",
+      "target": "node-1760040372609-4-559"
+    },
+    {
+      "source": "node-1760040161412-1-82",
+      "target": "node-1760040372609-4-559"
+    },
+    {
+      "source": "node-1760040305985-3-524",
+      "target": "node-1760040372609-4-559"
+    },
+    {
+      "source": "node-1760040372609-4-559",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1759995203058-10-598"
+    },
+    {
+      "source": "node-1754059166117-171",
+      "target": "node-1759995203058-10-598"
+    },
+    {
+      "source": "node-1758555035714-7-445",
+      "target": "node-1759995808900-16-45"
+    },
+    {
+      "source": "node-1759856532749-6-623",
+      "target": "node-1759995808900-16-45"
+    },
+    {
+      "source": "node-1759995397758-12-379",
+      "target": "node-1759995808900-16-45"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1759995250896-11-905"
+    },
+    {
+      "source": "node-1754059166117-171",
+      "target": "node-1759995250896-11-905"
+    }
+  ]
+}

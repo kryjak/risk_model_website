@@ -72,5 +72,21 @@
     "T1134 Access-Token Manipulation": "Privilege Escalation: Access-Token Manipulation",
     "T1195 Supply-Chain Compromise": "Initial Access: Supply-Chain Compromise",
     "T1566.001 Spear-phishing Attachment": "Initial Access: Spear-phishing Attachment"
+  },
+  "OC3_Ransomware_SME_target_human": {
+    "Ransom Payment": "Damage per Attack: Ransom",
+    "Recovery Cost": "Damage per Attack"
+  },
+  "OC3_Ransomware_SME_target_Web_vuln_llm": {
+    "Ransom Payment": "Damage per Attack: Ransom",
+    "Recovery Cost": "Damage per Attack",
+    "T1486/T1490/T1489 - Data Encryption and System Disruption": "Data Encryption and System Disruption",
+    "T1657 - Extortion": "Financial Theft"
+  },
+  "OC3_Ransomware_Large_enterprise_target_llm": {
+    "Ransom Payment": "Damage per Attack: Ransom",
+    "Recovery Cost": "Damage per Attack",
+    "T1486, T1490, T1489 - Data Encryption & System Disruption": "Data Encryption and System Disruption",
+    "T1657 - Financial Theft": "Financial Theft"
   }
 }

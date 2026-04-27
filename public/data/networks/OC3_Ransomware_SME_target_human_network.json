@@ -1,0 +1,334 @@
+{
+  "modelId": "RM4 (human)",
+  "name": "OC3 Ransomware SME Target - Human Uplift with Uncertainty",
+  "nodes": [
+    {
+      "id": "node-1754059166117-171",
+      "name": "CyBench",
+      "nodeType": "probability",
+      "x": 654.87,
+      "y": 1065.76,
+      "height": 392.8972571599213
+    },
+    {
+      "id": "node-1754059166521-175",
+      "name": "BountyBench",
+      "nodeType": "probability",
+      "x": 256.37,
+      "y": 1067.53,
+      "height": 409.23794210073004
+    },
+    {
+      "id": "node-1758548241976-4-189",
+      "name": "Expert",
+      "nodeType": "probability",
+      "x": 457.56,
+      "y": 1068.07,
+      "height": 537.5664895829336
+    },
+    {
+      "id": "node-1758548793791-1-216",
+      "name": "Initial Access",
+      "nodeType": "continuous",
+      "x": 3.08,
+      "y": 677.26
+    },
+    {
+      "id": "node-1758552529633-2-398",
+      "name": "Execution",
+      "nodeType": "continuous",
+      "x": 182.86,
+      "y": 675.9
+    },
+    {
+      "id": "node-1758553529063-4-293",
+      "name": "Privilege Escalation",
+      "nodeType": "continuous",
+      "x": 368.12,
+      "y": 668.25
+    },
+    {
+      "id": "node-1758554382063-5-292",
+      "name": "Lateral Movement",
+      "nodeType": "continuous",
+      "x": 740.05,
+      "y": 677.7
+    },
+    {
+      "id": "node-1758555035714-7-445",
+      "name": "Impact",
+      "nodeType": "continuous",
+      "x": 1491.09,
+      "y": 681.59
+    },
+    {
+      "id": "node-1758556505333-9-131",
+      "name": "Number of Actors",
+      "nodeType": "continuous",
+      "x": 1894.27,
+      "y": 695.51
+    },
+    {
+      "id": "node-1758557100534-14-225",
+      "name": "Number of Attempts per Actor",
+      "nodeType": "continuous",
+      "x": 1708.98,
+      "y": 681.57
+    },
+    {
+      "id": "node-1759417451956-6-654",
+      "name": "Damage per Attack",
+      "nodeType": "continuous",
+      "x": 2087.94,
+      "y": 758.19
+    },
+    {
+      "id": "node-1759418610308-7-652",
+      "name": "Damage per Attack: Ransom",
+      "nodeType": "continuous",
+      "x": 2420.73,
+      "y": 989.77
+    },
+    {
+      "id": "node-1759419709292-10-379",
+      "name": "Financial Theft",
+      "nodeType": "continuous",
+      "x": 2225.52,
+      "y": 893.48
+    },
+    {
+      "id": "node-1759419936115-12-460",
+      "name": "Risk (Ransom)",
+      "nodeType": "quantity",
+      "x": 2218.16,
+      "y": 539.87,
+      "unit": "$ / year"
+    },
+    {
+      "id": "node-1759756445335-1-262",
+      "name": "Risk (Recovery)",
+      "nodeType": "quantity",
+      "x": 2219.39,
+      "y": 296.73,
+      "unit": "$ / year"
+    },
+    {
+      "id": "node-1759761054875-2-595",
+      "name": "Total Risk",
+      "nodeType": "quantity",
+      "x": 2613.32,
+      "y": 448.67
+    },
+    {
+      "id": "node-1759832825592-2-864",
+      "name": "Successful Attack Rate",
+      "nodeType": "quantity",
+      "x": 523.78,
+      "y": 363.44
+    },
+    {
+      "id": "node-1761651098141-5-621",
+      "name": "Number of Successful Attacks",
+      "nodeType": "quantity",
+      "x": 1898.48,
+      "y": 419.12
+    },
+    {
+      "id": "node-1761651104669-6-491",
+      "name": "Rate of Successful Attempts",
+      "nodeType": "quantity",
+      "x": 1703.57,
+      "y": 418.93
+    },
+    {
+      "id": "node-1761753623630-6-305",
+      "name": "Discovery",
+      "nodeType": "continuous",
+      "x": 554.21,
+      "y": 656.54
+    },
+    {
+      "id": "node-1761753789678-7-381",
+      "name": "Collection",
+      "nodeType": "continuous",
+      "x": 927.18,
+      "y": 670.41
+    },
+    {
+      "id": "node-1761753860743-8-372",
+      "name": "Command and Control",
+      "nodeType": "continuous",
+      "x": 1113.66,
+      "y": 658.08
+    },
+    {
+      "id": "node-1761753973731-9-572",
+      "name": "Exfiltration",
+      "nodeType": "continuous",
+      "x": 1297.8,
+      "y": 656.13
+    }
+  ],
+  "edges": [
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1758548793791-1-216"
+    },
+    {
+      "source": "node-1754059166521-175",
+      "target": "node-1758548793791-1-216"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1758552529633-2-398"
+    },
+    {
+      "source": "node-1754059166521-175",
+      "target": "node-1758552529633-2-398"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1758553529063-4-293"
+    },
+    {
+      "source": "node-1754059166521-175",
+      "target": "node-1758553529063-4-293"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1758554382063-5-292"
+    },
+    {
+      "source": "node-1754059166117-171",
+      "target": "node-1758554382063-5-292"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1758555035714-7-445"
+    },
+    {
+      "source": "node-1754059166117-171",
+      "target": "node-1758555035714-7-445"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1758556505333-9-131"
+    },
+    {
+      "source": "node-1754059166521-175",
+      "target": "node-1758556505333-9-131"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1758557100534-14-225"
+    },
+    {
+      "source": "node-1754059166521-175",
+      "target": "node-1758557100534-14-225"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1759417451956-6-654"
+    },
+    {
+      "source": "node-1754059166117-171",
+      "target": "node-1759417451956-6-654"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1759418610308-7-652"
+    },
+    {
+      "source": "node-1754059166117-171",
+      "target": "node-1759418610308-7-652"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1759419709292-10-379"
+    },
+    {
+      "source": "node-1754059166117-171",
+      "target": "node-1759419709292-10-379"
+    },
+    {
+      "source": "node-1759418610308-7-652",
+      "target": "node-1759419936115-12-460"
+    },
+    {
+      "source": "node-1759417451956-6-654",
+      "target": "node-1759756445335-1-262"
+    },
+    {
+      "source": "node-1759756445335-1-262",
+      "target": "node-1759761054875-2-595"
+    },
+    {
+      "source": "node-1759419936115-12-460",
+      "target": "node-1759761054875-2-595"
+    },
+    {
+      "source": "node-1759419709292-10-379",
+      "target": "node-1759419936115-12-460"
+    },
+    {
+      "source": "node-1758548793791-1-216",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1758552529633-2-398",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1758553529063-4-293",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1758554382063-5-292",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1758555035714-7-445",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1759832825592-2-864",
+      "target": "node-1761651104669-6-491"
+    },
+    {
+      "source": "node-1761651104669-6-491",
+      "target": "node-1761651098141-5-621"
+    },
+    {
+      "source": "node-1761651098141-5-621",
+      "target": "node-1759756445335-1-262"
+    },
+    {
+      "source": "node-1758557100534-14-225",
+      "target": "node-1761651104669-6-491"
+    },
+    {
+      "source": "node-1758556505333-9-131",
+      "target": "node-1761651098141-5-621"
+    },
+    {
+      "source": "node-1761651098141-5-621",
+      "target": "node-1759419936115-12-460"
+    },
+    {
+      "source": "node-1761753623630-6-305",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1761753789678-7-381",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1761753860743-8-372",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1761753973731-9-572",
+      "target": "node-1759832825592-2-864"
+    }
+  ]
+}

@@ -1,0 +1,312 @@
+{
+  "modelId": "RM2",
+  "name": "OC2 Data Breach - LLM Uplift with Uncertainty",
+  "nodes": [
+    {
+      "id": "node-1754059166117-171",
+      "name": "CyBench",
+      "nodeType": "probability",
+      "x": 1612.05,
+      "y": 1132.88,
+      "height": 677.1364881161117
+    },
+    {
+      "id": "node-1754059166521-175",
+      "name": "BountyBench",
+      "nodeType": "probability",
+      "x": 428.72,
+      "y": 1164.57,
+      "height": 666.5659726363098
+    },
+    {
+      "id": "node-1758548241976-4-189",
+      "name": "Expert",
+      "nodeType": "probability",
+      "x": 1103.01,
+      "y": 1146.99,
+      "height": 506.89162501577835
+    },
+    {
+      "id": "node-1758548793791-1-216",
+      "name": "Initial Access",
+      "nodeType": "continuous",
+      "x": 456.95,
+      "y": 578.84
+    },
+    {
+      "id": "node-1758553529063-4-293",
+      "name": "Privilege Escalation",
+      "nodeType": "continuous",
+      "x": 665.9,
+      "y": 573.94
+    },
+    {
+      "id": "node-1758555035714-7-445",
+      "name": "Impact",
+      "nodeType": "continuous",
+      "x": 1619.57,
+      "y": 610.42
+    },
+    {
+      "id": "node-1758556505333-9-131",
+      "name": "Number of Actors",
+      "nodeType": "continuous",
+      "x": 2249.27,
+      "y": 845.07
+    },
+    {
+      "id": "node-1758557100534-14-225",
+      "name": "Number of Attempts per Actor",
+      "nodeType": "continuous",
+      "x": 1995.96,
+      "y": 843.66
+    },
+    {
+      "id": "node-1759417451956-6-654",
+      "name": "Damage per Attack",
+      "nodeType": "continuous",
+      "x": 2511.79,
+      "y": 847.45
+    },
+    {
+      "id": "node-1759756445335-1-262",
+      "name": "Total Risk",
+      "nodeType": "quantity",
+      "x": 2487.88,
+      "y": 356.94,
+      "unit": "$ / year"
+    },
+    {
+      "id": "node-1759829668363-6-764",
+      "name": "Collection",
+      "nodeType": "quantity",
+      "x": 1142.15,
+      "y": 567.83
+    },
+    {
+      "id": "node-1759832825592-2-864",
+      "name": "Successful Attack Rate",
+      "nodeType": "quantity",
+      "x": 958.08,
+      "y": 290.38
+    },
+    {
+      "id": "node-1759855419610-1-403",
+      "name": "Reconnaissance",
+      "nodeType": "continuous",
+      "x": 47.51,
+      "y": 569.47
+    },
+    {
+      "id": "node-1759855842179-2-599",
+      "name": "Resource Development",
+      "nodeType": "continuous",
+      "x": 253.07,
+      "y": 567.81
+    },
+    {
+      "id": "node-1759856066218-3-643",
+      "name": "Lateral Movement",
+      "nodeType": "continuous",
+      "x": 871.47,
+      "y": 572.68
+    },
+    {
+      "id": "node-1759856241315-4-569",
+      "name": "Exfiltration",
+      "nodeType": "continuous",
+      "x": 1424.73,
+      "y": 609.61
+    },
+    {
+      "id": "node-1759856478056-5-658",
+      "name": "Collection: Data Staged - Uncertainty",
+      "nodeType": "continuous",
+      "x": 1053.97,
+      "y": 840.36
+    },
+    {
+      "id": "node-1759856532749-6-623",
+      "name": "Collection: Data from Information Repositories",
+      "nodeType": "continuous",
+      "x": 1236.64,
+      "y": 827.24
+    },
+    {
+      "id": "node-1761647060262-1-169",
+      "name": "Rate of Successful Attempts",
+      "nodeType": "quantity",
+      "x": 2002.32,
+      "y": 352.35
+    },
+    {
+      "id": "node-1761647064548-2-638",
+      "name": "Number of Successful Attacks",
+      "nodeType": "quantity",
+      "x": 2242.07,
+      "y": 343.27
+    }
+  ],
+  "edges": [
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1758548793791-1-216"
+    },
+    {
+      "source": "node-1754059166521-175",
+      "target": "node-1758548793791-1-216"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1758553529063-4-293"
+    },
+    {
+      "source": "node-1754059166521-175",
+      "target": "node-1758553529063-4-293"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1758555035714-7-445"
+    },
+    {
+      "source": "node-1754059166117-171",
+      "target": "node-1758555035714-7-445"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1758556505333-9-131"
+    },
+    {
+      "source": "node-1754059166521-175",
+      "target": "node-1758556505333-9-131"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1758557100534-14-225"
+    },
+    {
+      "source": "node-1754059166521-175",
+      "target": "node-1758557100534-14-225"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1759417451956-6-654"
+    },
+    {
+      "source": "node-1754059166117-171",
+      "target": "node-1759417451956-6-654"
+    },
+    {
+      "source": "node-1759417451956-6-654",
+      "target": "node-1759756445335-1-262"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1759855419610-1-403"
+    },
+    {
+      "source": "node-1754059166521-175",
+      "target": "node-1759855419610-1-403"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1759855842179-2-599"
+    },
+    {
+      "source": "node-1754059166521-175",
+      "target": "node-1759855842179-2-599"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1759856066218-3-643"
+    },
+    {
+      "source": "node-1754059166521-175",
+      "target": "node-1759856066218-3-643"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1759856241315-4-569"
+    },
+    {
+      "source": "node-1754059166521-175",
+      "target": "node-1759856241315-4-569"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1759856478056-5-658"
+    },
+    {
+      "source": "node-1754059166117-171",
+      "target": "node-1759856478056-5-658"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1759856532749-6-623"
+    },
+    {
+      "source": "node-1754059166117-171",
+      "target": "node-1759856532749-6-623"
+    },
+    {
+      "source": "node-1759856478056-5-658",
+      "target": "node-1759829668363-6-764"
+    },
+    {
+      "source": "node-1759856532749-6-623",
+      "target": "node-1759829668363-6-764"
+    },
+    {
+      "source": "node-1759855419610-1-403",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1759855842179-2-599",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1758548793791-1-216",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1758553529063-4-293",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1759856066218-3-643",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1759829668363-6-764",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1759856241315-4-569",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1758555035714-7-445",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1759832825592-2-864",
+      "target": "node-1761647060262-1-169"
+    },
+    {
+      "source": "node-1758556505333-9-131",
+      "target": "node-1761647064548-2-638"
+    },
+    {
+      "source": "node-1761647060262-1-169",
+      "target": "node-1761647064548-2-638"
+    },
+    {
+      "source": "node-1761647064548-2-638",
+      "target": "node-1759756445335-1-262"
+    },
+    {
+      "source": "node-1758557100534-14-225",
+      "target": "node-1761647060262-1-169"
+    }
+  ]
+}

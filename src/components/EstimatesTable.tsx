@@ -195,16 +195,18 @@ function TechniqueGroup({ techniques, parentFormat }: TechniqueGroupProps) {
 
   return (
     <>
-      {/* AND/OR explanation row */}
-      <tr className="border-b border-gray-50 bg-safer-light-purple/10">
-        <td className="py-1.5 px-3" />
-        <td className="py-1.5 px-3 pl-8" colSpan={6}>
-          <div className="flex items-center gap-1.5 text-xs text-gray-500">
-            <Info className="w-3.5 h-3.5 flex-shrink-0" style={{ color: connectorColor }} />
-            <span>{tooltipText}</span>
-          </div>
-        </td>
-      </tr>
+      {/* AND/OR explanation row — only meaningful with 2+ techniques */}
+      {techniques.length > 1 && (
+        <tr className="border-b border-gray-50 bg-safer-light-purple/10">
+          <td className="py-1.5 px-3" />
+          <td className="py-1.5 px-3 pl-8" colSpan={6}>
+            <div className="flex items-center gap-1.5 text-xs text-gray-500">
+              <Info className="w-3.5 h-3.5 flex-shrink-0" style={{ color: connectorColor }} />
+              <span>{tooltipText}</span>
+            </div>
+          </td>
+        </tr>
+      )}
       {techniques.map((technique, idx) => (
         <TechniqueRow
           key={technique.nodeId}

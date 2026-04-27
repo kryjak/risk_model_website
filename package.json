@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.18",
+    "@xyflow/react": "^12.10.2",
     "buffer": "^6.0.3",
     "lucide-react": "^0.563.0",
     "plotly.js": "^3.3.1",

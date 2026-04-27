@@ -1,0 +1,350 @@
+{
+  "modelId": "RM4",
+  "name": "OC3 Ransomware SME Target - LLM Uplift with Uncertainty",
+  "nodes": [
+    {
+      "id": "node-1754059166117-171",
+      "name": "CyBench",
+      "nodeType": "probability",
+      "x": 1512.27,
+      "y": 1175.01,
+      "height": 677.1364881161117
+    },
+    {
+      "id": "node-1754059166521-175",
+      "name": "BountyBench",
+      "nodeType": "probability",
+      "x": 662.99,
+      "y": 1167.87,
+      "height": 634.904515514277
+    },
+    {
+      "id": "node-1758548241976-4-189",
+      "name": "Expert",
+      "nodeType": "probability",
+      "x": 1069.75,
+      "y": 1164.73,
+      "height": 506.89162501577835
+    },
+    {
+      "id": "node-1758548793791-1-216",
+      "name": "Initial Access",
+      "nodeType": "continuous",
+      "x": 222.37,
+      "y": 686.57
+    },
+    {
+      "id": "node-1758552529633-2-398",
+      "name": "Execution",
+      "nodeType": "continuous",
+      "x": 414.62,
+      "y": 689.93
+    },
+    {
+      "id": "node-1758553529063-4-293",
+      "name": "Privilege Escalation",
+      "nodeType": "continuous",
+      "x": 606.29,
+      "y": 683.83
+    },
+    {
+      "id": "node-1758556505333-9-131",
+      "name": "Number of Attempts per Actor",
+      "nodeType": "continuous",
+      "x": 1965.88,
+      "y": 677.39
+    },
+    {
+      "id": "node-1758557100534-14-225",
+      "name": "Number of Actors",
+      "nodeType": "continuous",
+      "x": 2191.46,
+      "y": 679.26
+    },
+    {
+      "id": "node-1759417451956-6-654",
+      "name": "Damage per Attack",
+      "nodeType": "continuous",
+      "x": 2473.42,
+      "y": 681.59
+    },
+    {
+      "id": "node-1759745742100-8-746",
+      "name": "Rate of Successful Attempts",
+      "nodeType": "quantity",
+      "x": 1973.16,
+      "y": 280.77,
+      "unit": "attacks / actor / year"
+    },
+    {
+      "id": "node-1759745830464-11-758",
+      "name": "Number of Successful Attacks",
+      "nodeType": "quantity",
+      "x": 2189.55,
+      "y": 282.04,
+      "unit": "attacks / year"
+    },
+    {
+      "id": "node-1759756445335-1-262",
+      "name": "Risk (Recovery)",
+      "nodeType": "quantity",
+      "x": 2467.03,
+      "y": 189.9,
+      "unit": "$ / year"
+    },
+    {
+      "id": "node-1759832825592-2-864",
+      "name": "Successful Attack Rate",
+      "nodeType": "quantity",
+      "x": 1094.31,
+      "y": 281.3,
+      "height": 341.728522317072
+    },
+    {
+      "id": "node-1759856532749-6-623",
+      "name": "Lateral Movement",
+      "nodeType": "continuous",
+      "x": 1004.31,
+      "y": 695.21
+    },
+    {
+      "id": "node-1759935811358-1-363",
+      "name": "Reconnaissance",
+      "nodeType": "quantity",
+      "x": 17.74,
+      "y": 446.72
+    },
+    {
+      "id": "node-1759935822420-3-15",
+      "name": "Resource Development",
+      "nodeType": "quantity",
+      "x": 25.3,
+      "y": 650.71
+    },
+    {
+      "id": "node-1759935899958-5-193",
+      "name": "Discovery",
+      "nodeType": "continuous",
+      "x": 803.57,
+      "y": 681.75
+    },
+    {
+      "id": "node-1759935976667-6-185",
+      "name": "Collection",
+      "nodeType": "continuous",
+      "x": 1191.59,
+      "y": 683.97
+    },
+    {
+      "id": "node-1759936082409-7-2",
+      "name": "Exfiltration",
+      "nodeType": "continuous",
+      "x": 1572.96,
+      "y": 681.75
+    },
+    {
+      "id": "node-1759936083871-8-794",
+      "name": "Command and Control",
+      "nodeType": "continuous",
+      "x": 1384.49,
+      "y": 686.18
+    },
+    {
+      "id": "node-1761745709563-1-25",
+      "name": "Impact",
+      "nodeType": "continuous",
+      "x": 1776.09,
+      "y": 669.15
+    },
+    {
+      "id": "node-1761745864620-2-601",
+      "name": "Financial Theft",
+      "nodeType": "continuous",
+      "x": 2042.13,
+      "y": 1083.98
+    },
+    {
+      "id": "node-1761745922646-3-530",
+      "name": "Damage per Attack: Ransom",
+      "nodeType": "continuous",
+      "x": 2262.95,
+      "y": 1081.85
+    },
+    {
+      "id": "node-1761746040520-4-20",
+      "name": "Risk (Ransom)",
+      "nodeType": "quantity",
+      "x": 2469.57,
+      "y": 391.13
+    },
+    {
+      "id": "node-1761746149488-5-341",
+      "name": "Total Risk",
+      "nodeType": "quantity",
+      "x": 2714.18,
+      "y": 288.74
+    }
+  ],
+  "edges": [
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1758548793791-1-216"
+    },
+    {
+      "source": "node-1754059166521-175",
+      "target": "node-1758548793791-1-216"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1758552529633-2-398"
+    },
+    {
+      "source": "node-1754059166521-175",
+      "target": "node-1758552529633-2-398"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1758553529063-4-293"
+    },
+    {
+      "source": "node-1754059166521-175",
+      "target": "node-1758553529063-4-293"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1758556505333-9-131"
+    },
+    {
+      "source": "node-1754059166521-175",
+      "target": "node-1758556505333-9-131"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1758557100534-14-225"
+    },
+    {
+      "source": "node-1754059166521-175",
+      "target": "node-1758557100534-14-225"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1759417451956-6-654"
+    },
+    {
+      "source": "node-1754059166117-171",
+      "target": "node-1759417451956-6-654"
+    },
+    {
+      "source": "node-1758556505333-9-131",
+      "target": "node-1759745742100-8-746"
+    },
+    {
+      "source": "node-1758557100534-14-225",
+      "target": "node-1759745830464-11-758"
+    },
+    {
+      "source": "node-1759417451956-6-654",
+      "target": "node-1759756445335-1-262"
+    },
+    {
+      "source": "node-1759745742100-8-746",
+      "target": "node-1759745830464-11-758"
+    },
+    {
+      "source": "node-1759745830464-11-758",
+      "target": "node-1759756445335-1-262"
+    },
+    {
+      "source": "node-1759832825592-2-864",
+      "target": "node-1759745742100-8-746"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1759856532749-6-623"
+    },
+    {
+      "source": "node-1754059166117-171",
+      "target": "node-1759856532749-6-623"
+    },
+    {
+      "source": "node-1759935811358-1-363",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1759935822420-3-15",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1758548793791-1-216",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1758552529633-2-398",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1758553529063-4-293",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1759935899958-5-193",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1759856532749-6-623",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1759935976667-6-185",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1759936083871-8-794",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1759936082409-7-2",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1761745709563-1-25",
+      "target": "node-1759832825592-2-864"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1761745864620-2-601"
+    },
+    {
+      "source": "node-1754059166117-171",
+      "target": "node-1761745864620-2-601"
+    },
+    {
+      "source": "node-1761745864620-2-601",
+      "target": "node-1761746040520-4-20"
+    },
+    {
+      "source": "node-1761745922646-3-530",
+      "target": "node-1761746040520-4-20"
+    },
+    {
+      "source": "node-1759745830464-11-758",
+      "target": "node-1761746040520-4-20"
+    },
+    {
+      "source": "node-1759756445335-1-262",
+      "target": "node-1761746149488-5-341"
+    },
+    {
+      "source": "node-1761746040520-4-20",
+      "target": "node-1761746149488-5-341"
+    },
+    {
+      "source": "node-1758548241976-4-189",
+      "target": "node-1761745922646-3-530"
+    },
+    {
+      "source": "node-1754059166117-171",
+      "target": "node-1761745922646-3-530"
+    }
+  ]
+}
