@@ -362,13 +362,13 @@ export function ByParameterView({
                     </tr>
                     <tr className="bg-safer-grey border-b border-gray-200">
                       <th className="text-right py-1.5 px-2 text-xs font-medium text-safer-blue/70">5th %</th>
-                      <th className="text-right py-1.5 px-2 text-xs font-medium text-safer-blue/70">Mode</th>
+                      <th className="text-right py-1.5 px-2 text-xs font-medium text-safer-blue/70">Median</th>
                       <th className="text-right py-1.5 px-2 text-xs font-medium text-safer-blue/70">95th %</th>
                       <th className="text-right py-1.5 px-2 text-xs font-medium text-safer-purple/70">5th %</th>
-                      <th className="text-right py-1.5 px-2 text-xs font-medium text-safer-purple/70">Mode</th>
+                      <th className="text-right py-1.5 px-2 text-xs font-medium text-safer-purple/70">Median</th>
                       <th className="text-right py-1.5 px-2 text-xs font-medium text-safer-purple/70">95th %</th>
                       <th className="text-right py-1.5 px-2 text-xs font-medium text-safer-teal/70">5th %</th>
-                      <th className="text-right py-1.5 px-2 text-xs font-medium text-safer-teal/70">Mode</th>
+                      <th className="text-right py-1.5 px-2 text-xs font-medium text-safer-teal/70">Median</th>
                       <th className="text-right py-1.5 px-2 text-xs font-medium text-safer-teal/70">95th %</th>
                     </tr>
                   </thead>

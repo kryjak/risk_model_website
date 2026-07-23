@@ -115,7 +115,7 @@ export function LandingPage({ index, onSelectModel }: LandingPageProps) {
               risk estimates in detail. Once inside a model, use the{' '}
               <em>"By Risk Model"</em> view to examine all parameters for that scenario,
               or switch to <em>"By Parameter"</em> to compare a single factor across
-              multiple models. Tables display the 5th percentile, mode, and 95th
+              multiple models. Tables display the 5th percentile, median, and 95th
               percentile of each estimate; click the chart icon on any row to view the
               full probability distribution.
             </p>

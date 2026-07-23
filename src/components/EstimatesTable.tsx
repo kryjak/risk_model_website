@@ -33,7 +33,7 @@ export function EstimatesTable({
               <th className="text-left py-2 px-3 font-medium text-gray-500 w-8"></th>
               <th className="text-left py-2 px-3 font-medium text-gray-500 w-[12%] min-w-[120px]">Parameter</th>
               <th className="text-right py-2 px-3 font-medium text-gray-500 w-[18%] min-w-[9rem]">5th %</th>
-              <th className="text-right py-2 px-3 font-medium text-gray-500 w-[18%] min-w-[9rem]">Mode</th>
+              <th className="text-right py-2 px-3 font-medium text-gray-500 w-[18%] min-w-[9rem]">Median</th>
               <th className="text-right py-2 px-3 font-medium text-gray-500 w-[18%] min-w-[9rem]">95th %</th>
               <th className="text-left py-2 px-3 font-medium text-gray-500">Rationale</th>
               <th className="text-center py-2 px-3 font-medium text-gray-500 w-12">Dist.</th>
